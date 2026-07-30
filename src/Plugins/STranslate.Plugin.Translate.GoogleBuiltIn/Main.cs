@@ -7,7 +7,7 @@ namespace STranslate.Plugin.Translate.GoogleBuiltIn;
 
 public class Main : TranslatePluginBase
 {
-    private const string URL = "https://googlet.deno.dev/translate";
+    private const string URL = "https://google.stranslate.deno.net/translate";
 
     private Control? _settingUi;
     private SettingsViewModel? _viewModel;
