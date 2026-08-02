@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using iNKORE.UI.WPF.Modern;
 using Microsoft.Extensions.Logging;
@@ -6,9 +6,8 @@ using Microsoft.Win32;
 using STranslate.Controls;
 using STranslate.Core;
 using STranslate.Helpers;
-using STranslate.Services;
 using STranslate.Plugin;
-using STranslate.Views;
+using STranslate.Services;
 using STranslate.Views.Pages;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -18,7 +17,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Bitmap = System.Drawing.Bitmap;
 
@@ -290,10 +288,8 @@ public partial class ImageTranslateWindowViewModel : ObservableObject, IDisposab
     }
 
     [RelayCommand]
-    private async Task ImTransOcrAsync(Window? window)
-    {
-        await _mainWindowViewModel.ImageTranslateCommand.ExecuteAsync(null);
-    }
+    private Task ImTransOcrAsync(Window? window)
+        => _mainWindowViewModel.ImageTranslateInternalAsync(hideExistingWindows: window is not null);
 
     [RelayCommand]
     private async Task ReExecuteAsync()

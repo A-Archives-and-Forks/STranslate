@@ -1225,7 +1225,9 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private async Task ImageTranslateAsync()
+    private Task ImageTranslateAsync() => ImageTranslateInternalAsync(hideExistingWindows: true);
+
+    internal async Task ImageTranslateInternalAsync(bool hideExistingWindows)
     {
         var ocrPlugin = GetImageTranslateOcrSvcAndNotify();
         if (ocrPlugin == null)
@@ -1240,10 +1242,12 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
             return;
         }
 
-        var existingWindows = Application.Current.Windows
-            .OfType<Window>()
-            .Where(w => w is ImageTranslateWindow or ImageTranslateCompactWindow)
-            .ToList();
+        var existingWindows = hideExistingWindows
+            ? Application.Current.Windows
+                .OfType<Window>()
+                .Where(w => w is ImageTranslateWindow or ImageTranslateCompactWindow)
+                .ToList()
+            : [];
         var ocr = ocrPlugin;
         await ExecuteWithWindowsHiddenAsync(existingWindows, async () =>
         {
@@ -1279,12 +1283,16 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private async Task OcrAsync()
+    private Task OcrAsync() => OcrInternalAsync(hideExistingWindow: true);
+
+    internal async Task OcrInternalAsync(bool hideExistingWindow)
     {
         if (GetOcrSvcAndNotify() == null)
             return;
 
-        var existingWindow = Application.Current.Windows.OfType<OcrWindow>().FirstOrDefault();
+        var existingWindow = hideExistingWindow
+            ? Application.Current.Windows.OfType<OcrWindow>().FirstOrDefault()
+            : null;
         await ExecuteWithWindowsHiddenAsync(existingWindow, async () =>
         {
             using var bitmap = await _screenshot.GetScreenshotAsync();

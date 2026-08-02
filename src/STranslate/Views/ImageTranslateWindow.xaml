@@ -218,25 +218,31 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <ikw:SimpleStackPanel
+                            <ToolBarTray
                                 VerticalAlignment="Bottom"
-                                Orientation="Horizontal"
-                                Spacing="5">
-                                <control:IconButton
-                                    Command="{Binding SaveImageCommand}"
-                                    Icon="{x:Static ui:FluentSystemIcons.SaveImage_20_Regular}"
-                                    ToolTip="{DynamicResource SaveAs}" />
-
-                                <control:IconButton
-                                    Margin="5,0,0,0"
-                                    Command="{Binding OpenClipboardImageCommand}"
-                                    Icon="{x:Static ui:FluentSystemIcons.ClipboardImage_20_Regular}"
-                                    ToolTip="{DynamicResource ImportFromClipboard}" />
-                                <control:IconButton
-                                    Command="{Binding OpenImageFileCommand}"
-                                    Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}"
-                                    ToolTip="{DynamicResource ImportFromFile}" />
-                            </ikw:SimpleStackPanel>
+                                Style="{StaticResource ResponsiveOverflowToolBarTrayStyle}">
+                                <ToolBar
+                                    HorizontalContentAlignment="Left"
+                                    Style="{StaticResource ResponsiveOverflowToolBarStyle}">
+                                    <control:IconButton
+                                        Margin="0,0,5,0"
+                                        Command="{Binding SaveImageCommand}"
+                                        Icon="{x:Static ui:FluentSystemIcons.SaveImage_20_Regular}"
+                                        ToolBar.OverflowMode="AsNeeded"
+                                        ToolTip="{DynamicResource SaveAs}" />
+                                    <control:IconButton
+                                        Margin="0,0,5,0"
+                                        Command="{Binding OpenClipboardImageCommand}"
+                                        Icon="{x:Static ui:FluentSystemIcons.ClipboardImage_20_Regular}"
+                                        ToolBar.OverflowMode="AsNeeded"
+                                        ToolTip="{DynamicResource ImportFromClipboard}" />
+                                    <control:IconButton
+                                        Command="{Binding OpenImageFileCommand}"
+                                        Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}"
+                                        ToolBar.OverflowMode="AsNeeded"
+                                        ToolTip="{DynamicResource ImportFromFile}" />
+                                </ToolBar>
+                            </ToolBarTray>
 
                             <ikw:SimpleStackPanel
                                 Grid.Column="1"
@@ -274,95 +280,72 @@
                     </Grid>
                 </Border>
 
-                <ikw:SimpleStackPanel
+                <ToolBarTray
                     Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="8">
-                    <ikw:SimpleStackPanel.Resources>
-                        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                            <Setter Property="Height" Value="32" />
-                        </Style>
-                        <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
-                            <Setter Property="MinWidth" Value="120" />
-                            <Setter Property="MaxWidth" Value="200" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                        </Style>
-                    </ikw:SimpleStackPanel.Resources>
-                    <ComboBox
-                        DisplayMemberPath="DisplayName"
-                        ItemsSource="{Binding OcrEngines}"
-                        SelectedItem="{Binding SelectedOcrEngine}" />
-                    <ComboBox
-                        DisplayMemberPath="DisplayName"
-                        ItemsSource="{Binding TransCollectionView}"
-                        SelectedItem="{Binding SelectedTranslateEngine}" />
-                    <ComboBox
-                        Width="112"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding DataProvider.LayoutAnalysisModes}"
-                        SelectedValue="{Binding Settings.LayoutAnalysisMode}"
-                        SelectedValuePath="Value"
-                        ToolTip="{DynamicResource ImageTranslateLayoutAnalysisToolTip}" />
-                    <Button Command="{Binding ToggleTextControlCommand}">
-                        <Button.Style>
-                            <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelRightContract_20_Regular}" ToolTip="{DynamicResource ShowText}" />
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Settings.IsImTranShowingTextControl}" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelLeftContract_20_Regular}" ToolTip="{DynamicResource HideText}" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button Command="{Binding OpenSettingsCommand}" ToolTip="{DynamicResource ImTranSettingsToolTip}">
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Settings_20_Regular}" />
-                    </Button>
-                    <Button
-                        Command="{Binding ImTransOcrCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                        ToolTip="{DynamicResource ReImTransOcr}">
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Cut_20_Regular}" />
-                    </Button>
-                    <ui:AppBarButton
-                        Width="20"
-                        Height="40"
-                        Margin="-8,0,0,0">
-                        <ui:AppBarButton.Resources>
-                            <Thickness x:Key="AppBarButtonContentViewboxCollapsedMargin">0,12,0,2</Thickness>
-                        </ui:AppBarButton.Resources>
-                        <ui:AppBarButton.Icon>
-                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ArrowCurveUpRight_20_Regular}" />
-                        </ui:AppBarButton.Icon>
-                        <ui:AppBarButton.Flyout>
-                            <ui:MenuFlyout>
-                                <MenuItem Command="{Binding ImTransOcrCommand}" Header="{DynamicResource ReOcrKeepWindow}" />
-                            </ui:MenuFlyout>
-                        </ui:AppBarButton.Flyout>
-                    </ui:AppBarButton>
+                    Style="{StaticResource ResponsiveOverflowToolBarTrayStyle}">
+                    <ToolBar Style="{StaticResource ResponsiveOverflowToolBarStyle}">
+                        <ComboBox
+                            MinWidth="120"
+                            MaxWidth="200"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding OcrEngines}"
+                            SelectedItem="{Binding SelectedOcrEngine}"
+                            ToolBar.OverflowMode="AsNeeded" />
+                        <ComboBox
+                            MinWidth="120"
+                            MaxWidth="200"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{Binding TransCollectionView}"
+                            SelectedItem="{Binding SelectedTranslateEngine}"
+                            ToolBar.OverflowMode="AsNeeded" />
+                        <ComboBox
+                            Width="112"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding DataProvider.LayoutAnalysisModes}"
+                            SelectedValue="{Binding Settings.LayoutAnalysisMode}"
+                            SelectedValuePath="Value"
+                            ToolBar.OverflowMode="AsNeeded"
+                            ToolTip="{DynamicResource ImageTranslateLayoutAnalysisToolTip}" />
+                        <Button
+                            Margin="0,0,8,0"
+                            Command="{Binding OpenSettingsCommand}"
+                            ToolBar.OverflowMode="AsNeeded"
+                            ToolTip="{DynamicResource ImTranSettingsToolTip}">
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Settings_20_Regular}" />
+                        </Button>
+                        <ui:SplitButton
+                            Margin="0,0,8,0"
+                            Command="{Binding ImTransOcrCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                            ToolBar.OverflowMode="AsNeeded"
+                            ToolTip="{DynamicResource ReImTransOcr}">
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Cut_20_Regular}" />
+                            <ui:SplitButton.Flyout>
+                                <ui:MenuFlyout>
+                                    <MenuItem Command="{Binding ImTransOcrCommand}" Header="{DynamicResource ReOcrKeepWindow}" />
+                                </ui:MenuFlyout>
+                            </ui:SplitButton.Flyout>
+                        </ui:SplitButton>
 
-                    <Button Command="{Binding ReExecuteCommand}">
-                        <ToolTipService.ToolTip>
-                            <ToolTip>
-                                <StackPanel>
-                                    <TextBlock Text="{DynamicResource ImageTranslate}" />
-                                    <TextBlock Text="{Binding HotkeySettings.ReExecuteOcrHotkey}" />
-                                </StackPanel>
-                            </ToolTip>
-                        </ToolTipService.ToolTip>
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextEffectsSparkle_20_Regular}" />
-                    </Button>
-                </ikw:SimpleStackPanel>
+                        <Button Command="{Binding ReExecuteCommand}" ToolBar.OverflowMode="AsNeeded">
+                            <ToolTipService.ToolTip>
+                                <ToolTip>
+                                    <StackPanel>
+                                        <TextBlock Text="{DynamicResource ImageTranslate}" />
+                                        <TextBlock Text="{Binding HotkeySettings.ReExecuteOcrHotkey}" />
+                                    </StackPanel>
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.TextEffectsSparkle_20_Regular}" />
+                        </Button>
+                    </ToolBar>
+                </ToolBarTray>
             </Grid>
             <!--#endregion-->
 
@@ -439,60 +422,95 @@
                     </Grid>
                 </Border>
 
-                <ikw:SimpleStackPanel
+                <ToolBarTray
                     Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal"
-                    Spacing="8">
-                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource RecognizeLanguage}" />
-                    <ComboBox
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Center"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding DataProvider.LangEnums}"
-                        SelectedValue="{Binding Settings.ImageTranslateOcrLanguage}"
-                        SelectedValuePath="Value" />
+                    Style="{StaticResource ResponsiveOverflowToolBarTrayStyle}">
+                    <ToolBar Style="{StaticResource ResponsiveOverflowToolBarStyle}">
+                        <ikw:SimpleStackPanel
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            ToolBar.OverflowMode="AsNeeded">
+                            <TextBlock VerticalAlignment="Center" Text="{DynamicResource RecognizeLanguage}" />
+                            <ComboBox
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.LangEnums}"
+                                SelectedValue="{Binding Settings.ImageTranslateOcrLanguage}"
+                                SelectedValuePath="Value" />
+                        </ikw:SimpleStackPanel>
 
-                    <Separator
-                        Width="20"
-                        Height="1"
-                        Margin="4,0"
-                        VerticalAlignment="Center"
-                        RenderTransformOrigin="0.5,0.5">
-                        <Separator.RenderTransform>
-                            <RotateTransform Angle="90" />
-                        </Separator.RenderTransform>
-                    </Separator>
-
-
-                    <ikw:SimpleStackPanel
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal"
-                        Spacing="4">
-                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource TranslateLanguage}" />
-                        <ui:FontIcon
-                            FontSize="14"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Icon="{x:Static ui:FluentSystemIcons.Info_24_Regular}"
-                            ToolTip="{DynamicResource ImageTranslateLanguageIndependentToolTip}" />
-                    </ikw:SimpleStackPanel>
-                    <ComboBox
-                        HorizontalContentAlignment="Center"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding DataProvider.LangEnums}"
-                        SelectedValue="{Binding Settings.ImageTranslateSourceLang}"
-                        SelectedValuePath="Value" />
-                    <TextBlock VerticalAlignment="Center" Text="&gt;&gt;" />
-                    <ComboBox
-                        HorizontalContentAlignment="Center"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding DataProvider.LangEnums}"
-                        SelectedValue="{Binding Settings.ImageTranslateTargetLang}"
-                        SelectedValuePath="Value" />
-                </ikw:SimpleStackPanel>
+                        <ikw:SimpleStackPanel
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            ToolBar.OverflowMode="AsNeeded">
+                            <Separator
+                                Width="20"
+                                Height="1"
+                                Margin="4,0"
+                                VerticalAlignment="Center"
+                                RenderTransformOrigin="0.5,0.5">
+                                <Separator.RenderTransform>
+                                    <RotateTransform Angle="90" />
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <ikw:SimpleStackPanel
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <TextBlock VerticalAlignment="Center" Text="{DynamicResource TranslateLanguage}" />
+                                <ui:FontIcon
+                                    FontSize="14"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    Icon="{x:Static ui:FluentSystemIcons.Info_24_Regular}"
+                                    ToolTip="{DynamicResource ImageTranslateLanguageIndependentToolTip}" />
+                            </ikw:SimpleStackPanel>
+                            <ComboBox
+                                HorizontalContentAlignment="Center"
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.LangEnums}"
+                                SelectedValue="{Binding Settings.ImageTranslateSourceLang}"
+                                SelectedValuePath="Value" />
+                            <TextBlock VerticalAlignment="Center" Text="&gt;&gt;" />
+                            <ComboBox
+                                HorizontalContentAlignment="Center"
+                                DisplayMemberPath="Display"
+                                ItemsSource="{Binding DataProvider.LangEnums}"
+                                SelectedValue="{Binding Settings.ImageTranslateTargetLang}"
+                                SelectedValuePath="Value" />
+                        </ikw:SimpleStackPanel>
+                    </ToolBar>
+                </ToolBarTray>
             </Grid>
             <!--#endregion-->
+        </Grid>
+
+        <Grid Margin="0,48,0,0" HorizontalAlignment="Right">
+            <Button Command="{Binding ToggleTextControlCommand}">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource SideTextPanelToggleButtonStyle}" TargetType="Button">
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelRightContract_20_Regular}" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="ToolTip" Value="{DynamicResource ShowText}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Settings.IsImTranShowingTextControl}" Value="True">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelLeftContract_20_Regular}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="ToolTip" Value="{DynamicResource HideText}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </Grid>
 
         <Border
