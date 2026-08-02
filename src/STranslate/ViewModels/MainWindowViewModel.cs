@@ -279,6 +279,18 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     [RelayCommand(IncludeCancelCommand = true, CanExecute = nameof(CanTranslate))]
     private async Task TranslateAsync(object? force, CancellationToken cancellationToken)
     {
+        try
+        {
+            await ExecuteAutomaticTranslationAsync(force, cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // 用户取消属于正常控制流，不应让取消异常越过命令边界。
+        }
+    }
+
+    private async Task ExecuteAutomaticTranslationAsync(object? force, CancellationToken cancellationToken)
+    {
         // 取消防抖执行器中的待执行任务
         _debounceExecutor.Cancel();
         var operation = _translationCoordinator.BeginAutomaticOperation(

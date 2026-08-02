@@ -132,8 +132,9 @@ if (!result.IsSuccess || !operation.IsCurrent(plugin.TransResult))
 3. 主翻译与回译都使用本次方法返回的临时结果；回译文本从本次主翻译返回值读取。
 4. `TranslationOperation` 会在插件返回后重新检查取消令牌；调用方仍须检查执行结果和 `operation.IsCurrent(...)`，再执行复制、历史、最近文本等非界面副作用。
 5. 自动请求的复制和历史入口还需检查 `operation.IsLatestAutomatic`；可见状态发布使用操作对象提供的发布方法。
-6. 不使用 `AsyncLocal`、静态“当前请求”或实时 `InputText` 隐式传递上下文，避免调用链变得不可追踪。
-7. 增加并发回归测试，至少覆盖旧请求在新请求完成后才进入流式回调、`catch` 或 `finally` 的情况。
+6. 深层编排可以使用 `ThrowIfCancellationRequested()` 快速终止流程；自动翻译命令入口必须仅捕获自身令牌触发的 `OperationCanceledException`，把用户取消作为正常控制流，不能让取消异常越过 `AsyncRelayCommand` 边界。
+7. 不使用 `AsyncLocal`、静态“当前请求”或实时 `InputText` 隐式传递上下文，避免调用链变得不可追踪。
+8. 增加并发回归测试，至少覆盖旧请求在新请求完成后才进入流式回调、`catch` 或 `finally` 的情况。
 
 ## 错误处理与通知策略
 
