@@ -2,6 +2,7 @@ namespace STranslate.Plugin.Translate.OpenAI;
 
 public class Settings
 {
+    public OpenAIApiMode ApiMode { get; set; } = OpenAIApiMode.ChatCompletions;
     public string ApiKey { get; set; } = string.Empty;
     public string Url { get; set; } = "https://api.openai.com/";
     public string Model { get; set; } = "gpt-4o";
@@ -36,4 +37,10 @@ public class Settings
             new PromptItem("user", "Please summarize the following text in $source (avoid explaining the original text):\r\n\r\n$content"),
         ]),
     ];
+}
+
+public enum OpenAIApiMode
+{
+    ChatCompletions,
+    Responses
 }

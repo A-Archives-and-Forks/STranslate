@@ -1,7 +1,6 @@
 using STranslate.Plugin.Translate.OpenAI.View;
 using STranslate.Plugin.Translate.OpenAI.ViewModel;
 using System.Text;
-using System.Text.Json.Nodes;
 using System.Windows.Controls;
 
 namespace STranslate.Plugin.Translate.OpenAI;
@@ -126,35 +125,44 @@ public class Main : LlmTranslatePluginBase
             return;
         }
 
-        // 构建最终URL
-        string url = UrlHelper.BuildFinalUrl(Settings.Url);
+        var messages = BuildMessages(sourceStr, targetStr, request.Text);
+        await ExecuteStreamingAsync(messages, text => result.Text = text, cancellationToken);
+    }
 
-        // 选择模型
-        var model = Settings.Model.Trim();
-        model = string.IsNullOrEmpty(model) ? "gpt-4o" : model;
+    internal async Task ValidateApiAsync(CancellationToken cancellationToken = default)
+    {
+        var messages = BuildMessages("en-US", "zh-CN", "Hello world");
+        await ExecuteStreamingAsync(messages, null, cancellationToken);
+    }
 
-        // 替换Prompt关键字
+    private List<PromptItem> BuildMessages(string source, string target, string text)
+    {
         var messages = (Prompts.FirstOrDefault(x => x.IsEnabled) ?? throw new Exception("请先完善Prompt配置"))
             .Clone()
-            .Items;
-        messages.ToList()
-            .ForEach(item =>
-                item.Content = item.Content
-                .Replace("$source", sourceStr)
-                .Replace("$target", targetStr)
-                .Replace("$content", request.Text)
-                );
+            .Items
+            .ToList();
 
-        // 温度限定
-        var temperature = Math.Clamp(Settings.Temperature, 0, 2);
-
-        var content = new
+        foreach (var item in messages)
         {
-            model,
-            messages,
-            temperature,
-            stream = true
-        };
+            item.Content = item.Content
+                .Replace("$source", source)
+                .Replace("$target", target)
+                .Replace("$content", text);
+        }
+
+        return messages;
+    }
+
+    private async Task<string> ExecuteStreamingAsync(
+        IReadOnlyCollection<PromptItem> messages,
+        Action<string>? onTextUpdated,
+        CancellationToken cancellationToken)
+    {
+        var apiMode = Settings.ApiMode;
+        var url = OpenAIProtocol.BuildFinalUrl(Settings.Url, apiMode);
+        var model = string.IsNullOrWhiteSpace(Settings.Model) ? "gpt-4o" : Settings.Model.Trim();
+        var temperature = Math.Clamp(Settings.Temperature, 0, 2);
+        var content = OpenAIProtocol.CreateRequest(apiMode, model, messages, temperature);
 
         var option = new Options
         {
@@ -169,69 +177,40 @@ public class Main : LlmTranslatePluginBase
 
         await Context.HttpService.StreamPostAsync(url, content, msg =>
         {
-            if (string.IsNullOrEmpty(msg?.Trim()) || msg == ": OPENROUTER PROCESSING")
+            var streamEvent = OpenAIProtocol.ParseStreamLine(apiMode, msg);
+            if (!string.IsNullOrWhiteSpace(streamEvent.ErrorMessage))
+                throw new InvalidOperationException(streamEvent.ErrorMessage);
+
+            var contentValue = streamEvent.TextDelta;
+            if (string.IsNullOrEmpty(contentValue))
                 return;
 
-            var preprocessString = msg.Replace("data:", "").Trim();
+            if (contentValue.Trim() == "<think>")
+            {
+                isThink = true;
+                return;
+            }
 
-            // 结束标记
-            if (preprocessString.Equals("[DONE]"))
+            if (contentValue.Trim() == "</think>")
+            {
+                isThink = false;
+                return;
+            }
+
+            if (isThink)
                 return;
 
-            try
-            {
-                // 解析JSON数据
-                var parsedData = JsonNode.Parse(preprocessString);
+            // 优化推理内容结束后的前导空白。
+            if (sb.Length == 0 && string.IsNullOrWhiteSpace(contentValue))
+                return;
 
-                if (parsedData is null)
-                    return;
+            sb.Append(contentValue);
+            onTextUpdated?.Invoke(sb.ToString());
+        }, option, cancellationToken: cancellationToken);
 
-                // 提取content的值
-                var contentValue = parsedData["choices"]?[0]?["delta"]?["content"]?.ToString();
+        if (sb.Length == 0)
+            throw new InvalidOperationException(Context.GetTranslation("STranslate_Plugin_Translate_OpenAI_NoTextOutput"));
 
-                if (string.IsNullOrEmpty(contentValue))
-                    return;
-
-                /***********************************************************************
-                 * 推理模型思考内容
-                 * 1. content字段内：Groq（推理后带有换行）(兼容think标签还带有换行情况)
-                 * 2. reasoning_content字段内：DeepSeek、硅基流动（推理后带有换行）、第三方服务商
-                 ************************************************************************/
-
-                #region 针对content内容中含有推理内容的优化
-
-                if (contentValue.Trim() == "<think>")
-                    isThink = true;
-                if (contentValue.Trim() == "</think>")
-                {
-                    isThink = false;
-                    // 跳过当前内容
-                    return;
-                }
-
-                if (isThink)
-                    return;
-
-                #endregion
-
-                #region 针对推理过后带有换行的情况进行优化
-
-                // 优化推理模型思考结束后的\n\n符号
-                if (string.IsNullOrWhiteSpace(sb.ToString()) && string.IsNullOrWhiteSpace(contentValue))
-                    return;
-
-                sb.Append(contentValue);
-
-                #endregion
-
-                result.Text = sb.ToString();
-            }
-            catch
-            {
-                // Ignore
-                // * 适配OpenRouter等第三方服务流数据中包含与OpenAI官方API中不同的数据
-                // * 如 ": OPENROUTER PROCESSING"
-            }
-        },option , cancellationToken: cancellationToken);
+        return sb.ToString();
     }
 }

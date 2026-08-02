@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:local="clr-namespace:STranslate.Plugin.Translate.OpenAI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:plugin="clr-namespace:STranslate.Plugin;assembly=STranslate.Plugin"
     xmlns:s="https://github.com/zggsong/2022/xaml"
@@ -16,6 +17,20 @@
     mc:Ignorable="d">
 
     <ikw:SimpleStackPanel Spacing="12">
+        <!--  API 模式配置  -->
+        <ui:SettingsCard Description="{DynamicResource STranslate_Plugin_Translate_OpenAI_ApiMode_Description}" Header="{DynamicResource STranslate_Plugin_Translate_OpenAI_ApiMode}">
+            <ui:SettingsCard.HeaderIcon>
+                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ArrowSwap_20_Regular}" />
+            </ui:SettingsCard.HeaderIcon>
+            <ComboBox
+                MinWidth="200"
+                SelectedValue="{Binding ApiMode}"
+                SelectedValuePath="Tag">
+                <ComboBoxItem Content="{DynamicResource STranslate_Plugin_Translate_OpenAI_ApiMode_ChatCompletions}" Tag="{x:Static local:OpenAIApiMode.ChatCompletions}" />
+                <ComboBoxItem Content="{DynamicResource STranslate_Plugin_Translate_OpenAI_ApiMode_Responses}" Tag="{x:Static local:OpenAIApiMode.Responses}" />
+            </ComboBox>
+        </ui:SettingsCard>
+
         <!--  API URL 配置  -->
         <ui:SettingsCard Description="{DynamicResource Url_Description}" Header="{DynamicResource Url}">
             <ui:SettingsCard.HeaderIcon>
@@ -26,11 +41,11 @@
                     x:Name="PART_UrlTb"
                     MinWidth="300"
                     ui:ControlHelper.PlaceholderText="https://api.openai.com"
-                    Text="{Binding Url}" />
+                    Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock
                     FontSize="{DynamicResource STControlFontSize12}"
                     Foreground="{DynamicResource {x:Static ui:ThemeKeys.SystemFillColorNeutralBrushKey}}"
-                    Text="{Binding ElementName=PART_UrlTb, Path=Text, Converter={plugin:UrlToFinalUrlConverter}, ConverterParameter=/v1/chat/completions}"
+                    Text="{Binding FinalUrl}"
                     ToolTip="{DynamicResource Url_ToolTip}" />
             </ikw:SimpleStackPanel>
         </ui:SettingsCard>

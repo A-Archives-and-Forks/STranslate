@@ -52,4 +52,8 @@
         <ProjectReference Include="..\..\STranslate.Plugin\STranslate.Plugin.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="STranslate.Tests" />
+    </ItemGroup>
+
 </Project>
