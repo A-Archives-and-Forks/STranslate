@@ -25,6 +25,7 @@
             <Border.Resources>
                 <s:BindingProxy x:Key="VmProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}, Path=DataContext}" />
                 <s:BindingProxy x:Key="SvcProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=DataContext}" />
+                <s:BindingProxy x:Key="NameEditorProxy" Data="{Binding ElementName=NameEditor}" />
             </Border.Resources>
             <Border.ContextMenu>
                 <ContextMenu>
@@ -50,6 +51,21 @@
                             </MultiBinding>
                         </Separator.Visibility>
                     </Separator>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource NameEditorProxy}, Path=Data.BeginEditCommand}"
+                        Header="{DynamicResource Rename}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Rename_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Duplicate}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <MenuItem Header="{DynamicResource Icon}">
                         <MenuItem.Icon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
@@ -71,14 +87,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem
-                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
-                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
-                        Header="{DynamicResource Duplicate}">
-                        <MenuItem.Icon>
-                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    <Separator />
                     <MenuItem
                         Command="{Binding Source={StaticResource VmProxy}, Path=Data.DeleteCommand}"
                         CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
@@ -98,6 +107,7 @@
                 </Grid.ColumnDefinitions>
                 <Image Height="{DynamicResource STControlFontSize18}" Source="{Binding IconPath, Converter={cnvt:ImagePathToSourceConverter}}" />
                 <control:EditableTextBlock
+                    x:Name="NameEditor"
                     Grid.Column="1"
                     Margin="5,0,0,0"
                     Text="{Binding DisplayName}"
@@ -152,6 +162,7 @@
             <Border.Resources>
                 <s:BindingProxy x:Key="VmProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}, Path=DataContext}" />
                 <s:BindingProxy x:Key="SvcProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=DataContext}" />
+                <s:BindingProxy x:Key="NameEditorProxy" Data="{Binding ElementName=NameEditor}" />
             </Border.Resources>
             <Border.ContextMenu>
                 <ContextMenu>
@@ -173,6 +184,21 @@
                             IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.ExecMode, Converter={cnvt:ExecutionModeBoolConverter}, ConverterParameter=Pinned}" />
                     </MenuItem>
                     <Separator />
+                    <MenuItem
+                        Command="{Binding Source={StaticResource NameEditorProxy}, Path=Data.BeginEditCommand}"
+                        Header="{DynamicResource Rename}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Rename_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Duplicate}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <MenuItem Header="{DynamicResource Icon}">
                         <MenuItem.Icon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
@@ -194,14 +220,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem
-                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
-                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
-                        Header="{DynamicResource Duplicate}">
-                        <MenuItem.Icon>
-                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    <Separator />
                     <MenuItem
                         Command="{Binding Source={StaticResource VmProxy}, Path=Data.DeleteCommand}"
                         CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
@@ -221,6 +240,7 @@
                 </Grid.ColumnDefinitions>
                 <Image Height="{DynamicResource STControlFontSize18}" Source="{Binding IconPath, Converter={cnvt:ImagePathToSourceConverter}}" />
                 <control:EditableTextBlock
+                    x:Name="NameEditor"
                     Grid.Column="1"
                     Margin="5,0,0,0"
                     Text="{Binding DisplayName}"
@@ -264,6 +284,7 @@
             <Border.Resources>
                 <s:BindingProxy x:Key="VmProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}, Path=DataContext}" />
                 <s:BindingProxy x:Key="SvcProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=DataContext}" />
+                <s:BindingProxy x:Key="NameEditorProxy" Data="{Binding ElementName=NameEditor}" />
             </Border.Resources>
             <Border.ContextMenu>
                 <ContextMenu>
@@ -330,6 +351,21 @@
                             IsChecked="{Binding Source={StaticResource SvcProxy}, Path=Data.Options.AutoBackTranslation, Converter={cnvt:BoolInverseConverter}}" />
                     </MenuItem>
                     <Separator />
+                    <MenuItem
+                        Command="{Binding Source={StaticResource NameEditorProxy}, Path=Data.BeginEditCommand}"
+                        Header="{DynamicResource Rename}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Rename_20_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
+                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
+                        Header="{DynamicResource Duplicate}">
+                        <MenuItem.Icon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <MenuItem Header="{DynamicResource Icon}">
                         <MenuItem.Icon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Image_20_Regular}" />
@@ -351,14 +387,7 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem
-                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.DuplicateCommand}"
-                        CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
-                        Header="{DynamicResource Duplicate}">
-                        <MenuItem.Icon>
-                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.SaveCopy_24_Regular}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                    <Separator />
                     <MenuItem
                         Command="{Binding Source={StaticResource VmProxy}, Path=Data.DeleteCommand}"
                         CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
@@ -378,6 +407,7 @@
                 </Grid.ColumnDefinitions>
                 <Image Height="{DynamicResource STControlFontSize18}" Source="{Binding IconPath, Converter={cnvt:ImagePathToSourceConverter}}" />
                 <control:EditableTextBlock
+                    x:Name="NameEditor"
                     Grid.Column="1"
                     Margin="5,0,0,0"
                     Text="{Binding DisplayName}"

@@ -416,6 +416,7 @@
     <sys:String x:Key="Add">追加</sys:String>
     <sys:String x:Key="Clear">クリア</sys:String>
     <sys:String x:Key="Delete">削除</sys:String>
+    <sys:String x:Key="Rename">名前を変更</sys:String>
     <sys:String x:Key="Overwrite">上書き</sys:String>
     <sys:String x:Key="Save">保存</sys:String>
     <sys:String x:Key="Confirm">確認</sys:String>

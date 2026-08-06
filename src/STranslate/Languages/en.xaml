@@ -425,6 +425,7 @@
     <sys:String x:Key="Add">Add</sys:String>
     <sys:String x:Key="Clear">Clear</sys:String>
     <sys:String x:Key="Delete">Delete</sys:String>
+    <sys:String x:Key="Rename">Rename</sys:String>
     <sys:String x:Key="Overwrite">Overwrite</sys:String>
     <sys:String x:Key="Save">Save</sys:String>
     <sys:String x:Key="Confirm">Confirm</sys:String>

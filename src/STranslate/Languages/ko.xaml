@@ -416,6 +416,7 @@
     <sys:String x:Key="Add">추가</sys:String>
     <sys:String x:Key="Clear">지우기</sys:String>
     <sys:String x:Key="Delete">삭제</sys:String>
+    <sys:String x:Key="Rename">이름 변경</sys:String>
     <sys:String x:Key="Overwrite">덮어쓰기</sys:String>
     <sys:String x:Key="Save">저장</sys:String>
     <sys:String x:Key="Confirm">확인</sys:String>

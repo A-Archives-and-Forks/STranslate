@@ -425,6 +425,7 @@
     <sys:String x:Key="Add">添加</sys:String>
     <sys:String x:Key="Clear">清空</sys:String>
     <sys:String x:Key="Delete">删除</sys:String>
+    <sys:String x:Key="Rename">重命名</sys:String>
     <sys:String x:Key="Overwrite">覆盖</sys:String>
     <sys:String x:Key="Save">保存</sys:String>
     <sys:String x:Key="Confirm">确认</sys:String>

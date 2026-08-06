@@ -1,11 +1,23 @@
+using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace STranslate.Controls;
 
+/// <summary>
+/// 提供双击或命令触发的内联文本编辑能力。
+/// </summary>
 public class EditableTextBlock : Control
 {
+    /// <summary>
+    /// 初始化可编辑文本控件及其编辑命令。
+    /// </summary>
+    public EditableTextBlock()
+    {
+        BeginEditCommand = new RelayCommand(BeginEdit);
+    }
+
     static EditableTextBlock()
     {
         DefaultStyleKeyProperty.OverrideMetadata(typeof(EditableTextBlock),
@@ -31,6 +43,11 @@ public class EditableTextBlock : Control
     public static readonly DependencyProperty IsEditingProperty =
         DependencyProperty.Register(nameof(IsEditing), typeof(bool), typeof(EditableTextBlock),
             new FrameworkPropertyMetadata(false));
+
+    /// <summary>
+    /// 获取使控件进入编辑状态的命令。
+    /// </summary>
+    public ICommand BeginEditCommand { get; }
 
     public ICommand? UpdateTextCommand
     {
@@ -98,13 +115,21 @@ public class EditableTextBlock : Control
 
     private void OnTextBlockMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (sender is not TextBlock textBlock || e.ClickCount != 2)
+        if (sender is not TextBlock || e.ClickCount != 2)
+            return;
+
+        BeginEdit();
+    }
+
+    private void BeginEdit()
+    {
+        if (IsEditing)
             return;
 
         IsEditing = true;
-        _oldText = textBlock.Text;
+        _oldText = Text;
 
-        // 延迟到UI渲染后再Focus+SelectAll
+        // 等待编辑模板完成切换，避免文本框尚未显示时聚焦失败。
         Dispatcher.BeginInvoke(new Action(() =>
         {
             _templateTextBox?.Focus();

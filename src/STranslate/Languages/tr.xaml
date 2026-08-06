@@ -426,6 +426,7 @@
     <sys:String x:Key="Add">Ekle</sys:String>
     <sys:String x:Key="Clear">Temizle</sys:String>
     <sys:String x:Key="Delete">Sil</sys:String>
+    <sys:String x:Key="Rename">Yeniden Adlandır</sys:String>
     <sys:String x:Key="Overwrite">Üzerine Yaz</sys:String>
     <sys:String x:Key="Save">Kaydet</sys:String>
     <sys:String x:Key="Confirm">Onayla</sys:String>
