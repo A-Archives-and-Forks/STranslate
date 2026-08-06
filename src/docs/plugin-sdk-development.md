@@ -97,6 +97,9 @@
 - Microsoft 内置翻译：
   - `Settings.RequestMode` 支持 `Default` 与 `EdgeToken` 两种请求方案。
   - `EdgeToken` 模式会缓存授权 Token，并在过期前刷新。
+- Google 内置翻译：
+  - `Settings.RequestMode` 支持 `CustomApi` 与 `Direct` 两种请求方案。
+  - `CustomApi` 使用可配置的 Deno 兼容中转地址；`Direct` 由客户端直接访问 Google 翻译网站接口。
 - Transmart 内置翻译：
   - 腾讯 Transmart 官方服务已停止，插件保留仅用于兼容旧配置。
   - 设置页只展示停用说明，不再提供连通性验证入口。

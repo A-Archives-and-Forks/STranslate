@@ -3,7 +3,7 @@
   "Name": "Google Translate (Built-in)",
   "Description": "Free Google Translate plugin",
   "Author": "zggsong",
-  "Version": "1.0.2",
+  "Version": "1.1.0",
   "Website": "https://github.com/STranslate/STranslate",
   "ExecuteFileName": "STranslate.Plugin.Translate.GoogleBuiltIn.dll",
   "IconPath": "icon.png"

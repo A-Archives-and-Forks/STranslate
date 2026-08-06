@@ -1,38 +1,91 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
+using System.ComponentModel;
 
 namespace STranslate.Plugin.Translate.GoogleBuiltIn.ViewModel;
 
-public partial class SettingsViewModel(IPluginContext context, Main main) : ObservableObject
+/// <summary>
+/// 管理 Google 内置翻译设置并验证当前请求模式。
+/// </summary>
+public partial class SettingsViewModel : ObservableObject, IDisposable
 {
-    public Main Main { get; } = main;
+    private readonly IPluginContext _context;
+    private readonly Settings _settings;
+    private readonly Main _main;
+
+    /// <summary>
+    /// 初始化设置视图模型并绑定插件配置存储。
+    /// </summary>
+    public SettingsViewModel(IPluginContext context, Settings settings, Main main)
+    {
+        _context = context;
+        _settings = settings;
+        _main = main;
+        RequestMode = settings.RequestMode;
+        ApiUrl = settings.ApiUrl;
+        PropertyChanged += OnPropertyChanged;
+    }
+
+    /// <summary>
+    /// 当前选择的请求模式。
+    /// </summary>
+    [ObservableProperty] public partial RequestMode RequestMode { get; set; }
+
+    /// <summary>
+    /// 自定义中转 API 的完整地址。
+    /// </summary>
+    [ObservableProperty] public partial string ApiUrl { get; set; }
+
+    /// <summary>
+    /// 当前配置的连接验证结果。
+    /// </summary>
     [ObservableProperty] public partial string ValidateResult { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 获取是否应显示自定义 API 地址设置。
+    /// </summary>
+    public bool IsCustomApiMode => RequestMode == RequestMode.CustomApi;
+
+    private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(RequestMode):
+                _settings.RequestMode = RequestMode;
+                OnPropertyChanged(nameof(IsCustomApiMode));
+                break;
+            case nameof(ApiUrl):
+                _settings.ApiUrl = ApiUrl.Trim();
+                break;
+            default:
+                return;
+        }
+
+        ValidateResult = string.Empty;
+        _context.SaveSettingStorage<Settings>();
+    }
+
+    /// <summary>
+    /// 使用当前模式发起测试翻译并更新验证结果。
+    /// </summary>
     [RelayCommand]
     public async Task ValidateAsync()
     {
         try
         {
-            var content = new
-            {
-                text = "Hello world!",
-                source_lang = "auto",
-                target_lang = "zh-CN"
-            };
-            var response = await context.HttpService.PostAsync("https://googlet.deno.dev/translate", content);
-
-            // 解析Google翻译返回的JSON
-            var jsonDoc = JsonDocument.Parse(response);
-            var translatedText = jsonDoc.RootElement.GetProperty("data").GetString() ?? throw new Exception(response);
-
-            ValidateResult = context.GetTranslation("ValidationSuccess");
+            await _main.TranslateTextAsync("Hello world!", "auto", "zh-CN");
+            ValidateResult = _context.GetTranslation("ValidationSuccess");
         }
         catch (Exception ex)
         {
-            ValidateResult = context.GetTranslation("ValidationFailure");
-            context.Logger.LogError(ex, context.GetTranslation("ValidationFailure"));
+            ValidateResult = _context.GetTranslation("ValidationFailure");
+            _context.Logger.LogError(ex, _context.GetTranslation("ValidationFailure"));
         }
     }
+
+    /// <summary>
+    /// 解除配置变更事件订阅。
+    /// </summary>
+    public void Dispose() => PropertyChanged -= OnPropertyChanged;
 }
