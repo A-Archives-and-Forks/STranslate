@@ -112,6 +112,12 @@
     <sys:String x:Key="General_HideLanguageControlDescription">Whether to hide the language selection control when hiding the input box.</sys:String>
     <sys:String x:Key="General_ShowMouseHook">Show Mouse Hook</sys:String>
     <sys:String x:Key="General_ShowMouseHookDescription">Whether to display the quick enable/disable mouse word selection icon on the main interface.</sys:String>
+    <sys:String x:Key="General_EnableMouseHook">Monitor Mouse Text Selection</sys:String>
+    <sys:String x:Key="General_EnableMouseHookDescription">Monitor mouse text selection globally and translate the selected text.</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelection">Show Icon After Mouse Selection</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">Show a floating icon after selecting text and translate only after the icon is clicked. When disabled, selected text is translated immediately.</sys:String>
+    <sys:String x:Key="MouseHookIconTranslate">Translate</sys:String>
+    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">The window must remain topmost while direct mouse selection translation is enabled.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">Show History Navigation</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">Whether to display forward/backward history translation navigation icons on the main interface.</sys:String>
     <sys:String x:Key="General_ShowOcrButton">Show OCR Button</sys:String>

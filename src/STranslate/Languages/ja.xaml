@@ -109,6 +109,12 @@
     <sys:String x:Key="General_HideLanguageControlDescription">入力ボックスを隠す際、言語選択コントロールも一緒に隠すかどうか。</sys:String>
     <sys:String x:Key="General_ShowMouseHook">マウスフックを表示</sys:String>
     <sys:String x:Key="General_ShowMouseHookDescription">メイン画面にマウス選択翻訳の有効/無効切替アイコンを表示するかどうか。</sys:String>
+    <sys:String x:Key="General_EnableMouseHook">マウス選択を監視</sys:String>
+    <sys:String x:Key="General_EnableMouseHookDescription">マウスで選択したテキストをグローバルに監視して翻訳します。</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelection">選択後にフローティングアイコンを表示</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">テキスト選択後にアイコンを表示し、クリックしたときに翻訳します。無効の場合は選択直後に翻訳します。</sys:String>
+    <sys:String x:Key="MouseHookIconTranslate">翻訳</sys:String>
+    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">直接マウス選択翻訳が有効な間、ウィンドウを最前面に保つ必要があります。</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">履歴ナビゲーションを表示</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">メイン画面に前/次の翻訳履歴へ移動するアイコンを表示するかどうか。</sys:String>
     <sys:String x:Key="General_ShowOcrButton">OCRボタンを表示</sys:String>

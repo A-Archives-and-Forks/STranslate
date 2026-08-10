@@ -112,6 +112,12 @@
     <sys:String x:Key="General_HideLanguageControlDescription">Giriş kutusu gizlendiğinde dil seçim kontrolünün gizlenip gizlenmeyeceği.</sys:String>
     <sys:String x:Key="General_ShowMouseHook">Fare Kancasını Göster</sys:String>
     <sys:String x:Key="General_ShowMouseHookDescription">Ana arayüzde fare ile kelime seçme özelliğini hızlıca etkinleştirme/devre dışı bırakma simgesinin gösterilip gösterilmeyeceği.</sys:String>
+    <sys:String x:Key="General_EnableMouseHook">Fareyle Metin Seçimini İzle</sys:String>
+    <sys:String x:Key="General_EnableMouseHookDescription">Fareyle seçilen metni genel olarak izler ve çevirir.</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelection">Seçimden Sonra Yüzen Simgeyi Göster</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">Metin seçiminden sonra bir simge gösterir ve yalnızca simge tıklandığında çevirir. Kapalıyken seçim hemen çevrilir.</sys:String>
+    <sys:String x:Key="MouseHookIconTranslate">Çevir</sys:String>
+    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">Doğrudan fare seçimi çevirisi etkinken pencere en üstte kalmalıdır.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">Geçmiş Gezinmesini Göster</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">Ana arayüzde ileri/geri geçmiş çeviri gezinme simgelerinin gösterilip gösterilmeyeceği.</sys:String>
     <sys:String x:Key="General_ShowOcrButton">OCR Düğmesini Göster</sys:String>

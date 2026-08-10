@@ -109,6 +109,12 @@
     <sys:String x:Key="General_HideLanguageControlDescription">입력 상자를 숨길 때 언어 선택 컨트롤도 함께 숨길지 여부입니다.</sys:String>
     <sys:String x:Key="General_ShowMouseHook">마우스 후킹 표시</sys:String>
     <sys:String x:Key="General_ShowMouseHookDescription">메인 화면에 마우스 드래그 번역 감지 활성화/비활성화 아이콘 표시 여부.</sys:String>
+    <sys:String x:Key="General_EnableMouseHook">마우스 텍스트 선택 감지</sys:String>
+    <sys:String x:Key="General_EnableMouseHookDescription">마우스로 선택한 텍스트를 전역에서 감지하여 번역합니다.</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelection">선택 후 플로팅 아이콘 표시</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">텍스트 선택 후 아이콘을 표시하고 클릭할 때 번역합니다. 끄면 선택 직후 번역합니다.</sys:String>
+    <sys:String x:Key="MouseHookIconTranslate">번역</sys:String>
+    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">직접 마우스 선택 번역을 사용하는 동안 창을 항상 위에 유지해야 합니다.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">기록 탐색 표시</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">메인 화면에 이전/다음 번역 기록 탐색 아이콘 표시 여부.</sys:String>
     <sys:String x:Key="General_ShowOcrButton">OCR 버튼 표시</sys:String>

@@ -112,6 +112,12 @@
     <sys:String x:Key="General_HideLanguageControlDescription">隱藏輸入框時是否一併隱藏語言選擇控制項。</sys:String>
     <sys:String x:Key="General_ShowMouseHook">顯示滑鼠鉤子</sys:String>
     <sys:String x:Key="General_ShowMouseHookDescription">主介面是否顯示快捷啟用/禁用監聽滑鼠劃詞圖示。</sys:String>
+    <sys:String x:Key="General_EnableMouseHook">監聽滑鼠劃詞</sys:String>
+    <sys:String x:Key="General_EnableMouseHookDescription">全域監聽滑鼠選取文字並觸發翻譯。</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelection">劃詞後顯示懸浮圖示</sys:String>
+    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">劃詞後顯示懸浮圖示，點擊圖示時再翻譯；關閉後劃詞完成即翻譯。</sys:String>
+    <sys:String x:Key="MouseHookIconTranslate">點擊翻譯</sys:String>
+    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">直接劃詞翻譯啟用時視窗必須保持置頂。</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">顯示歷史導航</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">主介面是否顯示向前/向後歷史翻譯記錄導航圖示。</sys:String>
     <sys:String x:Key="General_ShowOcrButton">顯示OCR按鈕</sys:String>

@@ -113,7 +113,7 @@
             IsHideInputVisible="{Binding Settings.IsHideInputVisible}"
             IsHistoryNavigationVisible="{Binding Settings.IsHistoryNavigationVisible}"
             IsImageTranslateVisible="{Binding Settings.IsImageTranslateVisible}"
-            IsMouseHook="{Binding IsMouseHook}"
+            IsMouseHook="{Binding Settings.IsMouseHook}"
             IsMouseHookVisible="{Binding Settings.IsMouseHookVisible}"
             IsOcrVisible="{Binding Settings.IsOcrVisible}"
             IsScreenshotTranslateVisible="{Binding Settings.IsScreenshotTranslateVisible}"

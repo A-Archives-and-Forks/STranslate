@@ -16,12 +16,7 @@
         ShowActivated="False"
         SizeToContent="Manual"
         UseLayoutRounding="True"
-        SnapsToDevicePixels="True"> <Window.Resources>
-        <Storyboard x:Key="FadeIn">
-            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.2" />
-        </Storyboard>
-    </Window.Resources>
-
+        SnapsToDevicePixels="True">
     <Grid Background="Transparent">
         <Button x:Name="TranslateBtn"
                 Width="20" Height="20"
@@ -32,7 +27,7 @@
                 BorderThickness="1">
             
             <Button.ToolTip>
-                <ToolTip Content="点击翻译" />
+                <ToolTip Content="{DynamicResource MouseHookIconTranslate}" />
             </Button.ToolTip>
 
             <Button.Template>
@@ -43,11 +38,11 @@
                             CornerRadius="3">
                         
                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Ellipse Width="10" Height="10" 
-                                     Stroke="Black" 
+                            <Ellipse Width="10" Height="10"
+                                     Stroke="Black"
                                      StrokeThickness="1.5"/>
-                            
-                            <Ellipse Width="4" Height="4" 
+
+                            <Ellipse Width="4" Height="4"
                                      Fill="Black"/>
                         </Grid>
                         

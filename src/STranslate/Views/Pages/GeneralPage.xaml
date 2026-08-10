@@ -554,12 +554,27 @@
                     </ui:SettingsExpander.Items>
                 </ui:SettingsExpander>
 
-                <ui:SettingsCard Header="划词后显示悬浮图标" Description="开启后，鼠标划选文本时仅显示悬浮图标，点击图标再进行翻译。未开启则划词后直接翻译。">
+                <ui:SettingsCard
+                    Header="{DynamicResource General_EnableMouseHook}"
+                    Description="{DynamicResource General_EnableMouseHookDescription}">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.IsMouseHook}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+                </ui:SettingsCard>
+
+                <ui:SettingsCard
+                    Header="{DynamicResource General_ShowIconAfterMouseSelection}"
+                    Description="{DynamicResource General_ShowIconAfterMouseSelectionDescription}"
+                    IsEnabled="{Binding Settings.IsMouseHook}">
                     <ui:SettingsCard.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
                     </ui:SettingsCard.HeaderIcon>
                     <ui:ToggleSwitch
-                        IsOn="{Binding Settings.ShowMouseHookIcon}"
+                        IsOn="{Binding Settings.ShowIconAfterMouseSelection}"
                         OffContent="{DynamicResource Disable}"
                         OnContent="{DynamicResource Enable}" />
                 </ui:SettingsCard>

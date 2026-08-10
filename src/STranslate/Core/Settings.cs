@@ -5,6 +5,7 @@ using Serilog.Core;
 using Serilog.Events;
 using STranslate.Helpers;
 using STranslate.Plugin;
+using STranslate.Services;
 using STranslate.Views;
 using System.ComponentModel;
 using System.Drawing.Imaging;
@@ -70,11 +71,9 @@ public partial class Settings : ObservableObject
 
     [ObservableProperty] public partial bool IsMouseHookVisible { get; set; } = true;
 
-    // ↓↓↓↓↓ 建议添加在这里 ↓↓↓↓↓
-    /// <summary>
-    /// 划词后是否显示悬浮图标
-    /// </summary>
-    [ObservableProperty] public partial bool ShowMouseHookIcon { get; set; } = true;
+    [ObservableProperty] public partial bool IsMouseHook { get; set; } = false;
+
+    [ObservableProperty] public partial bool ShowIconAfterMouseSelection { get; set; } = false;
 
     [ObservableProperty] public partial bool IsHistoryNavigationVisible { get; set; } = true;
 
@@ -470,6 +469,7 @@ public partial class Settings : ObservableObject
         ApplyTheme();
         ApplyDeactived();
         ApplyExternalCall();
+        ApplyMouseHook();
     }
 
     internal ImageFormat GetImageFormat() =>
@@ -546,6 +546,12 @@ public partial class Settings : ObservableObject
                 break;
             case nameof(IgnoreHotkeysOnFullscreen):
                 Ioc.Default.GetRequiredService<HotkeySettings>().ApplyIgnoreOnFullScreen();
+                break;
+            case nameof(IsMouseHook):
+                ApplyMouseHook();
+                break;
+            case nameof(ShowIconAfterMouseSelection):
+                Ioc.Default.GetRequiredService<MouseSelectionService>().ApplyModeChange();
                 break;
             case nameof(LocalDetectorRate):
                 LocalDetectorRate = Math.Round(LocalDetectorRate, 2);
@@ -711,6 +717,19 @@ public partial class Settings : ObservableObject
         {
             externalCallService.StopService();
         }
+    }
+
+    private void ApplyMouseHook()
+    {
+        var mouseSelectionService = Ioc.Default.GetRequiredService<MouseSelectionService>();
+        if (IsMouseHook)
+        {
+            if (!mouseSelectionService.Start())
+                IsMouseHook = false;
+            return;
+        }
+
+        mouseSelectionService.Stop();
     }
 
     #endregion

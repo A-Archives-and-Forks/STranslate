@@ -17,8 +17,10 @@
   - `IsReservedGlobalHotkey()`：阻止把系统复制热键注册为全局热键。
 - `STranslate/Helpers/CtrlSameCHelper.cs`
   - 监听 Ctrl+C 双击（500ms 窗口）。
-- `STranslate/Helpers/MouseKeyHelper.cs`
-  - 鼠标拖拽结束后读取选中文本并触发事件。
+- `STranslate/Services/MouseHookService.cs`
+  - 在专用消息线程通过 `WH_MOUSE_LL` 监听鼠标拖动，Hook 回调只投递事件，不执行剪贴板或 UI 操作。
+- `STranslate/Services/MouseSelectionService.cs`
+  - 协调常驻划词与增量翻译共享 Hook，并按配置选择直接取词或显示悬浮图标。
 - `STranslate/Helpers/ClipboardMonitor.cs`
   - `AddClipboardFormatListener` 监听剪贴板变更。
 - `STranslate/ViewModels/MainWindowViewModel.cs`
@@ -49,12 +51,12 @@
 ### 从入口到结果：增量翻译（按住键）
 1. `IncrementalTranslateKey` 变化触发 `ApplyIncrementalTranslate()`。
 2. 注册 `HotkeyMapper.RegisterHoldKey(key, OnIncKeyPressed, OnIncKeyReleased)` 并开启低级键盘钩子。
-3. 按下时 `OnIncKeyPressed()`：置顶窗口 + 开启鼠标划词监听 + 缓存旧文本。若 `Settings.IncrementalClearInput`（默认 true）则先清空输入框，本次会话内选中文本仍累积追加；false 时保留旧逻辑不清空。
-4. 松开时 `OnIncKeyReleased()`：关闭划词监听，若文本有变化则执行翻译。
+3. 按下时 `OnIncKeyPressed()`：置顶窗口 + 向 `MouseSelectionService` 申请增量取词会话 + 缓存旧文本。若 `Settings.IncrementalClearInput`（默认 true）则先清空输入框，本次会话内选中文本仍累积追加；false 时保留旧逻辑不清空。
+4. 松开时 `OnIncKeyReleased()`：释放增量取词会话，若文本有变化则执行翻译；常驻划词仍启用时底层 Hook 不会停止。
 
 ### 从入口到结果：Ctrl+CC、鼠标划词、剪贴板监听
 - Ctrl+CC：`CtrlSameCHelper` 监听全局按键，500ms 内双击 `Ctrl+C` 触发 `CrosswordTranslateByCtrlSameCHandler()`。
-- 鼠标划词：`MouseKeyHelper` 在拖拽完成后读选中文本，触发 `ExecuteTranslate()`。
+- 鼠标划词：`Settings.IsMouseHook` 控制 `MouseSelectionService` 启停；直接模式在拖拽完成后异步取词并触发 `ExecuteTranslate()`，悬浮图标模式等待用户点击后再取词。
 - 剪贴板监听：`ClipboardMonitor` 收到 `WM_CLIPBOARDUPDATE` 后读取文本，触发 `OnClipboardTextChanged -> ExecuteTranslate()`。
 
 ### 触发后的窗口置前
@@ -115,6 +117,8 @@
   - `TextSeparatorHandleType`
   - `TextSeparatorHandleScopes`
   - `CrosswordFetchFailedFallbackTarget`
+  - `IsMouseHook`
+  - `ShowIconAfterMouseSelection`
   - `HideInput`、`HideInputWithLangSelectControl`
 - 输入区有效显隐状态：
   - `IsInputActuallyHidden`：持久隐藏设置叠加输入翻译临时显示后的实际隐藏状态。
@@ -125,7 +129,8 @@
 - `STranslate/Core/HotkeySettings.cs`
 - `STranslate/Helpers/HotkeyMapper.cs`
 - `STranslate/Helpers/CtrlSameCHelper.cs`
-- `STranslate/Helpers/MouseKeyHelper.cs`
+- `STranslate/Services/MouseHookService.cs`
+- `STranslate/Services/MouseSelectionService.cs`
 - `STranslate/Helpers/ClipboardMonitor.cs`
 - `STranslate/ViewModels/MainWindowViewModel.cs`
 - `STranslate/Views/MainWindow.xaml`
