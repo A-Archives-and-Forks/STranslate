@@ -70,6 +70,12 @@ public partial class Settings : ObservableObject
 
     [ObservableProperty] public partial bool IsMouseHookVisible { get; set; } = true;
 
+    // ↓↓↓↓↓ 建议添加在这里 ↓↓↓↓↓
+    /// <summary>
+    /// 划词后是否显示悬浮图标
+    /// </summary>
+    [ObservableProperty] public partial bool ShowMouseHookIcon { get; set; } = true;
+
     [ObservableProperty] public partial bool IsHistoryNavigationVisible { get; set; } = true;
 
     [ObservableProperty] public partial bool IsOcrVisible { get; set; } = true;

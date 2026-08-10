@@ -33,6 +33,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     private readonly IScreenshot _screenshot;
     private readonly ISnackbar _snackbar;
     private readonly INotification _notification;
+    private readonly MouseHookIconWindow _mouseHookIconWindow;
     private double _cacheLeft;
     private double _cacheTop;
     private bool _isAdjustingWindowPositionForContent;
@@ -71,7 +72,8 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         VocabularyService vocabularyService,
         SqlService sqlService,
         Settings settings,
-        HotkeySettings hotkeySettings)
+        HotkeySettings hotkeySettings,
+        MouseHookIconWindow mouseHookIconWindow)
     {
         DataProvider = dataProvider;
         IdentifiedLanguageOptions = DataProvider.LangEnums
@@ -92,6 +94,10 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         _sqlService = sqlService;
         Settings = settings;
         HotkeySettings = hotkeySettings;
+        _mouseHookIconWindow = mouseHookIconWindow;
+        _mouseHookIconWindow.DataContext = this;
+        MouseKeyHelper.MousePointSelected += OnMousePointSelected;
+        Application.Current.Dispatcher.InvokeAsync(() => IsMouseHook = true);
 
         TranslateService.Services.CollectionChanged += OnQuickServiceCollectionChanged;
         OcrService.Services.CollectionChanged += OnQuickServiceCollectionChanged;
@@ -240,10 +246,19 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         get => field;
         set
         {
-            if (IsMouseHook && !value)
-                AppMessageBox.Show("监听鼠标划词时窗口必须置顶", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-            else
-                SetProperty(ref field, value);
+            if (IsMouseHook && !value && !Settings.ShowMouseHookIcon)
+            {
+                AppMessageBox.Show("监听鼠标划词且未开启图标模式时，窗口必须置顶", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            
+            SetProperty(ref field, value);
+            
+            // 更新 Utilities 的自动复制状态：置顶时自动复制，不置顶时手动复制
+            if (IsMouseHook)
+            {
+                MouseKeyHelper.IsAutomaticCopy = value || !Settings.ShowMouseHookIcon;
+            }
         }
     }
 
@@ -1688,17 +1703,57 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     {
         if (enable)
         {
-            Show();
-            IsTopmost = true;
+            if (!Settings.ShowMouseHookIcon)
+            {
+                Show();
+                IsTopmost = true;
+            }
+
+            // 设置 Utilities 模式：如果是置顶或者不显示图标，则自动复制；否则(后台+图标模式)不自动复制
+            MouseKeyHelper.IsAutomaticCopy = IsTopmost || !Settings.ShowMouseHookIcon;
+
             await MouseKeyHelper.StartMouseTextSelectionAsync(() => Settings.SelectedTextFetchTimeoutMs);
             MouseKeyHelper.MouseTextSelected += OnMouseTextSelected;
+            
+            var msg = Settings.ShowMouseHookIcon ? "已开启划词 (图标模式)" : "已开启划词 (置顶模式)";
+            _snackbar.ShowSuccess(msg);
         }
         else
         {
-            IsTopmost = false;
+            if (!Settings.ShowMouseHookIcon)
+            {
+                IsTopmost = false;
+            }
+            
             MouseKeyHelper.StopMouseTextSelection();
             MouseKeyHelper.MouseTextSelected -= OnMouseTextSelected;
         }
+    }
+
+    // 新增：图标模式回调（只显示图标）
+    private void OnMousePointSelected(System.Drawing.Point drawingPoint)
+    {
+        _ = Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            var point = new System.Windows.Point(drawingPoint.X, drawingPoint.Y);
+            _mouseHookIconWindow.ShowAt(point);
+        });
+    }
+
+    public void ExecuteIconTranslate()
+    {
+        // 点击图标后，才真正执行复制和取词
+        _ = Task.Run(async () =>
+        {
+            var text = await ClipboardHelper.GetSelectedTextAsync(Math.Max(1, Settings.SelectedTextFetchTimeoutMs));
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ExecuteTranslate(Utilities.LinebreakHandler(text, Settings.LineBreakHandleType));
+                });
+            }
+        });
     }
 
     private void OnMouseTextSelected(string text)
@@ -1935,7 +1990,11 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private void Cancel(Window window)
     {
-        if (!IsMouseHook)
+        // ★★★ 修改判断逻辑 ★★★
+        // 原逻辑：if (!IsMouseHook) ...
+        // 新逻辑：如果 (没有开启划词) 或者 (开启了划词 且 是图标模式) -> 允许隐藏窗口
+        // 这样你就可以放心地把主窗口关掉（最小化到托盘），划词功能依然在后台工作
+        if (!IsMouseHook || (IsMouseHook && Settings.ShowMouseHookIcon))
         {
             if (IsTopmost) IsTopmost = false;
             ExitInputTranslateMode();
@@ -2133,6 +2192,19 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
             e.PropertyName == nameof(Settings.HideInputWithLangSelectControl))
         {
             NotifyInputVisibilityProperties();
+        }
+
+        if (e.PropertyName == nameof(Settings.ShowMouseHookIcon))
+        {
+            if (IsMouseHook)
+            {
+                if (!Settings.ShowMouseHookIcon && !IsTopmost)
+                {
+                    Show();
+                    IsTopmost = true; // 直接翻译模式强制置顶
+                }
+                MouseKeyHelper.IsAutomaticCopy = IsTopmost || !Settings.ShowMouseHookIcon;
+            }
         }
 
         if (e.PropertyName != nameof(Settings.MainWindowMaxHeightRatio) &&
@@ -2791,6 +2863,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         if (disposing)
         {
             MouseKeyHelper.MouseTextSelected -= OnMouseTextSelected;
+            MouseKeyHelper.MousePointSelected -= OnMousePointSelected;
             MouseKeyHelper.MouseTextSelected -= OnMouseTextSelectedIncretemental;
             _clipboardMonitor?.OnClipboardTextChanged -= OnClipboardTextChanged;
             Settings.PropertyChanged -= OnSettingsPropertyChanged;

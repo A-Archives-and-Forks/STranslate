@@ -554,6 +554,16 @@
                     </ui:SettingsExpander.Items>
                 </ui:SettingsExpander>
 
+                <ui:SettingsCard Header="划词后显示悬浮图标" Description="开启后，鼠标划选文本时仅显示悬浮图标，点击图标再进行翻译。未开启则划词后直接翻译。">
+                    <ui:SettingsCard.HeaderIcon>
+                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
+                    </ui:SettingsCard.HeaderIcon>
+                    <ui:ToggleSwitch
+                        IsOn="{Binding Settings.ShowMouseHookIcon}"
+                        OffContent="{DynamicResource Disable}"
+                        OnContent="{DynamicResource Enable}" />
+                </ui:SettingsCard>
+
                 <control:CardGroup>
                     <ui:SettingsCard Description="{DynamicResource General_LineBreakHandleTypeDescription}" Header="{DynamicResource General_LineBreakHandleType}">
                         <ui:SettingsCard.HeaderIcon>
