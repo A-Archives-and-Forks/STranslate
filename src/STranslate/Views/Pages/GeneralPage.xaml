@@ -554,29 +554,27 @@
                     </ui:SettingsExpander.Items>
                 </ui:SettingsExpander>
 
-                <ui:SettingsCard
-                    Header="{DynamicResource General_EnableMouseSelectionTranslation}"
-                    Description="{DynamicResource General_EnableMouseSelectionTranslationDescription}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ui:ToggleSwitch
-                        IsOn="{Binding Settings.IsMouseSelectionTranslationEnabled}"
-                        OffContent="{DynamicResource Disable}"
-                        OnContent="{DynamicResource Enable}" />
-                </ui:SettingsCard>
+                <control:CardGroup>
+                    <ui:SettingsCard Description="{DynamicResource General_EnableMouseSelectionTranslationDescription}" Header="{DynamicResource General_EnableMouseSelectionTranslation}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.IsMouseSelectionTranslationEnabled}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
 
-                <ui:SettingsCard
-                    Header="{DynamicResource General_EnableMouseSelectionIcon}"
-                    Description="{DynamicResource General_EnableMouseSelectionIconDescription}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ui:ToggleSwitch
-                        IsOn="{Binding Settings.IsMouseSelectionIconEnabled}"
-                        OffContent="{DynamicResource Disable}"
-                        OnContent="{DynamicResource Enable}" />
-                </ui:SettingsCard>
+                    <ui:SettingsCard Description="{DynamicResource General_EnableMouseSelectionIconDescription}" Header="{DynamicResource General_EnableMouseSelectionIcon}">
+                        <ui:SettingsCard.HeaderIcon>
+                            <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
+                        </ui:SettingsCard.HeaderIcon>
+                        <ui:ToggleSwitch
+                            IsOn="{Binding Settings.IsMouseSelectionIconEnabled}"
+                            OffContent="{DynamicResource Disable}"
+                            OnContent="{DynamicResource Enable}" />
+                    </ui:SettingsCard>
+                </control:CardGroup>
 
                 <control:CardGroup>
                     <ui:SettingsCard Description="{DynamicResource General_LineBreakHandleTypeDescription}" Header="{DynamicResource General_LineBreakHandleType}">
