@@ -95,6 +95,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
                     services.AddSingleton(_settings.NonNull());
                     services.AddSingleton(_hotkeySettings.NonNull());
                     services.AddSingleton(_svcSettings.NonNull());
+                    services.AddSingleton<MouseHookIconWindow>();
 
                     // 注册核心服务
                     services.AddSingleton<PluginManager>();
