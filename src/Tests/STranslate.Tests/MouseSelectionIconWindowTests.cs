@@ -4,14 +4,14 @@ using System.Threading;
 
 namespace STranslate.Tests;
 
-public class MouseHookIconWindowTests
+public class MouseSelectionIconWindowTests
 {
     [Fact]
     public void FadeInAnimationHasWindowAsImplicitTarget()
     {
         RunOnStaThread(() =>
         {
-            var window = new MouseHookIconWindow();
+            var window = new MouseSelectionIconWindow();
             window.StartFadeIn();
         });
     }

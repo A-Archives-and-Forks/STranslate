@@ -8,13 +8,14 @@ namespace STranslate.Tests;
 public class MouseSelectionServiceTests
 {
     [Fact]
-    public void MouseHookSettingsDefaultToDisabledDirectMode()
+    public void MouseSelectionSettingsDefaultToDisabled()
     {
         var settings = new Settings();
 
-        Assert.False(settings.IsMouseHook);
-        Assert.False(settings.ShowIconAfterMouseSelection);
-        Assert.Null(typeof(Settings).GetProperty("ShowMouseHookIcon"));
+        Assert.False(settings.IsMouseSelectionTranslationEnabled);
+        Assert.False(settings.IsMouseSelectionIconEnabled);
+        Assert.Null(typeof(Settings).GetProperty("IsMouseHook"));
+        Assert.Null(typeof(Settings).GetProperty("ShowIconAfterMouseSelection"));
     }
 
     [Fact]
@@ -57,10 +58,9 @@ public class MouseSelectionServiceTests
     public async Task DirectModeCapturesTextWithoutRequestingIcon()
     {
         var hook = new FakeMouseHookService();
-        var settings = new Settings { ShowIconAfterMouseSelection = false };
         var selectedText = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
         var captureCount = 0;
-        using var service = CreateService(hook, settings, _ =>
+        using var service = CreateService(hook, new Settings(), _ =>
         {
             captureCount++;
             return Task.FromResult<string?>("selected");
@@ -69,7 +69,7 @@ public class MouseSelectionServiceTests
         service.TextSelected += (_, text) => selectedText.TrySetResult(text);
         service.IconRequested += (_, _) => iconRequestCount++;
 
-        Assert.True(service.Start());
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: false));
         hook.RaiseSelectionCompleted(new Point(20, 30));
 
         Assert.Equal("selected", await selectedText.Task.WaitAsync(TimeSpan.FromSeconds(2)));
@@ -81,9 +81,8 @@ public class MouseSelectionServiceTests
     public async Task IconModeDefersTextCaptureUntilRequested()
     {
         var hook = new FakeMouseHookService();
-        var settings = new Settings { ShowIconAfterMouseSelection = true };
         var captureCount = 0;
-        using var service = CreateService(hook, settings, _ =>
+        using var service = CreateService(hook, new Settings(), _ =>
         {
             captureCount++;
             return Task.FromResult<string?>("selected");
@@ -91,13 +90,42 @@ public class MouseSelectionServiceTests
         Point? iconPoint = null;
         service.IconRequested += (_, point) => iconPoint = point;
 
-        Assert.True(service.Start());
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: true));
         hook.RaiseSelectionCompleted(new Point(20, 30));
 
         Assert.Equal(new Point(20, 30), iconPoint);
         Assert.Equal(0, captureCount);
-        Assert.Equal("selected", await service.CaptureSelectedTextAsync());
+        Assert.Equal("selected", await service.CaptureIconSelectedTextAsync());
         Assert.Equal(1, captureCount);
+    }
+
+    [Fact]
+    public async Task DirectTranslationTakesPriorityWhenBothFeaturesAreEnabled()
+    {
+        var hook = new FakeMouseHookService();
+        var selectedText = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var service = CreateService(hook, new Settings(), _ => Task.FromResult<string?>("selected"));
+        var iconRequestCount = 0;
+        service.TextSelected += (_, text) => selectedText.TrySetResult(text);
+        service.IconRequested += (_, _) => iconRequestCount++;
+
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: true));
+        hook.RaiseSelectionCompleted(new Point(20, 30));
+
+        Assert.Equal("selected", await selectedText.Task.WaitAsync(TimeSpan.FromSeconds(2)));
+        Assert.Equal(0, iconRequestCount);
+    }
+
+    [Fact]
+    public void DisabledPersistentFeaturesDoNotStartHook()
+    {
+        var hook = new FakeMouseHookService();
+        using var service = CreateService(hook, new Settings(), _ => Task.FromResult<string?>(null));
+
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: false));
+
+        Assert.Equal(0, hook.StartCount);
+        Assert.False(hook.IsRunning);
     }
 
     [Fact]
@@ -106,11 +134,11 @@ public class MouseSelectionServiceTests
         var hook = new FakeMouseHookService();
         using var service = CreateService(hook, new Settings(), _ => Task.FromResult<string?>(null));
 
-        Assert.True(service.Start());
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: false));
         Assert.True(service.StartIncrementalCapture());
         Assert.Equal(1, hook.StartCount);
 
-        service.Stop();
+        service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: false);
         Assert.Equal(0, hook.StopCount);
 
         service.StopIncrementalCapture();
@@ -118,28 +146,28 @@ public class MouseSelectionServiceTests
     }
 
     [Fact]
-    public void RepeatedStartAndStopRemainIdempotent()
+    public void RepeatedFeatureUpdatesRemainIdempotent()
     {
         var hook = new FakeMouseHookService();
         using var service = CreateService(hook, new Settings(), _ => Task.FromResult<string?>(null));
 
-        Assert.True(service.Start());
-        Assert.True(service.Start());
-        service.Stop();
-        service.Stop();
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: false));
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: false));
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: false));
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: false));
 
         Assert.Equal(1, hook.StartCount);
         Assert.Equal(1, hook.StopCount);
     }
 
     [Fact]
-    public void FailedHookStartDoesNotEnablePersistentConsumer()
+    public void FailedHookStartDoesNotEnablePersistentFeatures()
     {
         var hook = new FakeMouseHookService { StartSucceeds = false };
         using var service = CreateService(hook, new Settings(), _ => Task.FromResult<string?>(null));
 
-        Assert.False(service.Start());
-        service.Stop();
+        Assert.False(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: true));
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: false));
 
         Assert.Equal(1, hook.StartCount);
         Assert.Equal(0, hook.StopCount);
@@ -149,14 +177,13 @@ public class MouseSelectionServiceTests
     public async Task IncrementalCaptureTakesPriorityOverPersistentMode()
     {
         var hook = new FakeMouseHookService();
-        var settings = new Settings { ShowIconAfterMouseSelection = true };
         var incrementalText = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
-        using var service = CreateService(hook, settings, _ => Task.FromResult<string?>("incremental"));
+        using var service = CreateService(hook, new Settings(), _ => Task.FromResult<string?>("incremental"));
         var iconRequestCount = 0;
         service.IncrementalTextSelected += (_, text) => incrementalText.TrySetResult(text);
         service.IconRequested += (_, _) => iconRequestCount++;
 
-        Assert.True(service.Start());
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: true));
         Assert.True(service.StartIncrementalCapture());
         hook.RaiseSelectionCompleted(new Point(20, 30));
 
@@ -165,19 +192,24 @@ public class MouseSelectionServiceTests
     }
 
     [Fact]
-    public void ModeChangeDoesNotRestartHookAndDismissesExistingIcon()
+    public void SwitchingFromBothFeaturesToIconOnlyRestoresIconWithoutRestartingHook()
     {
         var hook = new FakeMouseHookService();
         using var service = CreateService(hook, new Settings(), _ => Task.FromResult<string?>(null));
         var dismissCount = 0;
+        var iconRequestCount = 0;
         service.IconDismissRequested += (_, _) => dismissCount++;
+        service.IconRequested += (_, _) => iconRequestCount++;
 
-        Assert.True(service.Start());
-        service.ApplyModeChange();
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: true));
+        dismissCount = 0;
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: true));
+        hook.RaiseSelectionCompleted(new Point(20, 30));
 
         Assert.Equal(1, hook.StartCount);
         Assert.Equal(0, hook.StopCount);
         Assert.Equal(1, dismissCount);
+        Assert.Equal(1, iconRequestCount);
     }
 
     [Fact]
@@ -190,11 +222,35 @@ public class MouseSelectionServiceTests
         service.SelectionStarted += (_, point) => startedPoint = point;
         service.IconDismissRequested += (_, _) => dismissCount++;
 
-        Assert.True(service.Start());
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: true));
+        dismissCount = 0;
         hook.RaiseSelectionStarted(new Point(12, 34));
 
         Assert.Equal(new Point(12, 34), startedPoint);
         Assert.Equal(0, dismissCount);
+    }
+
+    [Fact]
+    public async Task IconCaptureIsDiscardedWhenDirectTranslationBecomesEnabled()
+    {
+        var hook = new FakeMouseHookService();
+        var captureStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseCapture = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        using var service = CreateService(hook, new Settings(), async _ =>
+        {
+            captureStarted.SetResult();
+            await releaseCapture.Task;
+            return "selected";
+        });
+
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: false, iconEnabled: true));
+        var captureTask = service.CaptureIconSelectedTextAsync();
+        await captureStarted.Task.WaitAsync(TimeSpan.FromSeconds(2));
+
+        Assert.True(service.ApplyPersistentFeatures(directTranslationEnabled: true, iconEnabled: true));
+        releaseCapture.SetResult();
+
+        Assert.Null(await captureTask.WaitAsync(TimeSpan.FromSeconds(2)));
     }
 
     private static MouseSelectionService CreateService(

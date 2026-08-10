@@ -27,7 +27,7 @@ public partial class HotkeySettings : ObservableObject
     public GlobalHotkey ScreenshotTranslateHotkey { get; set; } = new("Alt + S");
     public GlobalHotkey ImageTranslateHotkey { get; set; } = new("Alt + Shift + X");
     public GlobalHotkey ReplaceTranslateHotkey { get; set; } = new(Constant.EmptyHotkey);
-    public GlobalHotkey MouseHookTranslateHotkey { get; set; } = new(Constant.EmptyHotkey);
+    public GlobalHotkey MouseSelectionTranslationHotkey { get; set; } = new(Constant.EmptyHotkey);
     public GlobalHotkey SilentOcrHotkey { get; set; } = new(Constant.EmptyHotkey);
     public GlobalHotkey SilentTtsHotkey { get; set; } = new(Constant.EmptyHotkey);
     public GlobalHotkey OcrHotkey { get; set; } = new("Alt + Shift + S");
@@ -73,7 +73,7 @@ public partial class HotkeySettings : ObservableObject
         CreateGlobalHotkeyData(OpenWindowHotkey.Key, "Hotkey_OpenSTranslate", () => OpenWindowHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(InputTranslateHotkey.Key, "Hotkey_InputTranslate", () => InputTranslateHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(CrosswordTranslateHotkey.Key, "Hotkey_CrosswordTranslate", () => CrosswordTranslateHotkey.Key = Constant.EmptyHotkey),
-        CreateGlobalHotkeyData(MouseHookTranslateHotkey.Key, "Hotkey_MouseHookTranslate", () => MouseHookTranslateHotkey.Key = Constant.EmptyHotkey),
+        CreateGlobalHotkeyData(MouseSelectionTranslationHotkey.Key, "Hotkey_MouseSelectionTranslation", () => MouseSelectionTranslationHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ReplaceTranslateHotkey.Key, "Hotkey_ReplaceTranslate", () => ReplaceTranslateHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ScreenshotTranslateHotkey.Key, "Hotkey_ScreenshotTranslate", () => ScreenshotTranslateHotkey.Key = Constant.EmptyHotkey),
         CreateGlobalHotkeyData(ImageTranslateHotkey.Key, "Hotkey_ImageTranslate", () => ImageTranslateHotkey.Key = Constant.EmptyHotkey),
@@ -184,7 +184,7 @@ public partial class HotkeySettings : ObservableObject
             [nameof(ScreenshotTranslateHotkey)] = "Alt + S",
             [nameof(ImageTranslateHotkey)] = "Alt + Shift + X",
             [nameof(ReplaceTranslateHotkey)] = "Alt + F",
-            [nameof(MouseHookTranslateHotkey)] = "Alt + Shift + D",
+            [nameof(MouseSelectionTranslationHotkey)] = "Alt + Shift + D",
             [nameof(SilentOcrHotkey)] = "Alt + Shift + F",
             [nameof(SilentTtsHotkey)] = "Alt + Shift + G",
             [nameof(OcrHotkey)] = "Alt + Shift + S",
@@ -316,7 +316,7 @@ public partial class HotkeySettings : ObservableObject
         HandleGlobalLogic(nameof(OpenWindowHotkey));
         HandleGlobalLogic(nameof(InputTranslateHotkey));
         HandleGlobalLogic(nameof(CrosswordTranslateHotkey));
-        HandleGlobalLogic(nameof(MouseHookTranslateHotkey));
+        HandleGlobalLogic(nameof(MouseSelectionTranslationHotkey));
         HandleGlobalLogic(nameof(ReplaceTranslateHotkey));
         HandleGlobalLogic(nameof(ScreenshotTranslateHotkey));
         HandleGlobalLogic(nameof(ImageTranslateHotkey));
@@ -331,7 +331,7 @@ public partial class HotkeySettings : ObservableObject
         HotkeyManager.Current.Remove(OpenWindowHotkey.Key);
         HotkeyManager.Current.Remove(InputTranslateHotkey.Key);
         HotkeyManager.Current.Remove(CrosswordTranslateHotkey.Key);
-        HotkeyManager.Current.Remove(MouseHookTranslateHotkey.Key);
+        HotkeyManager.Current.Remove(MouseSelectionTranslationHotkey.Key);
         HotkeyManager.Current.Remove(ReplaceTranslateHotkey.Key);
         HotkeyManager.Current.Remove(ScreenshotTranslateHotkey.Key);
         HotkeyManager.Current.Remove(ImageTranslateHotkey.Key);
@@ -354,8 +354,8 @@ public partial class HotkeySettings : ObservableObject
             case nameof(CrosswordTranslateHotkey):
                 CrosswordTranslateHotkey.IsConflict = !HotkeyMapper.SetHotkey(CrosswordTranslateHotkey.Key, WithFullscreenCheck(() => MainWindowViewModel.CrosswordTranslateCommand.Execute(null)));
                 break;
-            case nameof(MouseHookTranslateHotkey):
-                MouseHookTranslateHotkey.IsConflict = !HotkeyMapper.SetHotkey(MouseHookTranslateHotkey.Key, WithFullscreenCheck(() => MainWindowViewModel.ToggleMouseHookTranslateCommand.Execute(null)));
+            case nameof(MouseSelectionTranslationHotkey):
+                MouseSelectionTranslationHotkey.IsConflict = !HotkeyMapper.SetHotkey(MouseSelectionTranslationHotkey.Key, WithFullscreenCheck(() => MainWindowViewModel.ToggleMouseSelectionTranslationCommand.Execute(null)));
                 break;
             case nameof(ScreenshotTranslateHotkey):
                 ScreenshotTranslateHotkey.IsConflict = !HotkeyMapper.SetHotkey(ScreenshotTranslateHotkey.Key, WithFullscreenCheck(() => MainWindowViewModel.ScreenshotTranslateCommand.Execute(null)));

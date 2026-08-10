@@ -177,15 +177,15 @@
                             WindowTitle="{DynamicResource Hotkey_ImageTranslate}" />
                     </ui:SettingsCard>
 
-                    <ui:SettingsCard Description="{DynamicResource Hotkey_MouseHookTranslateDescription}" Header="{DynamicResource Hotkey_MouseHookTranslate}">
+                    <ui:SettingsCard Description="{DynamicResource Hotkey_MouseSelectionTranslationDescription}" Header="{DynamicResource Hotkey_MouseSelectionTranslation}">
                         <ui:SettingsCard.HeaderIcon>
                             <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
                         </ui:SettingsCard.HeaderIcon>
                         <control:HotkeyControl
-                            DefaultHotkey="{Binding HotkeySettings.MouseHookTranslateHotkey.Default}"
-                            Hotkey="{Binding HotkeySettings.MouseHookTranslateHotkey.Key}"
-                            IsRegistered="{Binding HotkeySettings.MouseHookTranslateHotkey.IsConflict}"
-                            WindowTitle="{DynamicResource Hotkey_MouseHookTranslate}" />
+                            DefaultHotkey="{Binding HotkeySettings.MouseSelectionTranslationHotkey.Default}"
+                            Hotkey="{Binding HotkeySettings.MouseSelectionTranslationHotkey.Key}"
+                            IsRegistered="{Binding HotkeySettings.MouseSelectionTranslationHotkey.IsConflict}"
+                            WindowTitle="{DynamicResource Hotkey_MouseSelectionTranslation}" />
                     </ui:SettingsCard>
 
                     <ui:SettingsCard Description="{DynamicResource Hotkey_SilentOcrDescription}" Header="{DynamicResource Hotkey_SilentOcr}">

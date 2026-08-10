@@ -100,10 +100,10 @@ public partial class GeneralViewModel : SearchViewModelBase
 
     public List<I18nPair> Languages { get; }
 
-    public bool IsTextSeparatorMouseHookScopeEnabled
+    public bool IsTextSeparatorMouseSelectionScopeEnabled
     {
-        get => IsTextSeparatorScopeEnabled(TextSeparatorHandleScope.MouseHook);
-        set => SetTextSeparatorScope(TextSeparatorHandleScope.MouseHook, value);
+        get => IsTextSeparatorScopeEnabled(TextSeparatorHandleScope.MouseSelection);
+        set => SetTextSeparatorScope(TextSeparatorHandleScope.MouseSelection, value);
     }
 
     public bool IsTextSeparatorCrosswordScopeEnabled
@@ -159,7 +159,7 @@ public partial class GeneralViewModel : SearchViewModelBase
 
     private void OnTextSeparatorScopePropertiesChanged()
     {
-        OnPropertyChanged(nameof(IsTextSeparatorMouseHookScopeEnabled));
+        OnPropertyChanged(nameof(IsTextSeparatorMouseSelectionScopeEnabled));
         OnPropertyChanged(nameof(IsTextSeparatorCrosswordScopeEnabled));
         OnPropertyChanged(nameof(IsTextSeparatorIncrementalScopeEnabled));
         OnPropertyChanged(nameof(IsTextSeparatorClipboardMonitorScopeEnabled));

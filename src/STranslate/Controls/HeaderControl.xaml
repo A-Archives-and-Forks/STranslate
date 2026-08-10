@@ -87,10 +87,10 @@
                                                 ToolTip="{DynamicResource General_ScreenshotTranslate}"
                                                 Visibility="Collapsed" />
                                             <control:IconButton
-                                                x:Name="MouseHookButton"
+                                                x:Name="MouseSelectionTranslationButton"
                                                 Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}"
-                                                IsOn="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsMouseHook}"
-                                                ToolTip="{DynamicResource Hotkey_MouseHookTranslate}"
+                                                IsOn="{Binding RelativeSource={RelativeSource AncestorType={x:Type control:HeaderControl}}, Path=IsMouseSelectionTranslationEnabled}"
+                                                ToolTip="{DynamicResource Hotkey_MouseSelectionTranslation}"
                                                 Type="Toggle"
                                                 Visibility="Collapsed" />
                                             <control:IconButton
@@ -260,8 +260,8 @@
                                             <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ScreenshotTranslate}">
                                                 <Setter TargetName="ScreenshotTranslateButton" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseHook}">
-                                                <Setter TargetName="MouseHookButton" Property="Visibility" Value="Visible" />
+                                            <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseSelectionTranslation}">
+                                                <Setter TargetName="MouseSelectionTranslationButton" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ColorScheme}">
                                                 <Setter TargetName="ColorSchemeButton" Property="Visibility" Value="Visible" />

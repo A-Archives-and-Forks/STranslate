@@ -16,7 +16,8 @@ public sealed class MouseSelectionService : IDisposable
     private readonly Func<int, Task<string?>> _getSelectedTextAsync;
     private readonly Lock _stateLock = new();
     private readonly SemaphoreSlim _captureLock = new(1, 1);
-    private bool _persistentEnabled;
+    private bool _directTranslationEnabled;
+    private bool _iconEnabled;
     private bool _incrementalEnabled;
     private bool _disposed;
 
@@ -74,49 +75,37 @@ public sealed class MouseSelectionService : IDisposable
     public event EventHandler? IconDismissRequested;
 
     /// <summary>
-    /// 常驻监听或交互模式变化时触发。
+    /// 常驻鼠标划词功能状态变化时触发。
     /// </summary>
     public event EventHandler? StateChanged;
 
     /// <summary>
-    /// 启用常驻鼠标划词。
+    /// 同步常驻鼠标划词功能状态。
     /// </summary>
+    /// <param name="directTranslationEnabled">是否启用划词后直接翻译。</param>
+    /// <param name="iconEnabled">是否启用划词后悬浮图标。</param>
     /// <returns>底层 Hook 是否成功启动。</returns>
-    public bool Start()
+    public bool ApplyPersistentFeatures(bool directTranslationEnabled, bool iconEnabled)
     {
-        bool started;
         lock (_stateLock)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (_persistentEnabled)
+            if (_directTranslationEnabled == directTranslationEnabled && _iconEnabled == iconEnabled)
                 return true;
 
-            started = _mouseHookService.IsRunning || _mouseHookService.Start();
-            _persistentEnabled = started;
-        }
+            var shouldRun = directTranslationEnabled || iconEnabled;
+            if (shouldRun && !_mouseHookService.IsRunning && !_mouseHookService.Start())
+                return false;
 
-        if (started)
-            StateChanged?.Invoke(this, EventArgs.Empty);
-
-        return started;
-    }
-
-    /// <summary>
-    /// 停止常驻鼠标划词；增量翻译仍活动时保留底层 Hook。
-    /// </summary>
-    public void Stop()
-    {
-        lock (_stateLock)
-        {
-            if (!_persistentEnabled)
-                return;
-
-            _persistentEnabled = false;
-            StopHookWhenIdle();
+            _directTranslationEnabled = directTranslationEnabled;
+            _iconEnabled = iconEnabled;
+            if (!shouldRun)
+                StopHookWhenIdle();
         }
 
         IconDismissRequested?.Invoke(this, EventArgs.Empty);
         StateChanged?.Invoke(this, EventArgs.Empty);
+        return true;
     }
 
     /// <summary>
@@ -157,19 +146,19 @@ public sealed class MouseSelectionService : IDisposable
     }
 
     /// <summary>
-    /// 应用悬浮图标模式变化，不重启底层 Hook。
-    /// </summary>
-    public void ApplyModeChange()
-    {
-        IconDismissRequested?.Invoke(this, EventArgs.Empty);
-        StateChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <summary>
     /// 用户点击悬浮图标后获取当前选中文本。
     /// </summary>
     /// <returns>选中的文本；取词失败时返回 null。</returns>
-    public async Task<string?> CaptureSelectedTextAsync()
+    public async Task<string?> CaptureIconSelectedTextAsync()
+    {
+        if (!CanTranslateFromIcon())
+            return null;
+
+        var text = await CaptureSelectedTextAsync();
+        return CanTranslateFromIcon() ? text : null;
+    }
+
+    private async Task<string?> CaptureSelectedTextAsync()
     {
         await _captureLock.WaitAsync();
         try
@@ -189,12 +178,14 @@ public sealed class MouseSelectionService : IDisposable
     private void OnSelectionCompleted(object? sender, MouseDragCompletedEventArgs e)
     {
         bool incrementalEnabled;
-        bool persistentEnabled;
+        bool directTranslationEnabled;
+        bool iconEnabled;
 
         lock (_stateLock)
         {
             incrementalEnabled = _incrementalEnabled;
-            persistentEnabled = _persistentEnabled;
+            directTranslationEnabled = _directTranslationEnabled;
+            iconEnabled = _iconEnabled;
         }
 
         if (incrementalEnabled)
@@ -203,16 +194,14 @@ public sealed class MouseSelectionService : IDisposable
             return;
         }
 
-        if (!persistentEnabled)
-            return;
-
-        if (_settings.ShowIconAfterMouseSelection)
+        if (directTranslationEnabled)
         {
-            IconRequested?.Invoke(this, e.ScreenPoint);
+            _ = CaptureAndPublishAsync(TextSelected);
             return;
         }
 
-        _ = CaptureAndPublishAsync(TextSelected);
+        if (iconEnabled)
+            IconRequested?.Invoke(this, e.ScreenPoint);
     }
 
     private async Task CaptureAndPublishAsync(EventHandler<string>? handler)
@@ -231,8 +220,14 @@ public sealed class MouseSelectionService : IDisposable
 
     private void StopHookWhenIdle()
     {
-        if (!_persistentEnabled && !_incrementalEnabled)
+        if (!_directTranslationEnabled && !_iconEnabled && !_incrementalEnabled)
             _mouseHookService.Stop();
+    }
+
+    private bool CanTranslateFromIcon()
+    {
+        lock (_stateLock)
+            return !_incrementalEnabled && !_directTranslationEnabled && _iconEnabled;
     }
 
     /// <inheritdoc />
@@ -244,7 +239,8 @@ public sealed class MouseSelectionService : IDisposable
                 return;
 
             _disposed = true;
-            _persistentEnabled = false;
+            _directTranslationEnabled = false;
+            _iconEnabled = false;
             _incrementalEnabled = false;
         }
 

@@ -97,9 +97,9 @@
                         <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}" />
                         <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ShowScreenshotTranslate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseHook}">
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseSelectionTranslation}">
                         <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
-                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ShowMouseHook}" />
+                        <Setter TargetName="PreviewSingleButton" Property="ToolTip" Value="{DynamicResource General_ShowMouseSelectionTranslation}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ColorScheme}">
                         <Setter TargetName="PreviewSingleIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.Color_20_Regular}" />
@@ -158,9 +158,9 @@
                         <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.ScreenCut_20_Regular}" />
                         <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowScreenshotTranslate}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseHook}">
+                    <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.MouseSelectionTranslation}">
                         <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
-                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowMouseHook}" />
+                        <Setter TargetName="PoolActionText" Property="Text" Value="{DynamicResource General_ShowMouseSelectionTranslation}" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding}" Value="{x:Static core:MainHeaderActions.ColorScheme}">
                         <Setter TargetName="PoolActionIcon" Property="Icon" Value="{x:Static ui:FluentSystemIcons.Color_20_Regular}" />
@@ -497,12 +497,12 @@
                         SelectedValue="{Binding Settings.TextSeparatorHandleType}"
                         SelectedValuePath="Value" />
                     <ui:SettingsExpander.Items>
-                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeMouseHook}">
+                        <ui:SettingsCard Header="{DynamicResource TextSeparatorHandleScopeMouseSelection}">
                             <ui:SettingsCard.HeaderIcon>
                                 <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
                             </ui:SettingsCard.HeaderIcon>
                             <ui:ToggleSwitch
-                                IsOn="{Binding IsTextSeparatorMouseHookScopeEnabled, Mode=TwoWay}"
+                                IsOn="{Binding IsTextSeparatorMouseSelectionScopeEnabled, Mode=TwoWay}"
                                 OffContent="{DynamicResource Disable}"
                                 OnContent="{DynamicResource Enable}" />
                         </ui:SettingsCard>
@@ -555,26 +555,25 @@
                 </ui:SettingsExpander>
 
                 <ui:SettingsCard
-                    Header="{DynamicResource General_EnableMouseHook}"
-                    Description="{DynamicResource General_EnableMouseHookDescription}">
+                    Header="{DynamicResource General_EnableMouseSelectionTranslation}"
+                    Description="{DynamicResource General_EnableMouseSelectionTranslationDescription}">
                     <ui:SettingsCard.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.KeyboardMouse_16_Regular}" />
                     </ui:SettingsCard.HeaderIcon>
                     <ui:ToggleSwitch
-                        IsOn="{Binding Settings.IsMouseHook}"
+                        IsOn="{Binding Settings.IsMouseSelectionTranslationEnabled}"
                         OffContent="{DynamicResource Disable}"
                         OnContent="{DynamicResource Enable}" />
                 </ui:SettingsCard>
 
                 <ui:SettingsCard
-                    Header="{DynamicResource General_ShowIconAfterMouseSelection}"
-                    Description="{DynamicResource General_ShowIconAfterMouseSelectionDescription}"
-                    IsEnabled="{Binding Settings.IsMouseHook}">
+                    Header="{DynamicResource General_EnableMouseSelectionIcon}"
+                    Description="{DynamicResource General_EnableMouseSelectionIconDescription}">
                     <ui:SettingsCard.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.CursorClick_20_Regular}" />
                     </ui:SettingsCard.HeaderIcon>
                     <ui:ToggleSwitch
-                        IsOn="{Binding Settings.ShowIconAfterMouseSelection}"
+                        IsOn="{Binding Settings.IsMouseSelectionIconEnabled}"
                         OffContent="{DynamicResource Disable}"
                         OnContent="{DynamicResource Enable}" />
                 </ui:SettingsCard>

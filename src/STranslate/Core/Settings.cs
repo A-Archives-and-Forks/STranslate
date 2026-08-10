@@ -69,11 +69,11 @@ public partial class Settings : ObservableObject
 
     [ObservableProperty] public partial bool IsHideInputVisible { get; set; } = true;
 
-    [ObservableProperty] public partial bool IsMouseHookVisible { get; set; } = true;
+    [ObservableProperty] public partial bool IsMouseSelectionTranslationVisible { get; set; } = true;
 
-    [ObservableProperty] public partial bool IsMouseHook { get; set; } = false;
+    [ObservableProperty] public partial bool IsMouseSelectionTranslationEnabled { get; set; } = false;
 
-    [ObservableProperty] public partial bool ShowIconAfterMouseSelection { get; set; } = false;
+    [ObservableProperty] public partial bool IsMouseSelectionIconEnabled { get; set; } = false;
 
     [ObservableProperty] public partial bool IsHistoryNavigationVisible { get; set; } = true;
 
@@ -425,7 +425,7 @@ public partial class Settings : ObservableObject
         if (IsOcrVisible) migratedActions.Add(MainHeaderActions.Ocr);
         if (IsImageTranslateVisible) migratedActions.Add(MainHeaderActions.ImageTranslate);
         if (IsScreenshotTranslateVisible) migratedActions.Add(MainHeaderActions.ScreenshotTranslate);
-        if (IsMouseHookVisible) migratedActions.Add(MainHeaderActions.MouseHook);
+        if (IsMouseSelectionTranslationVisible) migratedActions.Add(MainHeaderActions.MouseSelectionTranslation);
         if (IsColorSchemeVisible) migratedActions.Add(MainHeaderActions.ColorScheme);
         if (IsHideInputVisible) migratedActions.Add(MainHeaderActions.HideInput);
         if (IsServiceSwitcherVisible) migratedActions.Add(MainHeaderActions.ServiceSwitcher);
@@ -469,7 +469,7 @@ public partial class Settings : ObservableObject
         ApplyTheme();
         ApplyDeactived();
         ApplyExternalCall();
-        ApplyMouseHook();
+        ApplyMouseSelectionFeatures();
     }
 
     internal ImageFormat GetImageFormat() =>
@@ -547,11 +547,9 @@ public partial class Settings : ObservableObject
             case nameof(IgnoreHotkeysOnFullscreen):
                 Ioc.Default.GetRequiredService<HotkeySettings>().ApplyIgnoreOnFullScreen();
                 break;
-            case nameof(IsMouseHook):
-                ApplyMouseHook();
-                break;
-            case nameof(ShowIconAfterMouseSelection):
-                Ioc.Default.GetRequiredService<MouseSelectionService>().ApplyModeChange();
+            case nameof(IsMouseSelectionTranslationEnabled):
+            case nameof(IsMouseSelectionIconEnabled):
+                ApplyMouseSelectionFeatures();
                 break;
             case nameof(LocalDetectorRate):
                 LocalDetectorRate = Math.Round(LocalDetectorRate, 2);
@@ -573,7 +571,7 @@ public partial class Settings : ObservableObject
         IsOcrVisible = actionSet.Contains(MainHeaderActions.Ocr);
         IsImageTranslateVisible = actionSet.Contains(MainHeaderActions.ImageTranslate);
         IsScreenshotTranslateVisible = actionSet.Contains(MainHeaderActions.ScreenshotTranslate);
-        IsMouseHookVisible = actionSet.Contains(MainHeaderActions.MouseHook);
+        IsMouseSelectionTranslationVisible = actionSet.Contains(MainHeaderActions.MouseSelectionTranslation);
         IsColorSchemeVisible = actionSet.Contains(MainHeaderActions.ColorScheme);
         IsHideInputVisible = actionSet.Contains(MainHeaderActions.HideInput);
         IsServiceSwitcherVisible = actionSet.Contains(MainHeaderActions.ServiceSwitcher);
@@ -719,17 +717,29 @@ public partial class Settings : ObservableObject
         }
     }
 
-    private void ApplyMouseHook()
-    {
-        var mouseSelectionService = Ioc.Default.GetRequiredService<MouseSelectionService>();
-        if (IsMouseHook)
-        {
-            if (!mouseSelectionService.Start())
-                IsMouseHook = false;
-            return;
-        }
+    private bool _isApplyingMouseSelectionFeatures;
 
-        mouseSelectionService.Stop();
+    private void ApplyMouseSelectionFeatures()
+    {
+        if (_isApplyingMouseSelectionFeatures)
+            return;
+
+        var mouseSelectionService = Ioc.Default.GetRequiredService<MouseSelectionService>();
+        if (mouseSelectionService.ApplyPersistentFeatures(
+                IsMouseSelectionTranslationEnabled,
+                IsMouseSelectionIconEnabled))
+            return;
+
+        try
+        {
+            _isApplyingMouseSelectionFeatures = true;
+            IsMouseSelectionTranslationEnabled = false;
+            IsMouseSelectionIconEnabled = false;
+        }
+        finally
+        {
+            _isApplyingMouseSelectionFeatures = false;
+        }
     }
 
     #endregion
@@ -781,7 +791,7 @@ public enum TextSeparatorHandleType
 public enum TextSeparatorHandleScope
 {
     None = 0,
-    MouseHook = 1,
+    MouseSelection = 1,
     Crossword = 2,
     Incremental = 4,
     ClipboardMonitor = 8,
@@ -877,7 +887,7 @@ public enum DoubleClickTrayFunction
     ScreenshotTranslate,
     OCR,
     OpenSettingsWindow,
-    ToggleMouseHook,
+    ToggleMouseSelectionTranslation,
     ToggleGlobalHotkeys,
     Exit
 }

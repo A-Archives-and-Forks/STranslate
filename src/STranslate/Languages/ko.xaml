@@ -107,14 +107,14 @@
     <sys:String x:Key="General_HideInputBoxButtonVisible">메인 화면에 입력 상자 숨기기 버튼 표시</sys:String>
     <sys:String x:Key="General_HideLanguageControl">언어 선택 컨트롤 숨기기</sys:String>
     <sys:String x:Key="General_HideLanguageControlDescription">입력 상자를 숨길 때 언어 선택 컨트롤도 함께 숨길지 여부입니다.</sys:String>
-    <sys:String x:Key="General_ShowMouseHook">마우스 후킹 표시</sys:String>
-    <sys:String x:Key="General_ShowMouseHookDescription">메인 화면에 마우스 드래그 번역 감지 활성화/비활성화 아이콘 표시 여부.</sys:String>
-    <sys:String x:Key="General_EnableMouseHook">마우스 텍스트 선택 감지</sys:String>
-    <sys:String x:Key="General_EnableMouseHookDescription">마우스로 선택한 텍스트를 전역에서 감지하여 번역합니다.</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelection">선택 후 플로팅 아이콘 표시</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">텍스트 선택 후 아이콘을 표시하고 클릭할 때 번역합니다. 끄면 선택 직후 번역합니다.</sys:String>
-    <sys:String x:Key="MouseHookIconTranslate">번역</sys:String>
-    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">직접 마우스 선택 번역을 사용하는 동안 창을 항상 위에 유지해야 합니다.</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslation">마우스 선택 즉시 번역 표시</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslationDescription">메인 화면에 마우스 선택 즉시 번역 스위치를 표시합니다.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslation">마우스 선택 즉시 번역</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">마우스로 선택한 텍스트를 즉시 복사하고 번역합니다.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIcon">선택 후 플로팅 아이콘 표시</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIconDescription">텍스트 선택 후 아이콘을 표시하고 클릭할 때 번역합니다. 두 기능이 모두 켜져 있으면 즉시 번역이 우선됩니다.</sys:String>
+    <sys:String x:Key="MouseSelectionIconTranslate">번역</sys:String>
+    <sys:String x:Key="MouseSelectionTranslationRequiresTopmost">마우스 선택 즉시 번역을 사용하는 동안 창을 항상 위에 유지해야 합니다.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">기록 탐색 표시</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">메인 화면에 이전/다음 번역 기록 탐색 아이콘 표시 여부.</sys:String>
     <sys:String x:Key="General_ShowOcrButton">OCR 버튼 표시</sys:String>
@@ -177,8 +177,8 @@
     <sys:String x:Key="Hotkey_CrosswordTranslateByCtrlSameCDescription">마우스로 텍스트를 선택하고 빠르게 Ctrl+C+C를 눌러 번역합니다.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailed">선택 텍스트를 가져오지 못했습니다. 입력 번역을 열었습니다.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailedShowWindow">선택 텍스트를 가져오지 못했습니다. 메인 창을 표시했습니다.</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslate">마우스 감지</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslateDescription">마우스 드래그 텍스트 선택 번역 감지를 켜고 끄는 단축키입니다.</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslation">마우스 선택 즉시 번역</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">마우스 선택 즉시 번역을 켜거나 끕니다.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">치환 번역</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">마우스로 선택한 텍스트를 번역하고 원본 텍스트를 치환하는 단축키입니다.</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">스크린샷 번역</sys:String>
@@ -590,7 +590,7 @@
     <sys:String x:Key="TextSeparatorHandleTypeHyphen">하이픈 처리</sys:String>
     <sys:String x:Key="TextSeparatorHandleTypeUnderscoreAndHyphen">밑줄과 하이픈 처리</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeNone">사용 안 함</sys:String>
-    <sys:String x:Key="TextSeparatorHandleScopeMouseHook">마우스 선택 감시</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeMouseSelection">마우스 선택</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeCrossword">선택 번역 / Ctrl+C+C</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeIncremental">증분 번역</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeClipboardMonitor">클립보드 감시</sys:String>
@@ -680,7 +680,7 @@
     <sys:String x:Key="DoubleClickTrayFunctionScreenshotTranslate">스크린샷 번역</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOCR">텍스트 인식</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOpenSettingsWindow">설정 창 열기</sys:String>
-    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseHook">마우스 감지 전환</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseSelectionTranslation">마우스 선택 즉시 번역 전환</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionToggleGlobalHotkeys">전역 단축키 전환</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionExit">프로그램 종료</sys:String>
 

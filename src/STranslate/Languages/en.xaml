@@ -110,14 +110,14 @@
     <sys:String x:Key="General_HideInputBoxButtonVisible">Show Hide Input Box button on main interface</sys:String>
     <sys:String x:Key="General_HideLanguageControl">Hide Language Selection Control</sys:String>
     <sys:String x:Key="General_HideLanguageControlDescription">Whether to hide the language selection control when hiding the input box.</sys:String>
-    <sys:String x:Key="General_ShowMouseHook">Show Mouse Hook</sys:String>
-    <sys:String x:Key="General_ShowMouseHookDescription">Whether to display the quick enable/disable mouse word selection icon on the main interface.</sys:String>
-    <sys:String x:Key="General_EnableMouseHook">Monitor Mouse Text Selection</sys:String>
-    <sys:String x:Key="General_EnableMouseHookDescription">Monitor mouse text selection globally and translate the selected text.</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelection">Show Icon After Mouse Selection</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">Show a floating icon after selecting text and translate only after the icon is clicked. When disabled, selected text is translated immediately.</sys:String>
-    <sys:String x:Key="MouseHookIconTranslate">Translate</sys:String>
-    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">The window must remain topmost while direct mouse selection translation is enabled.</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslation">Show Mouse Selection Translation</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslationDescription">Show the mouse selection translation toggle in the main window.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslation">Mouse Selection Translation</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">Copy and translate text immediately after selecting it with the mouse.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIcon">Floating Icon After Mouse Selection</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIconDescription">Show a floating icon after selecting text and translate when it is clicked. Direct translation takes priority when both features are enabled.</sys:String>
+    <sys:String x:Key="MouseSelectionIconTranslate">Translate</sys:String>
+    <sys:String x:Key="MouseSelectionTranslationRequiresTopmost">The window must remain topmost while mouse selection translation is enabled.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">Show History Navigation</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">Whether to display forward/backward history translation navigation icons on the main interface.</sys:String>
     <sys:String x:Key="General_ShowOcrButton">Show OCR Button</sys:String>
@@ -181,8 +181,8 @@
     <sys:String x:Key="Hotkey_CrosswordTranslateByCtrlSameCDescription">Quickly press Ctrl+C+C after selecting text with the mouse for text translation.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailed">Failed to capture selected text, switched to input translation.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailedShowWindow">Failed to capture selected text, switched to main window display.</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslate">Mouse Hook Translate</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslateDescription">Shortcut key to enable/disable listening for mouse text selection to trigger translation.</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslation">Mouse Selection Translation</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Enable or disable immediate mouse selection translation.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Replace Translation</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Shortcut key to translate the selected text and replace the original text.</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">Screenshot Translation</sys:String>
@@ -604,7 +604,7 @@
     <sys:String x:Key="TextSeparatorHandleTypeHyphen">Process hyphens</sys:String>
     <sys:String x:Key="TextSeparatorHandleTypeUnderscoreAndHyphen">Process underscores and hyphens</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeNone">Disabled</sys:String>
-    <sys:String x:Key="TextSeparatorHandleScopeMouseHook">Mouse selection monitor</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeMouseSelection">Mouse selection</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeCrossword">Word selection translation / Ctrl+C+C</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeIncremental">Incremental translation</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeClipboardMonitor">Clipboard monitor</sys:String>
@@ -694,7 +694,7 @@
     <sys:String x:Key="DoubleClickTrayFunctionScreenshotTranslate">ScreenshotTranslate</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOCR">OCR</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOpenSettingsWindow">OpenSettingsWindow</sys:String>
-    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseHook">ToggleMouseHook</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseSelectionTranslation">Toggle Mouse Selection Translation</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionToggleGlobalHotkeys">ToggleGlobalHotkeys</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionExit">Exit</sys:String>
 

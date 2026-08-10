@@ -275,32 +275,32 @@ public class HeaderControl : Control
 
     #endregion
 
-    #region MouseHook
+    #region Mouse Selection Translation
 
-    public bool IsMouseHook
+    public bool IsMouseSelectionTranslationEnabled
     {
-        get => (bool)GetValue(IsMouseHookProperty);
-        set => SetValue(IsMouseHookProperty, value);
+        get => (bool)GetValue(IsMouseSelectionTranslationEnabledProperty);
+        set => SetValue(IsMouseSelectionTranslationEnabledProperty, value);
     }
 
-    public static readonly DependencyProperty IsMouseHookProperty =
+    public static readonly DependencyProperty IsMouseSelectionTranslationEnabledProperty =
         DependencyProperty.Register(
-            nameof(IsMouseHook),
+            nameof(IsMouseSelectionTranslationEnabled),
             typeof(bool),
             typeof(HeaderControl),
             new FrameworkPropertyMetadata(
                 false,
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-    public bool IsMouseHookVisible
+    public bool IsMouseSelectionTranslationVisible
     {
-        get => (bool)GetValue(IsMouseHookVisibleProperty);
-        set => SetValue(IsMouseHookVisibleProperty, value);
+        get => (bool)GetValue(IsMouseSelectionTranslationVisibleProperty);
+        set => SetValue(IsMouseSelectionTranslationVisibleProperty, value);
     }
 
-    public static readonly DependencyProperty IsMouseHookVisibleProperty =
+    public static readonly DependencyProperty IsMouseSelectionTranslationVisibleProperty =
         DependencyProperty.Register(
-            nameof(IsMouseHookVisible),
+            nameof(IsMouseSelectionTranslationVisible),
             typeof(bool),
             typeof(HeaderControl),
             new FrameworkPropertyMetadata(

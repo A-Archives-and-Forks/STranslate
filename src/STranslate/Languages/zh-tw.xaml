@@ -110,14 +110,14 @@
     <sys:String x:Key="General_HideInputBoxButtonVisible">主界面顯示隱藏輸入框按鈕</sys:String>
     <sys:String x:Key="General_HideLanguageControl">隱藏語言選擇控制項</sys:String>
     <sys:String x:Key="General_HideLanguageControlDescription">隱藏輸入框時是否一併隱藏語言選擇控制項。</sys:String>
-    <sys:String x:Key="General_ShowMouseHook">顯示滑鼠鉤子</sys:String>
-    <sys:String x:Key="General_ShowMouseHookDescription">主介面是否顯示快捷啟用/禁用監聽滑鼠劃詞圖示。</sys:String>
-    <sys:String x:Key="General_EnableMouseHook">監聽滑鼠劃詞</sys:String>
-    <sys:String x:Key="General_EnableMouseHookDescription">全域監聽滑鼠選取文字並觸發翻譯。</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelection">劃詞後顯示懸浮圖示</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">劃詞後顯示懸浮圖示，點擊圖示時再翻譯；關閉後劃詞完成即翻譯。</sys:String>
-    <sys:String x:Key="MouseHookIconTranslate">點擊翻譯</sys:String>
-    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">直接劃詞翻譯啟用時視窗必須保持置頂。</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslation">顯示滑鼠劃詞直接翻譯</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslationDescription">主介面是否顯示滑鼠劃詞直接翻譯的快捷開關。</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslation">滑鼠劃詞直接翻譯</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">劃選文字後立即複製並觸發翻譯。</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIcon">劃詞後顯示懸浮圖示</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIconDescription">劃選文字後顯示懸浮圖示，點擊圖示時再翻譯；直接翻譯同時啟用時優先直接翻譯。</sys:String>
+    <sys:String x:Key="MouseSelectionIconTranslate">點擊翻譯</sys:String>
+    <sys:String x:Key="MouseSelectionTranslationRequiresTopmost">滑鼠劃詞直接翻譯啟用時視窗必須保持置頂。</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">顯示歷史導航</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">主介面是否顯示向前/向後歷史翻譯記錄導航圖示。</sys:String>
     <sys:String x:Key="General_ShowOcrButton">顯示OCR按鈕</sys:String>
@@ -181,8 +181,8 @@
     <sys:String x:Key="Hotkey_CrosswordTranslateByCtrlSameCDescription">滑鼠選中文字快速按下 Ctrl+C+C 進行取詞翻譯。</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailed">劃詞取詞失敗，已開啟輸入翻譯</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailedShowWindow">劃詞取詞失敗，已開啟主介面顯示</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslate">監聽滑鼠劃詞</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslateDescription">開啟/關閉監聽滑鼠劃詞選中文字觸發翻譯的快速鍵。</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslation">滑鼠劃詞直接翻譯</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">開啟或關閉滑鼠劃詞直接翻譯。</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">替換翻譯</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">滑鼠選中文本後觸發翻譯並替換原文本的快捷鍵。</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">截圖翻譯</sys:String>
@@ -607,7 +607,7 @@
     <sys:String x:Key="TextSeparatorHandleTypeHyphen">處理中劃線</sys:String>
     <sys:String x:Key="TextSeparatorHandleTypeUnderscoreAndHyphen">處理底線和中劃線</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeNone">不啟用</sys:String>
-    <sys:String x:Key="TextSeparatorHandleScopeMouseHook">監聽滑鼠劃詞</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeMouseSelection">滑鼠劃詞</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeCrossword">劃詞翻譯 / Ctrl+C+C</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeIncremental">增量翻譯</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeClipboardMonitor">剪貼簿監聽</sys:String>
@@ -697,7 +697,7 @@
     <sys:String x:Key="DoubleClickTrayFunctionScreenshotTranslate">螢幕擷取翻譯</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOCR">文本識別</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOpenSettingsWindow">開啟設定視窗</sys:String>
-    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseHook">切換滑鼠取詞</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseSelectionTranslation">切換滑鼠劃詞直接翻譯</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionToggleGlobalHotkeys">切換全域快速鍵</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionExit">退出程式</sys:String>
 

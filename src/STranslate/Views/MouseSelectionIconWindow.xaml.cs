@@ -12,7 +12,10 @@ using DrawingPoint = System.Drawing.Point;
 
 namespace STranslate.Views;
 
-public partial class MouseHookIconWindow : Window
+/// <summary>
+/// 显示在鼠标划词位置附近的无激活翻译入口。
+/// </summary>
+public partial class MouseSelectionIconWindow : Window
 {
     private const int IconOffset = 10;
     private readonly DispatcherTimer _hideTimer;
@@ -25,7 +28,7 @@ public partial class MouseHookIconWindow : Window
     /// <summary>
     /// 初始化鼠标划词悬浮图标窗口。
     /// </summary>
-    public MouseHookIconWindow()
+    public MouseSelectionIconWindow()
     {
         InitializeComponent();
 

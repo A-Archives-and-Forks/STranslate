@@ -186,7 +186,7 @@ public class ExternalCallService(
                     await viewModel.CrosswordTranslateCommand.ExecuteAsync(null);
                     break;
                 case ExternalCallAction.translate_mousehook:
-                    viewModel.ToggleMouseHookTranslateCommand.Execute(null);
+                    viewModel.ToggleMouseSelectionTranslationCommand.Execute(null);
                     break;
                 case ExternalCallAction.translate_replace:
                     {

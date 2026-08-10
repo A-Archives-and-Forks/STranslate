@@ -20,7 +20,7 @@
 - `STranslate/Services/MouseHookService.cs`
   - 在专用消息线程通过 `WH_MOUSE_LL` 监听鼠标拖动，Hook 回调只投递事件，不执行剪贴板或 UI 操作。
 - `STranslate/Services/MouseSelectionService.cs`
-  - 协调常驻划词与增量翻译共享 Hook，并按配置选择直接取词或显示悬浮图标。
+  - 协调直接翻译、悬浮图标与增量翻译共享 Hook，并按优先级分发划词结果。
 - `STranslate/Helpers/ClipboardMonitor.cs`
   - `AddClipboardFormatListener` 监听剪贴板变更。
 - `STranslate/ViewModels/MainWindowViewModel.cs`
@@ -56,7 +56,7 @@
 
 ### 从入口到结果：Ctrl+CC、鼠标划词、剪贴板监听
 - Ctrl+CC：`CtrlSameCHelper` 监听全局按键，500ms 内双击 `Ctrl+C` 触发 `CrosswordTranslateByCtrlSameCHandler()`。
-- 鼠标划词：`Settings.IsMouseHook` 控制 `MouseSelectionService` 启停；直接模式在拖拽完成后异步取词并触发 `ExecuteTranslate()`，悬浮图标模式等待用户点击后再取词。
+- 鼠标划词：`IsMouseSelectionTranslationEnabled` 和 `IsMouseSelectionIconEnabled` 是独立开关，任意一个开启都会维持同一个 Hook。处理优先级为增量翻译、直接翻译、悬浮图标；两者同时开启时直接翻译，不显示图标。
 - 剪贴板监听：`ClipboardMonitor` 收到 `WM_CLIPBOARDUPDATE` 后读取文本，触发 `OnClipboardTextChanged -> ExecuteTranslate()`。
 
 ### 触发后的窗口置前
@@ -74,7 +74,7 @@
    - 先执行 `LineBreakHandleType` 换行处理。
    - 再按 `TextSeparatorHandleType` 与 `TextSeparatorHandleScopes` 对 `_` / `-` 做可选分隔符处理。
 4. 当前取词作用域包括：
-   - `MouseHook`：监听鼠标划词。
+   - `MouseSelection`：鼠标划词直接翻译与悬浮图标取词。
    - `Crossword`：划词翻译与 `Ctrl+C+C`。
    - `Incremental`：按住键增量翻译。
    - `ClipboardMonitor`：剪贴板监听翻译。
@@ -117,8 +117,8 @@
   - `TextSeparatorHandleType`
   - `TextSeparatorHandleScopes`
   - `CrosswordFetchFailedFallbackTarget`
-  - `IsMouseHook`
-  - `ShowIconAfterMouseSelection`
+  - `IsMouseSelectionTranslationEnabled`
+  - `IsMouseSelectionIconEnabled`
   - `HideInput`、`HideInputWithLangSelectControl`
 - 输入区有效显隐状态：
   - `IsInputActuallyHidden`：持久隐藏设置叠加输入翻译临时显示后的实际隐藏状态。

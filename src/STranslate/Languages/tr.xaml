@@ -110,14 +110,14 @@
     <sys:String x:Key="General_HideInputBoxButtonVisible">Ana arayüzde Giriş Kutusunu Gizle düğmesini göster</sys:String>
     <sys:String x:Key="General_HideLanguageControl">Dil Seçim Kontrolünü Gizle</sys:String>
     <sys:String x:Key="General_HideLanguageControlDescription">Giriş kutusu gizlendiğinde dil seçim kontrolünün gizlenip gizlenmeyeceği.</sys:String>
-    <sys:String x:Key="General_ShowMouseHook">Fare Kancasını Göster</sys:String>
-    <sys:String x:Key="General_ShowMouseHookDescription">Ana arayüzde fare ile kelime seçme özelliğini hızlıca etkinleştirme/devre dışı bırakma simgesinin gösterilip gösterilmeyeceği.</sys:String>
-    <sys:String x:Key="General_EnableMouseHook">Fareyle Metin Seçimini İzle</sys:String>
-    <sys:String x:Key="General_EnableMouseHookDescription">Fareyle seçilen metni genel olarak izler ve çevirir.</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelection">Seçimden Sonra Yüzen Simgeyi Göster</sys:String>
-    <sys:String x:Key="General_ShowIconAfterMouseSelectionDescription">Metin seçiminden sonra bir simge gösterir ve yalnızca simge tıklandığında çevirir. Kapalıyken seçim hemen çevrilir.</sys:String>
-    <sys:String x:Key="MouseHookIconTranslate">Çevir</sys:String>
-    <sys:String x:Key="MouseHookDirectModeRequiresTopmost">Doğrudan fare seçimi çevirisi etkinken pencere en üstte kalmalıdır.</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslation">Fare Seçimi Anında Çevirisini Göster</sys:String>
+    <sys:String x:Key="General_ShowMouseSelectionTranslationDescription">Ana pencerede fare seçimi anında çeviri anahtarını gösterir.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslation">Fare Seçimi Anında Çeviri</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">Fareyle seçilen metni hemen kopyalar ve çevirir.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIcon">Seçimden Sonra Yüzen Simge</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIconDescription">Metin seçiminden sonra bir simge gösterir ve tıklandığında çevirir. Her ikisi de etkinse anında çeviri önceliklidir.</sys:String>
+    <sys:String x:Key="MouseSelectionIconTranslate">Çevir</sys:String>
+    <sys:String x:Key="MouseSelectionTranslationRequiresTopmost">Fare seçimi anında çeviri etkinken pencere en üstte kalmalıdır.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">Geçmiş Gezinmesini Göster</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigationDescription">Ana arayüzde ileri/geri geçmiş çeviri gezinme simgelerinin gösterilip gösterilmeyeceği.</sys:String>
     <sys:String x:Key="General_ShowOcrButton">OCR Düğmesini Göster</sys:String>
@@ -181,8 +181,8 @@
     <sys:String x:Key="Hotkey_CrosswordTranslateByCtrlSameCDescription">Metin çevirisi için fare ile metin seçtikten sonra hızlıca Ctrl+C+C tuşlarına basın.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailed">Seçili metin yakalanamadı, giriş çevirisine geçildi.</sys:String>
     <sys:String x:Key="CrosswordTranslateFetchFailedShowWindow">Seçili metin yakalanamadı, ana pencere görünümüne geçildi.</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslate">Fare Kancası Çevirisi</sys:String>
-    <sys:String x:Key="Hotkey_MouseHookTranslateDescription">Fare ile metin seçimini dinlemeyi etkinleştirmek/devre dışı bırakmak için kısayol tuşu.</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslation">Fare Seçimi Anında Çeviri</sys:String>
+    <sys:String x:Key="Hotkey_MouseSelectionTranslationDescription">Fare seçimi anında çeviriyi etkinleştirir veya devre dışı bırakır.</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslate">Değiştirerek Çeviri</sys:String>
     <sys:String x:Key="Hotkey_ReplaceTranslateDescription">Seçili metni çevirip orijinal metinle değiştirmek için kısayol tuşu.</sys:String>
     <sys:String x:Key="Hotkey_ScreenshotTranslate">Ekran Görüntüsü Çevirisi</sys:String>
@@ -606,7 +606,7 @@
     <sys:String x:Key="TextSeparatorHandleTypeHyphen">Kısa çizgileri işle</sys:String>
     <sys:String x:Key="TextSeparatorHandleTypeUnderscoreAndHyphen">Alt çizgi ve kısa çizgileri işle</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeNone">Devre Dışı</sys:String>
-    <sys:String x:Key="TextSeparatorHandleScopeMouseHook">Fare seçim izleyicisi</sys:String>
+    <sys:String x:Key="TextSeparatorHandleScopeMouseSelection">Fare seçimi</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeCrossword">Kelime seçimi çevirisi / Ctrl+C+C</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeIncremental">Kademeli çeviri</sys:String>
     <sys:String x:Key="TextSeparatorHandleScopeClipboardMonitor">Pano izleyici</sys:String>
@@ -696,7 +696,7 @@
     <sys:String x:Key="DoubleClickTrayFunctionScreenshotTranslate">Ekran Görüntüsü Çevirisi</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOCR">OCR (Metin Tanıma)</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionOpenSettingsWindow">Ayarlar Penceresini Aç</sys:String>
-    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseHook">Fare Kancasını Değiştir</sys:String>
+    <sys:String x:Key="DoubleClickTrayFunctionToggleMouseSelectionTranslation">Fare Seçimi Anında Çeviriyi Değiştir</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionToggleGlobalHotkeys">Genel Kısayolları Değiştir</sys:String>
     <sys:String x:Key="DoubleClickTrayFunctionExit">Çık</sys:String>
 
