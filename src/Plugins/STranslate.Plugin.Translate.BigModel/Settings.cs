@@ -24,8 +24,25 @@ public class Settings
     [
         new("翻译",
         [
-            new PromptItem("system", "You are a professional, authentic translation engine. You only return the translated text, without any explanations."),
-            new PromptItem("user", "Please translate  into $target (avoid explaining the original text):\r\n\r\n$content"),
+            new PromptItem("system", "你是一位精通源文本语言与目标语言及其文化的翻译专家。"),
+            new PromptItem("user", """"
+                源文本：
+                """
+                $content
+                """
+
+                ## 翻译要求
+                1. 忠实于源文本，确保每个句子都得到准确、流畅的翻译。
+                2. 不得遗漏源文本的任何内容或细节。
+                3. 准确翻译大额数字，并符合目标语言的表达习惯。
+
+                ## 任务
+                1. 仔细分析并深入理解源文本的内容、上下文、语境、情感，以及与目标语言之间的文化细微差异。
+                2. 根据上述翻译要求，将源文本从 $source 准确翻译为 $target。
+                3. 确保译文对目标受众来说准确、自然、流畅；必要时调整表达方式，以符合目标语言的文化和语言习惯。
+
+                注意：不要输出任何额外内容，只能输出译文。这一点非常关键。
+                """"),
         ], true),
         new("润色",
         [
