@@ -59,12 +59,15 @@ internal static class OpenAIProtocol
         if (!string.IsNullOrWhiteSpace(errorMessage))
             return new OpenAIStreamEvent(null, errorMessage);
 
+        var choices = parsedData["choices"] as JsonArray;
         var textDelta = apiMode switch
         {
             OpenAIApiMode.Responses when parsedData["type"]?.ToString() == "response.output_text.delta"
                 => parsedData["delta"]?.ToString(),
             OpenAIApiMode.ChatCompletions
-                => parsedData["choices"]?[0]?["delta"]?["content"]?.ToString(),
+                => choices is { Count: > 0 }
+                    ? choices[0]?["delta"]?["content"]?.ToString()
+                    : null,
             _ => null
         };
 
