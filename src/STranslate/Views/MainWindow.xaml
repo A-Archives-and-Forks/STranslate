@@ -151,6 +151,7 @@
                     SelectLanguageDetectorCommand="{Binding SelectLanguageDetectorCommand}"
                     SelectedIdentifiedLanguage="{Binding SelectedIdentifiedLanguage}"
                     SelectedLanguageDetector="{Binding Settings.LanguageDetector, Mode=TwoWay}"
+                    SourceLanguage="{Binding Settings.SourceLang}"
                     Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
                     TranslateOnPaste="{Binding Settings.TranslateOnPaste}"
                     Visibility="{Binding IsInputBoxVisible, Converter={cnvt:BoolToVisibilityConverter}}" />
@@ -281,6 +282,7 @@
                     ShowPascalCase="{Binding Settings.ShowPascalCase}"
                     ShowPrompt="{Binding Settings.ShowPromptButton}"
                     ShowSnakeCase="{Binding Settings.ShowSnakeCase}"
+                    TargetLanguage="{Binding Settings.TargetLang}"
                     TransBackCommand="{Binding SingleTransBackCommand}" />
             </StackPanel>
         </ui:ScrollViewerEx>

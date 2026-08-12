@@ -133,7 +133,13 @@
                                 VerticalAlignment="Center"
                                 Text="{Binding SourceText}"
                                 TextTrimming="CharacterEllipsis"
-                                TextWrapping="NoWrap" />
+                                TextWrapping="NoWrap">
+                                <TextBlock.FlowDirection>
+                                    <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                        <Binding Path="SourceText" />
+                                    </MultiBinding>
+                                </TextBlock.FlowDirection>
+                            </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

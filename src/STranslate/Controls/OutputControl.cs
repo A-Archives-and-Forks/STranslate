@@ -1,3 +1,4 @@
+using STranslate.Plugin;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -132,6 +133,19 @@ public class OutputControl : ItemsControl
             typeof(bool),
             typeof(OutputControl),
             new PropertyMetadata(true));
+
+    public LangEnum TargetLanguage
+    {
+        get => (LangEnum)GetValue(TargetLanguageProperty);
+        set => SetValue(TargetLanguageProperty, value);
+    }
+
+    public static readonly DependencyProperty TargetLanguageProperty =
+        DependencyProperty.Register(
+            nameof(TargetLanguage),
+            typeof(LangEnum),
+            typeof(OutputControl),
+            new PropertyMetadata(LangEnum.Auto));
 
     public ICommand? ExplainCommand
     {

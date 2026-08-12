@@ -28,7 +28,13 @@
                         IsReadOnly="True"
                         SnapsToDevicePixels="True"
                         Text="{Binding TransResult.Text}"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap">
+                        <TextBox.FlowDirection>
+                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                <Binding Path="TransResult.Text" />
+                            </MultiBinding>
+                        </TextBox.FlowDirection>
+                    </TextBox>
                     <Grid
                         Grid.Row="1"
                         Margin="6,2"
@@ -73,7 +79,13 @@
                             BorderThickness="0"
                             IsReadOnly="True"
                             Text="{Binding TransBackResult.Text}"
-                            TextWrapping="Wrap" />
+                            TextWrapping="Wrap">
+                            <TextBox.FlowDirection>
+                                <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                    <Binding Path="TransBackResult.Text" />
+                                </MultiBinding>
+                            </TextBox.FlowDirection>
+                        </TextBox>
                         <ikw:SimpleStackPanel
                             Grid.Row="1"
                             Margin="6,2"
@@ -111,7 +123,13 @@
                         IsReadOnly="True"
                         Style="{DynamicResource TextBlockSimilarStyle}"
                         Text="{Binding DictResult.Text}"
-                        TextWrapping="Wrap" />
+                        TextWrapping="Wrap">
+                        <TextBox.FlowDirection>
+                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                <Binding Path="DictResult.Text" />
+                            </MultiBinding>
+                        </TextBox.FlowDirection>
+                    </TextBox>
                     <!--  音标显示  -->
                     <ItemsControl
                         Margin="0,0,0,4"
@@ -178,7 +196,13 @@
                                         FontWeight="Medium"
                                         Foreground="{DynamicResource {x:Static ui:ThemeKeys.AccentTextFillColorPrimaryBrushKey}}"
                                         Text="{Binding PartOfSpeech}"
-                                        Visibility="{Binding PartOfSpeech, Converter={cnvt:EqualToVisibilityInverseConverter}}" />
+                                        Visibility="{Binding PartOfSpeech, Converter={cnvt:EqualToVisibilityInverseConverter}}">
+                                        <TextBlock.FlowDirection>
+                                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                <Binding Path="PartOfSpeech" />
+                                            </MultiBinding>
+                                        </TextBlock.FlowDirection>
+                                    </TextBlock>
                                     <!--  释义  -->
                                     <TextBox
                                         Grid.Column="1"
@@ -186,7 +210,13 @@
                                         IsReadOnly="True"
                                         Style="{DynamicResource TextBlockSimilarStyle}"
                                         Text="{Binding Means, Converter={cnvt:CollectionToStringConverter}, ConverterParameter=；}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap">
+                                        <TextBox.FlowDirection>
+                                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                <Binding Path="Means" Converter="{cnvt:CollectionToStringConverter}" ConverterParameter="；" />
+                                            </MultiBinding>
+                                        </TextBox.FlowDirection>
+                                    </TextBox>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -253,7 +283,13 @@
                                     <TextBlock
                                         FontStyle="Italic"
                                         Text="{Binding}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap">
+                                        <TextBlock.FlowDirection>
+                                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                <Binding />
+                                            </MultiBinding>
+                                        </TextBlock.FlowDirection>
+                                    </TextBlock>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -353,7 +389,13 @@
                                             IsReadOnly="True"
                                             SnapsToDevicePixels="True"
                                             Text="{Binding SourceText, Mode=OneWay}"
-                                            TextWrapping="Wrap" />
+                                            TextWrapping="Wrap">
+                                            <TextBox.FlowDirection>
+                                                <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                    <Binding Path="SourceText" />
+                                                </MultiBinding>
+                                            </TextBox.FlowDirection>
+                                        </TextBox>
                                         <ikw:SimpleStackPanel
                                             Grid.Row="1"
                                             Margin="6,2"

@@ -143,6 +143,13 @@
                                 BorderThickness="0"
                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Text, UpdateSourceTrigger=PropertyChanged}"
                                 TextWrapping="Wrap">
+                                <TextBox.FlowDirection>
+                                    <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                        <Binding RelativeSource="{RelativeSource Mode=TemplatedParent}" Path="Text" />
+                                        <Binding RelativeSource="{RelativeSource Mode=TemplatedParent}" Path="SourceLanguage" />
+                                        <Binding RelativeSource="{RelativeSource Mode=TemplatedParent}" Path="SelectedIdentifiedLanguage" />
+                                    </MultiBinding>
+                                </TextBox.FlowDirection>
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Enter" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ExecuteCommand}" />
                                     <KeyBinding
