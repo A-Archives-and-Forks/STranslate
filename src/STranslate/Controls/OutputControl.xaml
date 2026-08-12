@@ -235,7 +235,14 @@
                             IsReadOnly="True"
                             Text="{Binding Plugin.DictionaryResult.Text}"
                             TextWrapping="Wrap"
-                            Visibility="{Binding Plugin.DictionaryResult.ResultType, Converter={cnvt:DictionaryResultTypeVisibilityConverter}, ConverterParameter=Error}" />
+                            Visibility="{Binding Plugin.DictionaryResult.ResultType, Converter={cnvt:DictionaryResultTypeVisibilityConverter}, ConverterParameter=Error}">
+                            <TextBox.FlowDirection>
+                                <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                    <Binding Path="Plugin.DictionaryResult.Text" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="TargetLanguage" />
+                                </MultiBinding>
+                            </TextBox.FlowDirection>
+                        </TextBox>
                         <StackPanel Margin="8,8,8,4" Visibility="{Binding Plugin.DictionaryResult.ResultType, Converter={cnvt:DictionaryResultTypeVisibilityConverter}, ConverterParameter=Success}">
                             <!--  单词显示  -->
                             <TextBox
@@ -246,7 +253,14 @@
                                 IsReadOnly="True"
                                 Style="{DynamicResource TextBlockSimilarStyle}"
                                 Text="{Binding Plugin.DictionaryResult.Text}"
-                                TextWrapping="Wrap" />
+                                TextWrapping="Wrap">
+                                <TextBox.FlowDirection>
+                                    <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                        <Binding Path="Plugin.DictionaryResult.Text" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="TargetLanguage" />
+                                    </MultiBinding>
+                                </TextBox.FlowDirection>
+                            </TextBox>
 
                             <!--  音标显示  -->
                             <ItemsControl
@@ -632,6 +646,12 @@
                                 SnapsToDevicePixels="True"
                                 Text="{Binding Plugin.TransResult.Text}"
                                 TextWrapping="Wrap">
+                                <TextBox.FlowDirection>
+                                    <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                        <Binding Path="Plugin.TransResult.Text" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="TargetLanguage" />
+                                    </MultiBinding>
+                                </TextBox.FlowDirection>
                                 <TextBox.Style>
                                     <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
                                         <Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />
@@ -752,6 +772,12 @@
                                     IsReadOnly="True"
                                     Text="{Binding Plugin.TransBackResult.Text}"
                                     TextWrapping="Wrap">
+                                    <TextBox.FlowDirection>
+                                        <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                            <Binding Path="Plugin.TransBackResult.Text" />
+                                            <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="TargetLanguage" />
+                                        </MultiBinding>
+                                    </TextBox.FlowDirection>
                                     <TextBox.Style>
                                         <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
                                             <Setter Property="Foreground" Value="{DynamicResource TextControlForeground}" />

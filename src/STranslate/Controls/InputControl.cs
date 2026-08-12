@@ -56,6 +56,19 @@ public class InputControl : Control
                 string.Empty,
                 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+    public LangEnum SourceLanguage
+    {
+        get => (LangEnum)GetValue(SourceLanguageProperty);
+        set => SetValue(SourceLanguageProperty, value);
+    }
+
+    public static readonly DependencyProperty SourceLanguageProperty =
+        DependencyProperty.Register(
+            nameof(SourceLanguage),
+            typeof(LangEnum),
+            typeof(InputControl),
+            new PropertyMetadata(LangEnum.Auto));
+
     public IdentifiedLanguageStateKind IdentifiedLanguageState
     {
         get => (IdentifiedLanguageStateKind)GetValue(IdentifiedLanguageStateProperty);
