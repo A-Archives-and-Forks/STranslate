@@ -336,7 +336,14 @@
                                                 IsReadOnly="True"
                                                 Style="{DynamicResource TextBlockSimilarStyle}"
                                                 Text="{Binding Means, Converter={cnvt:CollectionToStringConverter}, ConverterParameter=；}"
-                                                TextWrapping="Wrap" />
+                                                TextWrapping="Wrap">
+                                                <TextBox.FlowDirection>
+                                                    <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                        <Binding Path="Means" Converter="{cnvt:CollectionToStringConverter}" ConverterParameter="；" />
+                                                        <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="TargetLanguage" />
+                                                    </MultiBinding>
+                                                </TextBox.FlowDirection>
+                                            </TextBox>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -409,7 +416,14 @@
                                             <TextBlock
                                                 FontStyle="Italic"
                                                 Text="{Binding}"
-                                                TextWrapping="Wrap" />
+                                                TextWrapping="Wrap">
+                                                <TextBlock.FlowDirection>
+                                                    <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                                        <Binding />
+                                                        <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="TargetLanguage" />
+                                                    </MultiBinding>
+                                                </TextBlock.FlowDirection>
+                                            </TextBlock>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -775,7 +789,8 @@
                                     <TextBox.FlowDirection>
                                         <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
                                             <Binding Path="Plugin.TransBackResult.Text" />
-                                            <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="TargetLanguage" />
+                                            <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="SourceLanguage" />
+                                            <Binding RelativeSource="{RelativeSource AncestorType=control:OutputControl}" Path="DetectedSourceLanguage" />
                                         </MultiBinding>
                                     </TextBox.FlowDirection>
                                     <TextBox.Style>

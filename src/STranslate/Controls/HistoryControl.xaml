@@ -196,13 +196,7 @@
                                         FontWeight="Medium"
                                         Foreground="{DynamicResource {x:Static ui:ThemeKeys.AccentTextFillColorPrimaryBrushKey}}"
                                         Text="{Binding PartOfSpeech}"
-                                        Visibility="{Binding PartOfSpeech, Converter={cnvt:EqualToVisibilityInverseConverter}}">
-                                        <TextBlock.FlowDirection>
-                                            <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
-                                                <Binding Path="PartOfSpeech" />
-                                            </MultiBinding>
-                                        </TextBlock.FlowDirection>
-                                    </TextBlock>
+                                        Visibility="{Binding PartOfSpeech, Converter={cnvt:EqualToVisibilityInverseConverter}}" />
                                     <!--  释义  -->
                                     <TextBox
                                         Grid.Column="1"

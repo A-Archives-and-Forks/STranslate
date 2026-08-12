@@ -374,7 +374,14 @@
                             BorderThickness="0"
                             Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}"
                             TextWrapping="Wrap"
-                            VerticalScrollBarVisibility="Auto" />
+                            VerticalScrollBarVisibility="Auto">
+                            <TextBox.FlowDirection>
+                                <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                    <Binding Path="Result" />
+                                    <Binding Path="Settings.ImageTranslateOcrLanguage" />
+                                </MultiBinding>
+                            </TextBox.FlowDirection>
+                        </TextBox>
                         <ikw:SimpleStackPanel
                             Grid.Row="1"
                             Margin="5"

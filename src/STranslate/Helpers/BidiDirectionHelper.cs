@@ -1,25 +1,22 @@
-using STranslate.Plugin;
-using System.Windows;
 using System.Globalization;
 using System.Text;
+using System.Windows;
+using STranslate.Plugin;
 
 namespace STranslate.Helpers;
 
+/// <summary>
+/// 根据显式语种、识别语种或文本中的首个强方向字符确定文本流向。
+/// </summary>
 public static class BidiDirectionHelper
 {
-    private static readonly LangEnum[] RtlLanguages =
-    [
-        LangEnum.Arabic,
-        LangEnum.Persian,
-//        TODO uncomment these when you add other languages to the app
-//        LangEnum.Hebrew,
-//        LangEnum.Urdu,
-//        LangEnum.Pashto,
-//        LangEnum.Sindhi,
-//        LangEnum.Kurdish,
-//        LangEnum.Yiddish
-    ];
-
+    /// <summary>
+    /// 按显式语种、识别语种、文本内容的优先级解析文本流向。
+    /// </summary>
+    /// <param name="text">用于兜底检测方向的文本。</param>
+    /// <param name="language">用户显式选择的语种；<see cref="LangEnum.Auto"/> 表示未知。</param>
+    /// <param name="detectedLanguage">自动识别出的语种；<see cref="LangEnum.Auto"/> 表示未知。</param>
+    /// <returns>适用于 WPF 控件的文本流向。</returns>
     public static FlowDirection GetFlowDirection(
         string? text,
         LangEnum? language = null,
@@ -68,47 +65,35 @@ public static class BidiDirectionHelper
     }
 
     private static bool IsRightToLeftLanguage(LangEnum language)
-        => RtlLanguages.Contains(language);
+        => language is LangEnum.Arabic or LangEnum.Persian;
 
     private static bool IsRightToLeftRune(Rune rune)
     {
         var value = rune.Value;
 
-        return
-            // Hebrew
+        var isRightToLeftBlock =
             value is >= 0x0590 and <= 0x05FF ||
-
-            // Arabic
             value is >= 0x0600 and <= 0x06FF ||
-
-            // Arabic Supplement
             value is >= 0x0750 and <= 0x077F ||
-
-            // Arabic Extended-A
+            value is >= 0x0870 and <= 0x089F ||
             value is >= 0x08A0 and <= 0x08FF ||
-
-            // Hebrew Presentation Forms
             value is >= 0xFB1D and <= 0xFB4F ||
-
-            // Arabic Presentation Forms-A
             value is >= 0xFB50 and <= 0xFDFF ||
-
-            // Arabic Presentation Forms-B
             value is >= 0xFE70 and <= 0xFEFF ||
-
-            // Arabic Mathematical Alphabetic Symbols
+            value is >= 0x10EC0 and <= 0x10EFF ||
             value is >= 0x1EE00 and <= 0x1EEFF;
+
+        // 区段还包含数字、标点与组合符；它们不是首个强方向字符，必须继续向后查找。
+        return isRightToLeftBlock && IsLetter(rune);
     }
 
-    private static bool IsLeftToRightRune(Rune rune)
-    {
-        var category = Rune.GetUnicodeCategory(rune);
+    private static bool IsLeftToRightRune(Rune rune) => IsLetter(rune);
 
-        return category is
+    private static bool IsLetter(Rune rune)
+        => Rune.GetUnicodeCategory(rune) is
             UnicodeCategory.UppercaseLetter or
             UnicodeCategory.LowercaseLetter or
             UnicodeCategory.TitlecaseLetter or
             UnicodeCategory.ModifierLetter or
             UnicodeCategory.OtherLetter;
-    }
 }

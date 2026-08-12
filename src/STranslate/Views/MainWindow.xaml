@@ -266,6 +266,7 @@
                     CopyCommand="{Binding CopyCommand}"
                     CopyPascalCaseCommand="{Binding CopyPascalCaseCommand}"
                     CopySnakeCaseCommand="{Binding CopySnakeCaseCommand}"
+                    DetectedSourceLanguage="{Binding SelectedIdentifiedLanguage}"
                     ExplainCommand="{Binding ExplainCommand}"
                     HasActivedVocabulary="{Binding VocabularyService.HasActivedVocabulary}"
                     InsertCommand="{Binding InsertCommand}"
@@ -282,6 +283,7 @@
                     ShowPascalCase="{Binding Settings.ShowPascalCase}"
                     ShowPrompt="{Binding Settings.ShowPromptButton}"
                     ShowSnakeCase="{Binding Settings.ShowSnakeCase}"
+                    SourceLanguage="{Binding Settings.SourceLang}"
                     TargetLanguage="{Binding Settings.TargetLang}"
                     TransBackCommand="{Binding SingleTransBackCommand}" />
             </StackPanel>

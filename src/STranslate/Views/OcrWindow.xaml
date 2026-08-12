@@ -398,7 +398,14 @@
                                 Text="{Binding Result, UpdateSourceTrigger=PropertyChanged}"
                                 TextWrapping="Wrap"
                                 VerticalScrollBarVisibility="Auto"
-                                Visibility="{Binding Settings.OcrResultShowingType, Converter={cnvt:OcrResultShowingTypeVisibilityConverter}, ConverterParameter=Original}" />
+                                Visibility="{Binding Settings.OcrResultShowingType, Converter={cnvt:OcrResultShowingTypeVisibilityConverter}, ConverterParameter=Original}">
+                                <TextBox.FlowDirection>
+                                    <MultiBinding Converter="{cnvt:TextAndLanguageToFlowDirectionConverter}">
+                                        <Binding Path="Result" />
+                                        <Binding Path="Settings.OcrWindowOcrLanguage" />
+                                    </MultiBinding>
+                                </TextBox.FlowDirection>
+                            </TextBox>
                             <markdig:MarkdownViewer
                                 Background="Transparent"
                                 BorderBrush="Transparent"

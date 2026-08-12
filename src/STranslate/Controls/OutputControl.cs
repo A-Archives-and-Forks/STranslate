@@ -134,6 +134,41 @@ public class OutputControl : ItemsControl
             typeof(OutputControl),
             new PropertyMetadata(true));
 
+    /// <summary>
+    /// 获取或设置生成回译结果时使用的源语种。
+    /// </summary>
+    public LangEnum SourceLanguage
+    {
+        get => (LangEnum)GetValue(SourceLanguageProperty);
+        set => SetValue(SourceLanguageProperty, value);
+    }
+
+    public static readonly DependencyProperty SourceLanguageProperty =
+        DependencyProperty.Register(
+            nameof(SourceLanguage),
+            typeof(LangEnum),
+            typeof(OutputControl),
+            new PropertyMetadata(LangEnum.Auto));
+
+    /// <summary>
+    /// 获取或设置自动识别出的源语种。
+    /// </summary>
+    public LangEnum DetectedSourceLanguage
+    {
+        get => (LangEnum)GetValue(DetectedSourceLanguageProperty);
+        set => SetValue(DetectedSourceLanguageProperty, value);
+    }
+
+    public static readonly DependencyProperty DetectedSourceLanguageProperty =
+        DependencyProperty.Register(
+            nameof(DetectedSourceLanguage),
+            typeof(LangEnum),
+            typeof(OutputControl),
+            new PropertyMetadata(LangEnum.Auto));
+
+    /// <summary>
+    /// 获取或设置普通翻译结果使用的目标语种。
+    /// </summary>
     public LangEnum TargetLanguage
     {
         get => (LangEnum)GetValue(TargetLanguageProperty);
