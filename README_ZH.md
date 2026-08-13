@@ -89,4 +89,4 @@
 
 ## 星标历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=ZGGSONG/STranslate&type=Date)](https://star-history.com/#ZGGSONG/STranslate&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=ZGGSONG/STranslate&type=Date)](https://star-history.dera.page/#ZGGSONG/STranslate&Date)
