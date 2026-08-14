@@ -89,5 +89,5 @@ Copyright © [zggsong](https://github.com/zggsong)
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=ZGGSONG/STranslate&type=Date)](https://star-history.com/#ZGGSONG/STranslate&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=STranslate/STranslate&type=Date)](https://star-history.dera.page/#STranslate/STranslate&Date)
 
