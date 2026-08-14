@@ -83,12 +83,14 @@ public class HttpService : IHttpService
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Sending GET request to {Url} using service {ServiceName}", finalUrl, serviceName);
+            LogRequest(request, serviceName, null);
 
             using var response = await client.SendAsync(request, cancellationToken);
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            LogResponse(request, response, serviceName, responseContent);
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
-            return await response.Content.ReadAsStringAsync(cancellationToken);
+            return responseContent;
         }
         catch (Exception ex)
         {
@@ -109,12 +111,14 @@ public class HttpService : IHttpService
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Sending GET request for bytes to {Url} using service {ServiceName}", finalUrl, serviceName);
+            LogRequest(request, serviceName, null);
 
             using var response = await client.SendAsync(request, cancellationToken);
+            var responseContent = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+            LogResponse(request, response, serviceName, $"<binary: {responseContent.Length} bytes>");
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
-            return await response.Content.ReadAsByteArrayAsync(cancellationToken);
+            return responseContent;
         }
         catch (Exception ex)
         {
@@ -135,9 +139,10 @@ public class HttpService : IHttpService
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Sending GET stream request to {Url} using service {ServiceName}", finalUrl, serviceName);
+            LogRequest(request, serviceName, null);
 
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            LogResponse(request, response, serviceName, "<stream>");
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
             return await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -197,12 +202,14 @@ public class HttpService : IHttpService
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Sending POST request to {Url} using service {ServiceName}", url, serviceName);
+            LogRequest(request, serviceName, content);
 
             using var response = await client.SendAsync(request, cancellationToken);
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            LogResponse(request, response, serviceName, responseContent);
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
-            return await response.Content.ReadAsStringAsync(cancellationToken);
+            return responseContent;
         }
         catch (Exception ex)
         {
@@ -221,25 +228,30 @@ public class HttpService : IHttpService
             var finalUrl = BuildUrlWithQuery(url, options?.QueryParams);
             using var request = new HttpRequestMessage(HttpMethod.Post, finalUrl);
 
+            string requestContent;
             if (content is byte[] bytes)
             {
                 request.Content = new ByteArrayContent(bytes);
                 request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(options?.ContentType ?? "application/octet-stream");
+                requestContent = $"<binary: {bytes.Length} bytes>";
             }
             else
             {
                 var json = content is string str ? str : JsonSerializer.Serialize(content, _jsonOptions);
                 request.Content = new StringContent(json, Encoding.UTF8, options?.ContentType ?? "application/json");
+                requestContent = json;
             }
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Sending POST request for bytes to {Url} using service {ServiceName}", url, serviceName);
+            LogRequest(request, serviceName, requestContent);
 
             using var response = await client.SendAsync(request, cancellationToken);
+            var responseContent = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+            LogResponse(request, response, serviceName, $"<binary: {responseContent.Length} bytes>");
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
-            return await response.Content.ReadAsByteArrayAsync(cancellationToken);
+            return responseContent;
         }
         catch (Exception ex)
         {
@@ -270,12 +282,16 @@ public class HttpService : IHttpService
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Sending POST form request to {Url} using service {ServiceName}", url, serviceName);
+            LogRequest(request, serviceName, _logger.IsEnabled(LogLevel.Trace)
+                ? await request.Content.ReadAsStringAsync(cancellationToken)
+                : null);
 
             using var response = await client.SendAsync(request, cancellationToken);
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            LogResponse(request, response, serviceName, responseContent);
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
-            return await response.Content.ReadAsStringAsync(cancellationToken);
+            return responseContent;
         }
         catch (Exception ex)
         {
@@ -306,9 +322,10 @@ public class HttpService : IHttpService
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Sending streaming POST request to {Url} using service {ServiceName}", url, serviceName);
+            LogRequest(request, serviceName, jsonContent);
 
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            LogResponse(request, response, serviceName, "<stream started>");
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -320,6 +337,7 @@ public class HttpService : IHttpService
             {
                 if (!string.IsNullOrEmpty(line))
                 {
+                    LogStreamResponse(request, response, serviceName, line);
                     onDataReceived(line);
                 }
             }
@@ -355,9 +373,10 @@ public class HttpService : IHttpService
 
         AddHeaders(request, options?.Headers);
 
-        _logger?.LogTrace("Sending streaming POST async-enumerable request to {Url} using service {ServiceName}", url, serviceName);
+        LogRequest(request, serviceName, jsonContent);
 
         using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        LogResponse(request, response, serviceName, "<stream started>");
         await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -369,6 +388,7 @@ public class HttpService : IHttpService
         {
             if (!string.IsNullOrEmpty(line))
             {
+                LogStreamResponse(request, response, serviceName, line);
                 yield return line;
             }
         }
@@ -403,9 +423,10 @@ public class HttpService : IHttpService
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Starting file download from {Url} to {Path} using service {ServiceName}", url, fullPath, serviceName);
+            LogRequest(request, serviceName, null);
 
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            LogResponse(request, response, serviceName, $"<file: {response.Content.Headers.ContentLength?.ToString() ?? "unknown"} bytes>");
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
             var totalBytes = response.Content.Headers.ContentLength ?? -1;
@@ -450,9 +471,10 @@ public class HttpService : IHttpService
 
             AddHeaders(request, options?.Headers);
 
-            _logger?.LogTrace("Starting POST file download from {Url} to {Path} using service {ServiceName}", url, fullPath, serviceName);
+            LogRequest(request, serviceName, jsonContent);
 
             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            LogResponse(request, response, serviceName, $"<file: {response.Content.Headers.ContentLength?.ToString() ?? "unknown"} bytes>");
             await EnsureSuccessStatusCodeAsync(response, cancellationToken);
 
             var totalBytes = response.Content.Headers.ContentLength ?? -1;
@@ -498,6 +520,46 @@ public class HttpService : IHttpService
     #endregion
 
     #region 私有方法
+
+    private void LogRequest(HttpRequestMessage request, string serviceName, string? content)
+    {
+        _logger.LogTrace(
+            "HTTP request: {Method} {Url}, Service: {ServiceName}, Body: {Body}",
+            request.Method,
+            request.RequestUri,
+            serviceName,
+            content ?? "<empty>");
+    }
+
+    private void LogResponse(
+        HttpRequestMessage request,
+        HttpResponseMessage response,
+        string serviceName,
+        string content)
+    {
+        _logger.LogTrace(
+            "HTTP response: {StatusCode} {Method} {Url}, Service: {ServiceName}, Body: {Body}",
+            (int)response.StatusCode,
+            request.Method,
+            request.RequestUri,
+            serviceName,
+            content);
+    }
+
+    private void LogStreamResponse(
+        HttpRequestMessage request,
+        HttpResponseMessage response,
+        string serviceName,
+        string content)
+    {
+        _logger.LogTrace(
+            "HTTP stream response: {StatusCode} {Method} {Url}, Service: {ServiceName}, Data: {Data}",
+            (int)response.StatusCode,
+            request.Method,
+            request.RequestUri,
+            serviceName,
+            content);
+    }
 
     private static void ConfigureClientTimeout(HttpClient client, TimeSpan? timeout)
     {
