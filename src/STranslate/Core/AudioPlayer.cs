@@ -11,7 +11,7 @@ public class AudioPlayer : IAudioPlayer
     private readonly IHttpService _httpService;
     private WaveOutEvent? _waveOut;
     private MemoryStream? _audioStream;
-    private Mp3FileReader? _mp3Reader;
+    private WaveStream? _audioReader;
     private CancellationTokenSource? _cancellationTokenSource;
     private int _stopping;
     private bool _disposed;
@@ -44,16 +44,30 @@ public class AudioPlayer : IAudioPlayer
             _logger.LogWarning("音频数据为空");
             return;
         }
+
+        await PlayAsync(new AudioData(audioData, AudioFormat.Auto), cancellationToken);
+    }
+
+    public async Task PlayAsync(AudioData audioData, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(audioData);
+
+        if (audioData.Content == null || audioData.Content.Length == 0)
+        {
+            _logger.LogWarning("音频数据为空");
+            return;
+        }
+
         try
         {
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             // 创建内存流
-            _audioStream = new MemoryStream(audioData);
-            // 创建MP3读取器
-            _mp3Reader = new Mp3FileReader(_audioStream);
+            _audioStream = new MemoryStream(audioData.Content, writable: false);
+            // 根据音频格式创建读取器
+            _audioReader = AudioReaderFactory.Create(audioData, _audioStream);
             // 创建播放设备
             _waveOut = new WaveOutEvent();
-            _waveOut.Init(_mp3Reader);
+            _waveOut.Init(_audioReader);
             // 注册事件
             _waveOut.PlaybackStopped += OnPlaybackStopped;
             // 开始播放
@@ -136,9 +150,9 @@ public class AudioPlayer : IAudioPlayer
                 });
             }
 
-            var mp3Reader = _mp3Reader;
-            _mp3Reader = null;
-            mp3Reader?.Dispose();
+            var audioReader = _audioReader;
+            _audioReader = null;
+            audioReader?.Dispose();
 
             var audioStream = _audioStream;
             _audioStream = null;
@@ -192,10 +206,10 @@ public class AudioPlayer : IAudioPlayer
         try
         {
             while (!cancellationToken.IsCancellationRequested &&
-                   _mp3Reader != null &&
+                   _audioReader != null &&
                    _waveOut?.PlaybackState == PlaybackState.Playing)
             {
-                var currentPosition = _mp3Reader.CurrentTime;
+                var currentPosition = _audioReader.CurrentTime;
                 PlaybackPositionChanged?.Invoke(this, currentPosition);
 
                 await Task.Delay(100, cancellationToken);

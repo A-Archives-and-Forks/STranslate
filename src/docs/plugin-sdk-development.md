@@ -12,6 +12,8 @@
   - 插件可用能力：`HttpService`、`Logger`、`AudioPlayer`、`Snackbar`、`Notification`、配置存储、主题应用。
 - `STranslate.Plugin/IHttpService.cs`
   - 插件侧 HTTP 能力：普通 GET/POST、表单、下载、流式 POST、代理测试。
+- `STranslate.Plugin/IAudioPlayer.cs`、`AudioData.cs`
+  - 插件侧音频播放能力：兼容旧 `byte[]` / URL 调用，并支持显式描述 MP3、WAV 和裸 PCM。
 - `STranslate.Plugin/ITranslatePlugin.cs`
   - 翻译/词典接口与基类：`TranslatePluginBase`、`LlmTranslatePluginBase`、`DictionaryPluginBase`。
 - `STranslate.Plugin/IOcrPlugin.cs`、`ITtsPlugin.cs`、`IVocabularyPlugin.cs`
@@ -50,6 +52,7 @@
 ### SDK 核心模型
 - `PluginMetaData`：插件静态元信息 + 运行时路径与类型。
 - `Service`：插件实例容器，含 `ServiceID`、`DisplayName`、`Options`。
+- `AudioData`：待播放的音频字节与格式；裸 PCM 通过 `PcmAudioFormat` 指定采样率、声道、位深和编码。
 - `TranslateRequest` / `TranslateResult`、`DictionaryResult`、`OcrRequest` / `OcrResult`、`VocabularyResult`：能力结果模型。
 - OCR 模型：
   - `OcrRequest.PixelWidth` / `PixelHeight` 由宿主在截图 OCR、OCR 窗口和图片翻译中传入真实图片尺寸，旧插件可忽略。
@@ -85,6 +88,12 @@
   - 两者均有带 `serviceName` 的重载，可复用指定服务 HTTP 客户端配置。
 - 取消：插件实现必须把 `CancellationToken` 继续传给 HTTP 接口；流式取消会以取消状态向上传播。
 
+### 音频播放接口
+- 新插件优先调用 `AudioPlayer.PlayAsync(AudioData, cancellationToken)` 并显式声明 `AudioFormat`。
+- MP3 和 WAV 的采样参数由容器携带；裸 PCM 必须传入 `PcmAudioFormat`，宿主不会猜测采样率、声道或位深。
+- `AudioFormat.Auto` 只识别 MP3/WAV，主要用于兼容旧 `byte[]` 和 URL 播放接口；AAC、FLAC、Ogg、Opus 当前不属于保证支持范围。
+- Gemini 等返回裸 PCM 的服务可直接传入 `AudioFormat.Pcm`，例如单声道、24 kHz、16-bit little-endian PCM。
+
 ### 接口与基类选择建议
 - 文本翻译：优先继承 `TranslatePluginBase`。
 - 大模型翻译：优先继承 `LlmTranslatePluginBase`（内置 Prompt 选择机制）。
@@ -111,6 +120,8 @@
 - `STranslate.Plugin/IPlugin.cs`
 - `STranslate.Plugin/IPluginContext.cs`
 - `STranslate.Plugin/IHttpService.cs`
+- `STranslate.Plugin/IAudioPlayer.cs`
+- `STranslate.Plugin/AudioData.cs`
 - `STranslate.Plugin/ITranslatePlugin.cs`
 - `STranslate.Plugin/IOcrPlugin.cs`
 - `STranslate.Plugin/ITtsPlugin.cs`

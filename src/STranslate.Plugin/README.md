@@ -1,5 +1,11 @@
 Reference this package to develop a plugin for [STranslate](https://github.com/STranslate/STranslate).
 
+## v1.0.14 - 2026-08-14
+
+- `IAudioPlayer` 新增 `PlayAsync(AudioData, CancellationToken)`，支持显式播放 MP3、WAV 和裸 PCM
+- `AudioData` 可通过 `PcmAudioFormat` 指定裸 PCM 的采样率、声道、位深与采样编码
+- 现有 `byte[]` 和 URL 播放接口保持兼容，并支持自动识别 MP3/WAV
+
 ## v1.0.13 - 2026-07-01
 
 - `Service` 新增 `IconPath` 属性，支持为服务实例设置自定义图标路径（为空时回退 `MetaData.IconPath`）

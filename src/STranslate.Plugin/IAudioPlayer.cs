@@ -6,6 +6,14 @@ namespace STranslate.Plugin;
 public interface IAudioPlayer : IDisposable
 {
     /// <summary>
+    /// 播放带格式信息的音频数据
+    /// </summary>
+    /// <param name="audioData"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task PlayAsync(AudioData audioData, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// 播放音频
     /// </summary>
     /// <param name="audioData"></param>

@@ -93,7 +93,7 @@ git remote add origin https://github.com/STranslate/STranslate.Plugin.Translate.
 - **`ExecuteFileName`**：改为自己的插件 dll 文件名。
 
 ### `csproj` 调试改法
-`ThirdPlugins` 下的社区插件会受到主仓库上层 `Directory.Packages.props` 影响，所以插件项目应显式关闭集中包版本管理，并保留自己的 `PackageReference` 版本。以下是 `DeepLX` 项目文件中的实际配置参考，不要遗漏其中的 Debug / Release 输出和内容复制项；`STranslate.Plugin` 推荐使用 [NuGet 上的最新版本](https://www.nuget.org/packages/STranslate.Plugin)，截至 2026-06-25 核对为 `1.0.12`：
+`ThirdPlugins` 下的社区插件会受到主仓库上层 `Directory.Packages.props` 影响，所以插件项目应显式关闭集中包版本管理，并保留自己的 `PackageReference` 版本。以下是 `DeepLX` 项目文件中的实际配置参考，不要遗漏其中的 Debug / Release 输出和内容复制项；`STranslate.Plugin` 推荐使用 [NuGet 上的最新版本](https://www.nuget.org/packages/STranslate.Plugin)，截至 2026-08-14 核对为 `1.0.14`：
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -151,7 +151,7 @@ git remote add origin https://github.com/STranslate/STranslate.Plugin.Translate.
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="STranslate.Plugin" Version="1.0.12" />
+        <PackageReference Include="STranslate.Plugin" Version="1.0.14" />
     </ItemGroup>
 
 </Project>
@@ -243,6 +243,7 @@ Plugins\ThirdPlugins\STranslate.Plugin.Translate.DeepLX\.artifacts\plugins\STran
   - 新窗口或对话框需要跟随主题时调用 `context.ApplyTheme(window)`。
 - `TranslateAsync()` / `RecognizeAsync()` / `PlayAudioAsync()` / `SaveAsync()`
   - 将 `CancellationToken` 继续传给 `Context.HttpService`、音频播放或外部异步操作。
+  - 播放 MP3、WAV 或裸 PCM 时，优先构造 `AudioData` 并显式声明格式；裸 PCM 必须同时提供 `PcmAudioFormat`，不要依赖宿主猜测采样参数。
   - 对可预期的服务端失败返回 `Fail(...)` 或写入结果错误信息；对意外异常记录日志后再决定是否抛出。
   - 不要把本次请求文本、响应正文或临时结果保存在插件字段中；运行时服务会复用同一个插件实例，字段更适合保存只读配置、客户端状态或可控缓存。
 
