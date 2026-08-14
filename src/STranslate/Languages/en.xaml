@@ -29,6 +29,7 @@
     <sys:String x:Key="TimeoutPlaceholder">Timeout (seconds)</sys:String>
     <sys:String x:Key="SearchFunction">Search Function</sys:String>
     <sys:String x:Key="SearchFunctionToolTip">Ctrl+F to search function</sys:String>
+    <sys:String x:Key="NoResultsFound">No results found</sys:String>
     <sys:String x:Key="Function">Function</sys:String>
     <sys:String x:Key="Appearance">Appearance</sys:String>
     <sys:String x:Key="AutoTranslateEnabled">Enable Auto-Translate</sys:String>

@@ -29,6 +29,7 @@
     <sys:String x:Key="TimeoutPlaceholder">Zaman Aşımı (saniye)</sys:String>
     <sys:String x:Key="SearchFunction">İşlev Ara</sys:String>
     <sys:String x:Key="SearchFunctionToolTip">İşlev aramak için Ctrl+F</sys:String>
+    <sys:String x:Key="NoResultsFound">Sonuç bulunamadı</sys:String>
     <sys:String x:Key="Function">İşlev</sys:String>
     <sys:String x:Key="Appearance">Görünüm</sys:String>
     <sys:String x:Key="AutoTranslateEnabled">Otomatik Çeviriyi Etkinleştir</sys:String>

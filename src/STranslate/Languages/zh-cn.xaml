@@ -29,6 +29,7 @@
     <sys:String x:Key="TimeoutPlaceholder">超时时间（秒）</sys:String>
     <sys:String x:Key="SearchFunction">搜索功能</sys:String>
     <sys:String x:Key="SearchFunctionToolTip">按 Ctrl+F 搜索功能</sys:String>
+    <sys:String x:Key="NoResultsFound">未找到结果</sys:String>
     <sys:String x:Key="Function">功能</sys:String>
     <sys:String x:Key="Appearance">外观</sys:String>
     <sys:String x:Key="AutoTranslateEnabled">启用自动翻译</sys:String>
