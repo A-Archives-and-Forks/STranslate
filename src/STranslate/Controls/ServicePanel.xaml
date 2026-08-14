@@ -23,6 +23,7 @@
             BorderThickness="{DynamicResource SettingsCardBorderThickness}"
             CornerRadius="{DynamicResource {x:Static ui:ThemeKeys.ControlCornerRadiusKey}}">
             <Border.Resources>
+                <s:BindingProxy x:Key="PanelProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}}" />
                 <s:BindingProxy x:Key="VmProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=control:ServicePanel}, Path=DataContext}" />
                 <s:BindingProxy x:Key="SvcProxy" Data="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=DataContext}" />
                 <s:BindingProxy x:Key="NameEditorProxy" Data="{Binding ElementName=NameEditor}" />
@@ -30,12 +31,12 @@
             <Border.ContextMenu>
                 <ContextMenu>
                     <MenuItem
-                        Command="{Binding Source={StaticResource VmProxy}, Path=Data.ActiveImTranOcrCommand}"
+                        Command="{Binding Source={StaticResource PanelProxy}, Path=Data.ActiveImTranOcrCommand}"
                         CommandParameter="{Binding Source={StaticResource SvcProxy}, Path=Data}"
                         Header="{DynamicResource AsImTranOcrSvc}">
                         <MenuItem.Visibility>
                             <MultiBinding Converter="{cnvt:ImTranOcrEligibilityConverter}">
-                                <Binding Path="Data.ActiveImTranOcrCommand" Source="{StaticResource VmProxy}" />
+                                <Binding Path="Data.ActiveImTranOcrCommand" Source="{StaticResource PanelProxy}" />
                                 <Binding Path="Data" Source="{StaticResource SvcProxy}" />
                             </MultiBinding>
                         </MenuItem.Visibility>
@@ -46,7 +47,7 @@
                     <Separator>
                         <Separator.Visibility>
                             <MultiBinding Converter="{cnvt:ImTranOcrEligibilityConverter}">
-                                <Binding Path="Data.ActiveImTranOcrCommand" Source="{StaticResource VmProxy}" />
+                                <Binding Path="Data.ActiveImTranOcrCommand" Source="{StaticResource PanelProxy}" />
                                 <Binding Path="Data" Source="{StaticResource SvcProxy}" />
                             </MultiBinding>
                         </Separator.Visibility>
