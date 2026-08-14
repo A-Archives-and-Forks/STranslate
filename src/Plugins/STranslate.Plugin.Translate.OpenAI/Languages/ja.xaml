@@ -7,4 +7,6 @@
     <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_ChatCompletions">Chat Completions</sys:String>
     <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Responses">Responses</sys:String>
     <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_NoTextOutput">API からテキストが返されませんでした。</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters">追加リクエストパラメーター</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters_Description">リクエストのルートにマージする JSON オブジェクトを入力します。プラグインが生成する組み込みフィールドは上書きできません。</sys:String>
 </ResourceDictionary>

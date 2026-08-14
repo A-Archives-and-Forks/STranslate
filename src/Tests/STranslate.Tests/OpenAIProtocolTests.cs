@@ -80,6 +80,39 @@ public class OpenAIProtocolTests
         Assert.Equal("system", json["input"]?[0]?["role"]?.ToString());
     }
 
+    [Theory]
+    [InlineData(OpenAIApiMode.ChatCompletions)]
+    [InlineData(OpenAIApiMode.Responses)]
+    public void CreateRequest_AppendsAdditionalParameters(OpenAIApiMode apiMode)
+    {
+        var request = OpenAIProtocol.CreateRequest(
+            apiMode,
+            "test-model",
+            CreateMessages(),
+            0.7,
+            """{"thinking":{"type":"enabled"},"top_k":40}""");
+
+        var json = JsonSerializer.SerializeToNode(request, RequestJsonOptions)!;
+
+        Assert.Equal("enabled", json["thinking"]?["type"]?.ToString());
+        Assert.Equal(40, json["top_k"]?.GetValue<int>());
+    }
+
+    [Theory]
+    [InlineData("[]")]
+    [InlineData("not-json")]
+    [InlineData("{\"stream\":false}")]
+    [InlineData("{\"Model\":\"other-model\"}")]
+    public void CreateRequest_RejectsInvalidOrConflictingAdditionalParameters(string additionalParametersJson)
+    {
+        Assert.Throws<FormatException>(() => OpenAIProtocol.CreateRequest(
+            OpenAIApiMode.ChatCompletions,
+            "test-model",
+            CreateMessages(),
+            0.7,
+            additionalParametersJson));
+    }
+
     [Fact]
     public void ParseStreamLine_ReadsChatCompletionsDeltaWithoutRemovingContentDataPrefix()
     {

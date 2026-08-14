@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace STranslate.Plugin.Translate.OpenAI;
@@ -17,13 +18,55 @@ internal static class OpenAIProtocol
         OpenAIApiMode apiMode,
         string model,
         IReadOnlyCollection<PromptItem> messages,
-        double temperature)
+        double temperature,
+        string? additionalParametersJson = null)
     {
-        return apiMode switch
+        JsonObject request = apiMode switch
         {
-            OpenAIApiMode.Responses => new ResponsesRequest(model, messages, temperature, true, false),
-            _ => new ChatCompletionsRequest(model, messages, temperature, true)
+            OpenAIApiMode.Responses => new JsonObject
+            {
+                ["model"] = model,
+                ["input"] = JsonSerializer.SerializeToNode(messages),
+                ["temperature"] = temperature,
+                ["stream"] = true,
+                ["store"] = false
+            },
+            _ => new JsonObject
+            {
+                ["model"] = model,
+                ["messages"] = JsonSerializer.SerializeToNode(messages),
+                ["temperature"] = temperature,
+                ["stream"] = true
+            }
         };
+
+        AppendAdditionalParameters(request, additionalParametersJson);
+        return request;
+    }
+
+    private static void AppendAdditionalParameters(JsonObject request, string? additionalParametersJson)
+    {
+        if (string.IsNullOrWhiteSpace(additionalParametersJson))
+            return;
+
+        JsonObject additionalParameters;
+        try
+        {
+            additionalParameters = JsonNode.Parse(additionalParametersJson) as JsonObject
+                ?? throw new FormatException("附加请求参数的根节点必须是 JSON 对象。");
+        }
+        catch (JsonException ex)
+        {
+            throw new FormatException("附加请求参数不是有效的 JSON。", ex);
+        }
+
+        foreach (var (name, value) in additionalParameters)
+        {
+            if (request.Any(item => string.Equals(item.Key, name, StringComparison.OrdinalIgnoreCase)))
+                throw new FormatException($"附加请求参数不能覆盖内置字段“{name}”。");
+
+            request[name] = value?.DeepClone();
+        }
     }
 
     internal static OpenAIStreamEvent ParseStreamLine(OpenAIApiMode apiMode, string? line)
@@ -87,18 +130,5 @@ internal static class OpenAIProtocol
         return parsedData["error"]?["message"]?.ToString();
     }
 }
-
-internal sealed record ChatCompletionsRequest(
-    string Model,
-    IReadOnlyCollection<PromptItem> Messages,
-    double Temperature,
-    bool Stream);
-
-internal sealed record ResponsesRequest(
-    string Model,
-    IReadOnlyCollection<PromptItem> Input,
-    double Temperature,
-    bool Stream,
-    bool Store);
 
 internal readonly record struct OpenAIStreamEvent(string? TextDelta, string? ErrorMessage);

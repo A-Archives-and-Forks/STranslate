@@ -162,7 +162,12 @@ public class Main : LlmTranslatePluginBase
         var url = OpenAIProtocol.BuildFinalUrl(Settings.Url, apiMode);
         var model = string.IsNullOrWhiteSpace(Settings.Model) ? "gpt-4o" : Settings.Model.Trim();
         var temperature = Math.Clamp(Settings.Temperature, 0, 2);
-        var content = OpenAIProtocol.CreateRequest(apiMode, model, messages, temperature);
+        var content = OpenAIProtocol.CreateRequest(
+            apiMode,
+            model,
+            messages,
+            temperature,
+            Settings.AdditionalParametersJson);
 
         var option = new Options
         {
@@ -175,7 +180,11 @@ public class Main : LlmTranslatePluginBase
         StringBuilder sb = new();
         var isThink = false;
 
-        await Context.HttpService.StreamPostAsync(url, content, msg =>
+        await foreach (var msg in Context.HttpService.StreamPostAsyncEnumerable(
+            url,
+            content,
+            option,
+            cancellationToken))
         {
             var streamEvent = OpenAIProtocol.ParseStreamLine(apiMode, msg);
             if (!string.IsNullOrWhiteSpace(streamEvent.ErrorMessage))
@@ -183,30 +192,30 @@ public class Main : LlmTranslatePluginBase
 
             var contentValue = streamEvent.TextDelta;
             if (string.IsNullOrEmpty(contentValue))
-                return;
+                continue;
 
             if (contentValue.Trim() == "<think>")
             {
                 isThink = true;
-                return;
+                continue;
             }
 
             if (contentValue.Trim() == "</think>")
             {
                 isThink = false;
-                return;
+                continue;
             }
 
             if (isThink)
-                return;
+                continue;
 
             // 优化推理内容结束后的前导空白。
             if (sb.Length == 0 && string.IsNullOrWhiteSpace(contentValue))
-                return;
+                continue;
 
             sb.Append(contentValue);
             onTextUpdated?.Invoke(sb.ToString());
-        }, option, cancellationToken: cancellationToken);
+        }
 
         if (sb.Length == 0)
             throw new InvalidOperationException(Context.GetTranslation("STranslate_Plugin_Translate_OpenAI_NoTextOutput"));

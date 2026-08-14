@@ -149,6 +149,24 @@
             </ikw:SimpleStackPanel>
         </ui:SettingsCard>
 
+        <!--  附加请求参数  -->
+        <ui:SettingsCard
+            Description="{DynamicResource STranslate_Plugin_Translate_OpenAI_AdditionalParameters_Description}"
+            Header="{DynamicResource STranslate_Plugin_Translate_OpenAI_AdditionalParameters}">
+            <ui:SettingsCard.HeaderIcon>
+                <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.Code_20_Regular}" />
+            </ui:SettingsCard.HeaderIcon>
+            <TextBox
+                MinWidth="300"
+                MinHeight="80"
+                AcceptsReturn="True"
+                FontFamily="Consolas"
+                Text="{Binding AdditionalParametersJson, UpdateSourceTrigger=PropertyChanged}"
+                TextWrapping="Wrap"
+                ui:ControlHelper.PlaceholderText="{}{&quot;thinking&quot;: {&quot;type&quot;: &quot;enabled&quot;}}"
+                VerticalScrollBarVisibility="Auto" />
+        </ui:SettingsCard>
+
 
         <!--  连接验证  -->
         <ui:SettingsCard Description="{DynamicResource PluginTranslateValidateDescription}" Header="{DynamicResource PluginTranslateValidate}">

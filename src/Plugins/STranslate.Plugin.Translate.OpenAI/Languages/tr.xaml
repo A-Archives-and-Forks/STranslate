@@ -7,4 +7,6 @@
     <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_ChatCompletions">Chat Completions</sys:String>
     <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_ApiMode_Responses">Responses</sys:String>
     <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_NoTextOutput">API herhangi bir metin çıktısı döndürmedi.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters">Ek İstek Parametreleri</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_OpenAI_AdditionalParameters_Description">İstek köküne birleştirilecek JSON nesnesini girin. Eklentinin oluşturduğu yerleşik alanlar geçersiz kılınamaz.</sys:String>
 </ResourceDictionary>

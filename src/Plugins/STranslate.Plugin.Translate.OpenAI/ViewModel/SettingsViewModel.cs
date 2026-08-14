@@ -26,6 +26,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
         Model = _settings.Model;
         Models = new ObservableCollection<string>(_settings.Models);
         Temperature = _settings.Temperature;
+        AdditionalParametersJson = _settings.AdditionalParametersJson;
 
         PropertyChanged += OnPropertyChanged;
         Models.CollectionChanged += OnModelsCollectionChanged;
@@ -62,6 +63,9 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
                 // 舍入到一位小数，避免浮点精度问题
                 _settings.Temperature = Math.Round(Temperature, 1);
                 break;
+            case nameof(AdditionalParametersJson):
+                _settings.AdditionalParametersJson = AdditionalParametersJson;
+                break;
             default:
                 return;
         }
@@ -75,6 +79,7 @@ public partial class SettingsViewModel : ObservableObject, IDisposable
     [ObservableProperty] public partial string? Model { get; set; }
     [ObservableProperty] public partial ObservableCollection<string> Models { get; set; }
     [ObservableProperty] public partial double Temperature { get; set; }
+    [ObservableProperty] public partial string AdditionalParametersJson { get; set; }
 
     public string FinalUrl => OpenAIProtocol.BuildFinalUrl(Url, ApiMode);
 
