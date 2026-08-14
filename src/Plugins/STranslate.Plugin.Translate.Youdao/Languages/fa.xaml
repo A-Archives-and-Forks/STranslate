@@ -1,0 +1,8 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="STranslate_Plugin_Translate_Youdao_Info">معرفی</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Youdao_Info_Content">این افزونه از API رسمی ترجمه Youdao استفاده می‌کند.</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Youdao_AppKey">شناسه برنامه (AppKey)</sys:String>
+    <sys:String x:Key="STranslate_Plugin_Translate_Youdao_AppSecret">کلید محرمانه برنامه (AppSecret)</sys:String>
+</ResourceDictionary>
