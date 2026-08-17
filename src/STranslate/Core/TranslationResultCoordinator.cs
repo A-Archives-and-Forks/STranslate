@@ -211,7 +211,9 @@ internal sealed class TranslationResultCoordinator
         CopyCollection(source.Superlative, target.Superlative);
         CopyCollection(source.Tags, target.Tags);
         CopyCollection(source.Sentences, target.Sentences);
-        target.Duration = source.Duration;
+        target.Duration = source.ResultType == DictionaryResultType.NoResult
+            ? TimeSpan.Zero
+            : source.Duration;
         target.IsProcessing = source.IsProcessing;
     }
 

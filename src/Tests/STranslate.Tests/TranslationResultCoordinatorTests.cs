@@ -218,6 +218,28 @@ public class TranslationResultCoordinatorTests
     }
 
     [Fact]
+    public void DictionaryNoResultDoesNotPublishPluginDuration()
+    {
+        var coordinator = CreateCoordinator();
+        var visibleResult = new DictionaryResult();
+        var operation = BeginOperation(coordinator);
+        var pluginResult = new DictionaryResult
+        {
+            ResultType = DictionaryResultType.NoResult,
+            Duration = TimeSpan.FromSeconds(1)
+        };
+
+        Assert.True(coordinator.TryReset(visibleResult, operation.OperationId));
+        Assert.True(coordinator.TryPublish(
+            pluginResult,
+            visibleResult,
+            operation.OperationId));
+
+        Assert.Equal(DictionaryResultType.NoResult, visibleResult.ResultType);
+        Assert.Equal(TimeSpan.Zero, visibleResult.Duration);
+    }
+
+    [Fact]
     public void StaleOperationCannotPublishSideEffectsOrReactivateChannel()
     {
         var coordinator = CreateCoordinator();

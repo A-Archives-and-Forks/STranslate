@@ -116,8 +116,9 @@ internal sealed class TranslationOperation
         }
         finally
         {
-            if (result.ResultType != DictionaryResultType.NoResult)
-                result.Duration = DateTime.Now - startTime;
+            result.Duration = result.ResultType == DictionaryResultType.NoResult
+                ? TimeSpan.Zero
+                : DateTime.Now - startTime;
 
             result.IsProcessing = false;
             PublishDictionary(result, plugin.DictionaryResult);
