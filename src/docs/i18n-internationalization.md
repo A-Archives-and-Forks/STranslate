@@ -209,7 +209,7 @@ internal static class AvailableLanguages
 - ❌ 无需重启提示：语言切换是热切换。
 
 ### 已知硬编码（待修复）
-- 暂无。设置页搜索框的「无结果」提示已改为 `NoResultsFound` key，走 i18n。
+- 暂无。设置页搜索框的「无结果」提示已改为 `NoResultsFound` key；网络页代理测试的四条结果提示已改为 `ProxyTesting` / `ProxyTestSuccess` / `ProxyTestFailed` / `ProxyTestError` key，均走 i18n。
 
 ## 开发参考：在代码 / XAML 中使用国际化
 

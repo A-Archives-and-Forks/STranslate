@@ -310,6 +310,10 @@
     <sys:String x:Key="Network_HelpBypassListContent" xml:space="preserve">여러 주소는 세미콜론(;)으로 구분하며 와일드카드(*)를 지원합니다:&#10;localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">적용 설명</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">프록시 구성 수정은 약 2분 후 적용됩니다&#10;즉시 적용하려면 재시작이 필요합니다</sys:String>
+    <sys:String x:Key="ProxyTesting">연결 테스트 중...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">연결 성공! 현재 IP 정보: {0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">연결 실패, 프록시 설정을 확인하세요</sys:String>
+    <sys:String x:Key="ProxyTestError">테스트 실패: {0}</sys:String>
 
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">텍스트 감지 결과 표시</sys:String>
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">원본 이미지/텍스트 감지 이미지 표시 전환</sys:String>

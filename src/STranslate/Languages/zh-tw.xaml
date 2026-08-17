@@ -317,6 +317,10 @@
     <sys:String x:Key="Network_HelpBypassListContent" xml:space="preserve">使用分號(;)分隔多個地址，支持通配符(*)：&#10;localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">生效說明</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">修改代理配置需等待 2 分鐘後生效&#10;立即生效需重啟</sys:String>
+    <sys:String x:Key="ProxyTesting">正在測試連接...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">連接成功！當前IP資訊：{0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">連接失敗，請檢查代理設置</sys:String>
+    <sys:String x:Key="ProxyTestError">測試失敗：{0}</sys:String>
 
     <!--  Standalone Page  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">顯示文字偵測結果</sys:String>

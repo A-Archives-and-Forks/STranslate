@@ -318,6 +318,10 @@
     <sys:String x:Key="Network_HelpBypassListContent" xml:space="preserve">Birden fazla adresi ayırmak için noktalı virgül (;) kullanın, joker karakterleri (*) destekler:&#10;localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">Etkinlik</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">Proxy ayarlarındaki değişiklikler 2 dakika sonra etkili olur&#10;Hemen uygulamak için yeniden başlatma gerekir</sys:String>
+    <sys:String x:Key="ProxyTesting">Bağlantı test ediliyor...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">Bağlantı başarılı! Geçerli IP bilgisi: {0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">Bağlantı başarısız, lütfen proxy ayarlarını kontrol edin</sys:String>
+    <sys:String x:Key="ProxyTestError">Test başarısız: {0}</sys:String>
 
     <!--  Bağımsız Sayfa  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">Açıklamayı Göster</sys:String>

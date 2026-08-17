@@ -317,6 +317,10 @@
     <sys:String x:Key="Network_HelpBypassListContent" xml:space="preserve">Адреса разделяются точкой с запятой (;), поддерживаются подстановочные знаки (*):&#10;localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">Вступление в силу</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">Изменения настроек прокси вступают в силу в течение 2 минут&#10;Для немедленного применения нужен перезапуск</sys:String>
+    <sys:String x:Key="ProxyTesting">Идёт проверка подключения...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">Подключение установлено! Текущий IP: {0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">Не удалось подключиться, проверьте настройки прокси</sys:String>
+    <sys:String x:Key="ProxyTestError">Ошибка проверки: {0}</sys:String>
 
     <!--  Standalone Page  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">Показывать разметку</sys:String>

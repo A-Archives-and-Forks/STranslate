@@ -324,6 +324,10 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">نحوه اعمال تغییرات</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">تغییرات تنظیمات پروکسی پس از ۲ دقیقه اعمال می‌شوند
 برای اعمال فوری، برنامه را دوباره راه‌اندازی کنید</sys:String>
+    <sys:String x:Key="ProxyTesting">در حال تست اتصال...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">اتصال موفق بود! اطلاعات IP فعلی: {0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">اتصال ناموفق بود، لطفاً تنظیمات پروکسی را بررسی کنید</sys:String>
+    <sys:String x:Key="ProxyTestError">تست ناموفق بود: {0}</sys:String>
 
     <!--  Standalone Page  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">نمایش نشانه‌گذاری</sys:String>

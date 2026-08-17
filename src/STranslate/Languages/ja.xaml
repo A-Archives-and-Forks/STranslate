@@ -310,6 +310,10 @@
     <sys:String x:Key="Network_HelpBypassListContent" xml:space="preserve">複数のアドレスはセミコロン(;)で区切ります。ワイルドカード(*)に対応：&#10;localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">反映について</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">プロキシ設定の変更は約2分後に反映されます&#10;即時反映させるには再起動が必要です</sys:String>
+    <sys:String x:Key="ProxyTesting">接続をテスト中...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">接続に成功しました！現在のIP情報：{0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">接続に失敗しました。プロキシ設定を確認してください</sys:String>
+    <sys:String x:Key="ProxyTestError">テストに失敗しました：{0}</sys:String>
 
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">検出結果を表示</sys:String>
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">元画像/検出結果画像の表示切替</sys:String>
