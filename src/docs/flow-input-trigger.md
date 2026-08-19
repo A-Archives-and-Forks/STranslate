@@ -18,7 +18,7 @@
 - `STranslate/Helpers/CtrlSameCHelper.cs`
   - 监听 Ctrl+C 双击（500ms 窗口）。
 - `STranslate/Services/MouseHookService.cs`
-  - 在专用消息线程通过 `WH_MOUSE_LL` 监听鼠标拖动，Hook 回调只投递事件，不执行剪贴板或 UI 操作。
+  - 在专用消息线程通过 `WH_MOUSE_LL` 监听鼠标拖选与双击选词，Hook 回调只投递事件，不执行剪贴板或 UI 操作。
 - `STranslate/Services/MouseSelectionService.cs`
   - 协调直接翻译、悬浮图标与增量翻译共享 Hook，并按优先级分发划词结果。
 - `STranslate/Helpers/ClipboardMonitor.cs`
@@ -56,7 +56,7 @@
 
 ### 从入口到结果：Ctrl+CC、鼠标划词、剪贴板监听
 - Ctrl+CC：`CtrlSameCHelper` 监听全局按键，500ms 内双击 `Ctrl+C` 触发 `CrosswordTranslateByCtrlSameCHandler()`。
-- 鼠标划词：`IsMouseSelectionTranslationEnabled` 和 `IsMouseSelectionIconEnabled` 是独立开关，任意一个开启都会维持同一个 Hook。处理优先级为增量翻译、直接翻译、悬浮图标；两者同时开启时直接翻译，不显示图标。
+- 鼠标划词：拖选和双击选词共用同一条完成事件链路。`IsMouseSelectionTranslationEnabled` 和 `IsMouseSelectionIconEnabled` 是独立开关，任意一个开启都会维持同一个 Hook。处理优先级为增量翻译、直接翻译、悬浮图标；两者同时开启时直接翻译，不显示图标。
 - 剪贴板监听：`ClipboardMonitor` 收到 `WM_CLIPBOARDUPDATE` 后读取文本，触发 `OnClipboardTextChanged -> ExecuteTranslate()`。
 
 ### 触发后的窗口置前

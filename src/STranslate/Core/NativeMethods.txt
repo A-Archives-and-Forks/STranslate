@@ -40,6 +40,7 @@ GetDesktopWindow
 GetClassName
 FindWindowEx
 GetSystemMetrics
+GetDoubleClickTime
 MonitorFromWindow
 EnumDisplayMonitors
 GetCursorPos

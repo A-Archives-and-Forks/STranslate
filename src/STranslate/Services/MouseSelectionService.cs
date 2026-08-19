@@ -175,7 +175,7 @@ public sealed class MouseSelectionService : IDisposable
     private void OnSelectionStarted(object? sender, Point point)
         => SelectionStarted?.Invoke(this, point);
 
-    private void OnSelectionCompleted(object? sender, MouseDragCompletedEventArgs e)
+    private void OnSelectionCompleted(object? sender, MouseSelectionCompletedEventArgs e)
     {
         bool incrementalEnabled;
         bool directTranslationEnabled;

@@ -19,22 +19,22 @@ public class MouseSelectionServiceTests
     }
 
     [Fact]
-    public void DragDetectorIgnoresClickAndMovementBelowSystemThreshold()
+    public void GestureDetectorIgnoresClickAndMovementBelowSystemThreshold()
     {
-        var detector = new MouseDragDetector(4, 4);
+        var detector = CreateGestureDetector();
 
-        detector.OnLeftButtonDown(new Point(10, 10), isIBeam: true);
+        detector.OnLeftButtonDown(new Point(10, 10), timestamp: 100, isIBeam: true);
         detector.OnMouseMove(new Point(13, 13), isIBeam: true);
 
         Assert.False(detector.TryComplete(new Point(13, 13), isIBeam: true, out _));
     }
 
     [Fact]
-    public void DragDetectorAcceptsThresholdMovementWhenEitherEndpointUsesIBeam()
+    public void GestureDetectorAcceptsThresholdMovementWhenEitherEndpointUsesIBeam()
     {
-        var detector = new MouseDragDetector(4, 4);
+        var detector = CreateGestureDetector();
 
-        detector.OnLeftButtonDown(new Point(10, 10), isIBeam: false);
+        detector.OnLeftButtonDown(new Point(10, 10), timestamp: 100, isIBeam: false);
         detector.OnMouseMove(new Point(14, 10), isIBeam: false);
 
         Assert.True(detector.TryComplete(new Point(14, 10), isIBeam: true, out var completedPoint));
@@ -43,15 +43,86 @@ public class MouseSelectionServiceTests
     }
 
     [Fact]
-    public void DragDetectorAcceptsTextCursorObservedBetweenNonTextEndpoints()
+    public void GestureDetectorAcceptsTextCursorObservedBetweenNonTextEndpoints()
     {
-        var detector = new MouseDragDetector(4, 4);
+        var detector = CreateGestureDetector();
 
-        detector.OnLeftButtonDown(new Point(20, 10), isIBeam: false);
+        detector.OnLeftButtonDown(new Point(20, 10), timestamp: 100, isIBeam: false);
         detector.OnMouseMove(new Point(18, 10), isIBeam: true);
         detector.OnMouseMove(new Point(10, 10), isIBeam: false);
 
         Assert.True(detector.TryComplete(new Point(10, 10), isIBeam: false, out _));
+    }
+
+    [Fact]
+    public void GestureDetectorAcceptsDoubleClickOnText()
+    {
+        var detector = CreateGestureDetector();
+
+        Assert.False(CompleteClick(detector, new Point(10, 10), 100, isIBeam: true));
+        Assert.True(CompleteClick(detector, new Point(12, 11), 200, isIBeam: true, out var completedPoint));
+        Assert.Equal(new Point(12, 11), completedPoint);
+    }
+
+    [Fact]
+    public void GestureDetectorRejectsDoubleClickAfterSystemTimeout()
+    {
+        var detector = CreateGestureDetector();
+
+        Assert.False(CompleteClick(detector, new Point(10, 10), 100, isIBeam: true));
+        Assert.False(CompleteClick(detector, new Point(10, 10), 601, isIBeam: true));
+    }
+
+    [Fact]
+    public void GestureDetectorRejectsDoubleClickOutsideSystemBounds()
+    {
+        var detector = CreateGestureDetector();
+
+        Assert.False(CompleteClick(detector, new Point(10, 10), 100, isIBeam: true));
+        Assert.False(CompleteClick(detector, new Point(15, 10), 200, isIBeam: true));
+    }
+
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    public void GestureDetectorRequiresTextCursorDuringBothClicks(bool firstClickIBeam, bool secondClickIBeam)
+    {
+        var detector = CreateGestureDetector();
+
+        Assert.False(CompleteClick(detector, new Point(10, 10), 100, firstClickIBeam));
+        Assert.False(CompleteClick(detector, new Point(10, 10), 200, secondClickIBeam));
+    }
+
+    [Fact]
+    public void GestureDetectorTreatsDragAfterClickAsSingleDragSelection()
+    {
+        var detector = CreateGestureDetector();
+
+        Assert.False(CompleteClick(detector, new Point(10, 10), 100, isIBeam: true));
+        detector.OnLeftButtonDown(new Point(10, 10), timestamp: 200, isIBeam: true);
+        detector.OnMouseMove(new Point(20, 10), isIBeam: true);
+
+        Assert.True(detector.TryComplete(new Point(20, 10), isIBeam: true, out _));
+        Assert.False(CompleteClick(detector, new Point(20, 10), 300, isIBeam: true));
+    }
+
+    [Fact]
+    public void GestureDetectorStartsNewSequenceAfterDoubleClick()
+    {
+        var detector = CreateGestureDetector();
+
+        Assert.False(CompleteClick(detector, new Point(10, 10), 100, isIBeam: true));
+        Assert.True(CompleteClick(detector, new Point(10, 10), 200, isIBeam: true));
+        Assert.False(CompleteClick(detector, new Point(10, 10), 300, isIBeam: true));
+    }
+
+    [Fact]
+    public void GestureDetectorHandlesTimestampWraparound()
+    {
+        var detector = CreateGestureDetector(doubleClickTime: 50);
+
+        Assert.False(CompleteClick(detector, new Point(10, 10), uint.MaxValue - 10, isIBeam: true));
+        Assert.True(CompleteClick(detector, new Point(10, 10), 20, isIBeam: true));
     }
 
     [Fact]
@@ -259,10 +330,31 @@ public class MouseSelectionServiceTests
         Func<int, Task<string?>> getSelectedTextAsync) =>
         new(hook, settings, NullLogger<MouseSelectionService>.Instance, getSelectedTextAsync);
 
+    private static MouseSelectionGestureDetector CreateGestureDetector(uint doubleClickTime = 500) =>
+        new(4, 4, 8, 8, doubleClickTime);
+
+    private static bool CompleteClick(
+        MouseSelectionGestureDetector detector,
+        Point point,
+        uint timestamp,
+        bool isIBeam) =>
+        CompleteClick(detector, point, timestamp, isIBeam, out _);
+
+    private static bool CompleteClick(
+        MouseSelectionGestureDetector detector,
+        Point point,
+        uint timestamp,
+        bool isIBeam,
+        out Point completedPoint)
+    {
+        detector.OnLeftButtonDown(point, timestamp, isIBeam);
+        return detector.TryComplete(point, isIBeam, out completedPoint);
+    }
+
     private sealed class FakeMouseHookService : IMouseHookService
     {
         public event EventHandler<Point>? SelectionStarted;
-        public event EventHandler<MouseDragCompletedEventArgs>? SelectionCompleted;
+        public event EventHandler<MouseSelectionCompletedEventArgs>? SelectionCompleted;
 
         public bool IsRunning { get; private set; }
         public bool StartSucceeds { get; init; } = true;
@@ -285,7 +377,7 @@ public class MouseSelectionServiceTests
         public void RaiseSelectionStarted(Point point) => SelectionStarted?.Invoke(this, point);
 
         public void RaiseSelectionCompleted(Point point) =>
-            SelectionCompleted?.Invoke(this, new MouseDragCompletedEventArgs(point));
+            SelectionCompleted?.Invoke(this, new MouseSelectionCompletedEventArgs(point));
 
         public void Dispose() => Stop();
     }

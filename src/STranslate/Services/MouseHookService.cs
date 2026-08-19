@@ -9,7 +9,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 namespace STranslate.Services;
 
 /// <summary>
-/// 在专用消息线程中监听全局鼠标拖动。
+/// 在专用消息线程中监听全局鼠标选词手势。
 /// </summary>
 /// <param name="logger">日志记录器。</param>
 public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseHookService
@@ -22,7 +22,7 @@ public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseH
     private ManualResetEventSlim? _startupCompleted;
     private UnhookWindowsHookExSafeHandle? _hookHandle;
     private HOOKPROC? _hookProc;
-    private MouseDragDetector? _dragDetector;
+    private MouseSelectionGestureDetector? _gestureDetector;
     private HCURSOR _iBeamCursor;
     private uint _hookThreadId;
     private bool _startupSucceeded;
@@ -34,9 +34,9 @@ public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseH
     public event EventHandler<Point>? SelectionStarted;
 
     /// <summary>
-    /// 检测到可能的文本拖动选择时触发。
+    /// 检测到可能的文本选中操作时触发。
     /// </summary>
-    public event EventHandler<MouseDragCompletedEventArgs>? SelectionCompleted;
+    public event EventHandler<MouseSelectionCompletedEventArgs>? SelectionCompleted;
 
     /// <summary>
     /// 获取 Hook 线程是否正在运行。
@@ -135,7 +135,14 @@ public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseH
 
             var horizontalThreshold = Math.Max(1, PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXDRAG));
             var verticalThreshold = Math.Max(1, PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYDRAG));
-            _dragDetector = new MouseDragDetector(horizontalThreshold, verticalThreshold);
+            var doubleClickWidth = Math.Max(1, PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXDOUBLECLK));
+            var doubleClickHeight = Math.Max(1, PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYDOUBLECLK));
+            _gestureDetector = new MouseSelectionGestureDetector(
+                horizontalThreshold,
+                verticalThreshold,
+                doubleClickWidth,
+                doubleClickHeight,
+                PInvoke.GetDoubleClickTime());
             _iBeamCursor = PInvoke.LoadCursor(HINSTANCE.Null, PInvoke.IDC_IBEAM);
             _hookProc = HookCallback;
 
@@ -173,7 +180,7 @@ public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseH
             _hookHandle?.Dispose();
             _hookHandle = null;
             _hookProc = null;
-            _dragDetector = null;
+            _gestureDetector = null;
             _iBeamCursor = HCURSOR.Null;
 
             lock (_stateLock)
@@ -188,7 +195,7 @@ public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseH
 
     private LRESULT HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
     {
-        if (nCode < 0 || _dragDetector is null)
+        if (nCode < 0 || _gestureDetector is null)
             return PInvoke.CallNextHookEx(HHOOK.Null, nCode, wParam, lParam);
 
         var data = Marshal.PtrToStructure<MSLLHOOKSTRUCT>(lParam);
@@ -197,18 +204,18 @@ public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseH
 
         if (message == PInvoke.WM_LBUTTONDOWN)
         {
-            _dragDetector.OnLeftButtonDown(point, IsIBeamCursor());
+            _gestureDetector.OnLeftButtonDown(point, data.time, IsIBeamCursor());
             QueueEvent(() => SelectionStarted?.Invoke(this, point));
         }
         else if (message == PInvoke.WM_MOUSEMOVE)
         {
-            if (_dragDetector.IsTracking)
-                _dragDetector.OnMouseMove(point, IsIBeamCursor());
+            if (_gestureDetector.IsTracking)
+                _gestureDetector.OnMouseMove(point, IsIBeamCursor());
         }
         else if (message == PInvoke.WM_LBUTTONUP &&
-                 _dragDetector.TryComplete(point, IsIBeamCursor(), out var completedPoint))
+                 _gestureDetector.TryComplete(point, IsIBeamCursor(), out var completedPoint))
         {
-            var args = new MouseDragCompletedEventArgs(completedPoint);
+            var args = new MouseSelectionCompletedEventArgs(completedPoint);
             QueueEvent(() => SelectionCompleted?.Invoke(this, args));
         }
 
@@ -279,26 +286,38 @@ public sealed class MouseHookService(ILogger<MouseHookService> logger) : IMouseH
 }
 
 /// <summary>
-/// 描述一次全局鼠标文本拖动操作。
+/// 描述一次全局鼠标文本选中操作。
 /// </summary>
-/// <param name="ScreenPoint">拖动结束时的物理屏幕坐标。</param>
-public sealed record MouseDragCompletedEventArgs(Point ScreenPoint);
+/// <param name="ScreenPoint">选中操作完成时的物理屏幕坐标。</param>
+public sealed record MouseSelectionCompletedEventArgs(Point ScreenPoint);
 
-internal sealed class MouseDragDetector(int horizontalThreshold, int verticalThreshold)
+internal sealed class MouseSelectionGestureDetector(
+    int horizontalThreshold,
+    int verticalThreshold,
+    int doubleClickWidth,
+    int doubleClickHeight,
+    uint doubleClickTime)
 {
     private Point _startPoint;
+    private uint _startTime;
+    private Point _firstClickPoint;
+    private uint _firstClickTime;
     private bool _isLeftButtonDown;
     private bool _isDragging;
     private bool _hasSeenIBeam;
+    private bool _hasPendingClick;
+    private bool _isPotentialSecondClick;
 
     internal bool IsTracking => _isLeftButtonDown;
 
-    internal void OnLeftButtonDown(Point point, bool isIBeam)
+    internal void OnLeftButtonDown(Point point, uint timestamp, bool isIBeam)
     {
         _startPoint = point;
+        _startTime = timestamp;
         _isLeftButtonDown = true;
         _isDragging = false;
         _hasSeenIBeam = isIBeam;
+        _isPotentialSecondClick = IsWithinDoubleClickBounds(point, timestamp);
     }
 
     internal void OnMouseMove(Point point, bool isIBeam)
@@ -317,9 +336,50 @@ internal sealed class MouseDragDetector(int horizontalThreshold, int verticalThr
     internal bool TryComplete(Point point, bool isIBeam, out Point completedPoint)
     {
         completedPoint = point;
-        var isTextDrag = _isLeftButtonDown && _isDragging && (_hasSeenIBeam || isIBeam);
-        Reset();
-        return isTextDrag;
+        if (!_isLeftButtonDown)
+            return false;
+
+        _hasSeenIBeam |= isIBeam;
+        if (_isDragging)
+        {
+            var isTextDrag = _hasSeenIBeam;
+            Reset();
+            return isTextDrag;
+        }
+
+        if (_isPotentialSecondClick)
+        {
+            var isTextDoubleClick = _hasSeenIBeam;
+            Reset();
+            return isTextDoubleClick;
+        }
+
+        StorePendingClick();
+        return false;
+    }
+
+    private void StorePendingClick()
+    {
+        _isLeftButtonDown = false;
+        _isDragging = false;
+        _isPotentialSecondClick = false;
+        _hasPendingClick = _hasSeenIBeam;
+        _hasSeenIBeam = false;
+
+        if (!_hasPendingClick)
+            return;
+
+        _firstClickPoint = _startPoint;
+        _firstClickTime = _startTime;
+    }
+
+    private bool IsWithinDoubleClickBounds(Point point, uint timestamp)
+    {
+        if (!_hasPendingClick || unchecked(timestamp - _firstClickTime) > doubleClickTime)
+            return false;
+
+        return Math.Abs(point.X - _firstClickPoint.X) * 2 <= doubleClickWidth &&
+               Math.Abs(point.Y - _firstClickPoint.Y) * 2 <= doubleClickHeight;
     }
 
     internal void Reset()
@@ -327,6 +387,8 @@ internal sealed class MouseDragDetector(int horizontalThreshold, int verticalThr
         _isLeftButtonDown = false;
         _isDragging = false;
         _hasSeenIBeam = false;
+        _hasPendingClick = false;
+        _isPotentialSecondClick = false;
     }
 }
 
@@ -341,9 +403,9 @@ public interface IMouseHookService : IDisposable
     event EventHandler<Point>? SelectionStarted;
 
     /// <summary>
-    /// 检测到可能的文本拖动选择时触发。
+    /// 检测到可能的文本选中操作时触发。
     /// </summary>
-    event EventHandler<MouseDragCompletedEventArgs>? SelectionCompleted;
+    event EventHandler<MouseSelectionCompletedEventArgs>? SelectionCompleted;
 
     /// <summary>
     /// 获取 Hook 是否正在运行。

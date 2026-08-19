@@ -113,9 +113,9 @@
     <sys:String x:Key="General_ShowMouseSelectionTranslation">Fare Seçimi Anında Çevirisini Göster</sys:String>
     <sys:String x:Key="General_ShowMouseSelectionTranslationDescription">Ana pencerede fare seçimi anında çeviri anahtarını gösterir.</sys:String>
     <sys:String x:Key="General_EnableMouseSelectionTranslation">Fare Seçimi Anında Çeviri</sys:String>
-    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">Fareyle seçilen metni hemen kopyalar ve çevirir.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">Sürükleyerek veya çift tıklayarak seçilen metni hemen kopyalar ve çevirir.</sys:String>
     <sys:String x:Key="General_EnableMouseSelectionIcon">Seçimden Sonra Yüzen Simge</sys:String>
-    <sys:String x:Key="General_EnableMouseSelectionIconDescription">Metin seçiminden sonra bir simge gösterir ve tıklandığında çevirir. Her ikisi de etkinse anında çeviri önceliklidir.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIconDescription">Sürükleyerek veya çift tıklayarak metin seçildikten sonra bir simge gösterir ve tıklandığında çevirir. Her ikisi de etkinse anında çeviri önceliklidir.</sys:String>
     <sys:String x:Key="MouseSelectionIconTranslate">Çevir</sys:String>
     <sys:String x:Key="MouseSelectionTranslationRequiresTopmost">Fare seçimi anında çeviri etkinken pencere en üstte kalmalıdır.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">Geçmiş Gezinmesini Göster</sys:String>
