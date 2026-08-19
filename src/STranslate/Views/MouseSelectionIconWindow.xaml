@@ -19,7 +19,15 @@
     UseLayoutRounding="True"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Grid Background="Transparent">
+    <Grid
+        x:Name="IconRoot"
+        Background="Transparent"
+        Opacity="0"
+        RenderTransformOrigin="0.5,0.5">
+        <Grid.RenderTransform>
+            <ScaleTransform x:Name="IconScaleTransform" />
+        </Grid.RenderTransform>
+
         <Button
             x:Name="TranslateBtn"
             Width="32"
@@ -51,9 +59,6 @@
                     </Border>
 
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
-                        </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
                         </Trigger>

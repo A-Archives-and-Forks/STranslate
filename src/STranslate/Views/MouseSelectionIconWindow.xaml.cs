@@ -2,6 +2,7 @@ using STranslate.Helpers;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Windows.Win32;
@@ -18,7 +19,10 @@ namespace STranslate.Views;
 public partial class MouseSelectionIconWindow : Window
 {
     private const int IconOffset = 10;
+    private const double InitialIconScale = 0.86;
+    private static readonly Duration ShowAnimationDuration = TimeSpan.FromMilliseconds(140);
     private readonly DispatcherTimer _hideTimer;
+    private int _showRequestId;
 
     /// <summary>
     /// 用户点击翻译图标时触发。
@@ -85,25 +89,50 @@ public partial class MouseSelectionIconWindow : Window
         left = Math.Clamp(left, workArea.Left, workArea.Right - physicalWidth);
         top = Math.Clamp(top, workArea.Top, workArea.Bottom - physicalHeight);
 
-        BeginAnimation(OpacityProperty, null);
-        Opacity = 0;
+        var showRequestId = ++_showRequestId;
+        StopShowAnimation();
+        PrepareContentForShow();
+        Win32Helper.SetWindowCloaked(this, cloaked: true);
         Left = left / dpi.DpiScaleX;
         Top = top / dpi.DpiScaleY;
+        Win32Helper.SetWindowPhysicalBounds(this, left, top, physicalWidth, physicalHeight, showWindow: false);
         Show();
-        Win32Helper.SetWindowPhysicalBounds(this, left, top, physicalWidth, physicalHeight);
         RestartHideTimer();
-        StartFadeIn();
+        // Render 优先级本身不保证画面已经提交；Loaded 可确保透明初始帧先完成布局和渲染。
+        _ = Dispatcher.InvokeAsync(
+            () => RevealAndAnimate(showRequestId),
+            DispatcherPriority.Loaded);
     }
 
-    internal void StartFadeIn()
+    internal void StartShowAnimation()
     {
-        Opacity = 1;
-        BeginAnimation(
-            OpacityProperty,
-            new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200))
+        var showRequestId = _showRequestId;
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+        var opacityAnimation = CreateShowAnimation(0, 1, easing);
+        opacityAnimation.Completed += (_, _) =>
+        {
+            if (showRequestId == _showRequestId && IsVisible)
             {
-                FillBehavior = FillBehavior.Stop
-            });
+                // 先在动画仍保持终值时更新基值，再移除时钟，避免完成瞬间跳回透明初始态。
+                IconRoot.Opacity = 1;
+                IconScaleTransform.ScaleX = 1;
+                IconScaleTransform.ScaleY = 1;
+                StopShowAnimation();
+            }
+        };
+
+        IconRoot.BeginAnimation(
+            OpacityProperty,
+            opacityAnimation,
+            HandoffBehavior.SnapshotAndReplace);
+        IconScaleTransform.BeginAnimation(
+            ScaleTransform.ScaleXProperty,
+            CreateShowAnimation(InitialIconScale, 1, easing),
+            HandoffBehavior.SnapshotAndReplace);
+        IconScaleTransform.BeginAnimation(
+            ScaleTransform.ScaleYProperty,
+            CreateShowAnimation(InitialIconScale, 1, easing),
+            HandoffBehavior.SnapshotAndReplace);
     }
 
     /// <summary>
@@ -111,7 +140,13 @@ public partial class MouseSelectionIconWindow : Window
     /// </summary>
     public void HideWindow()
     {
+        _showRequestId++;
         _hideTimer.Stop();
+        if (!IsVisible)
+            return;
+
+        Win32Helper.SetWindowCloaked(this, cloaked: true);
+        StopShowAnimation();
         Hide();
     }
 
@@ -144,4 +179,36 @@ public partial class MouseSelectionIconWindow : Window
         _hideTimer.Stop();
         _hideTimer.Start();
     }
+
+    private void RevealAndAnimate(int showRequestId)
+    {
+        if (showRequestId != _showRequestId || !IsVisible)
+            return;
+
+        // 等 DWM 接收透明初始帧，并在 Cloak 内挂好动画时钟后再显示，避免暴露动画前后的中间基值。
+        Win32Helper.FlushDesktopComposition();
+        StartShowAnimation();
+        Win32Helper.SetWindowCloaked(this, cloaked: false);
+    }
+
+    private void PrepareContentForShow()
+    {
+        IconRoot.Opacity = 0;
+        IconScaleTransform.ScaleX = InitialIconScale;
+        IconScaleTransform.ScaleY = InitialIconScale;
+    }
+
+    private void StopShowAnimation()
+    {
+        IconRoot.BeginAnimation(OpacityProperty, null);
+        IconScaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+        IconScaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+    }
+
+    private static DoubleAnimation CreateShowAnimation(double from, double to, IEasingFunction easing)
+        => new(from, to, ShowAnimationDuration)
+        {
+            EasingFunction = easing,
+            FillBehavior = FillBehavior.HoldEnd
+        };
 }

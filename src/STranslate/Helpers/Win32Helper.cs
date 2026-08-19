@@ -8,6 +8,7 @@ using System.Windows.Media;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace STranslate.Helpers;
@@ -195,9 +196,28 @@ public static class Win32Helper
         public readonly int Y = y;
     }
 
-    public static void SetWindowPhysicalBounds(Window window, int left, int top, int width, int height)
+    /// <summary>
+    /// 使用物理像素设置窗口边界，并可选择是否同步显示窗口。
+    /// </summary>
+    /// <param name="window">需要定位的 WPF 窗口。</param>
+    /// <param name="left">窗口左边缘的物理像素坐标。</param>
+    /// <param name="top">窗口上边缘的物理像素坐标。</param>
+    /// <param name="width">窗口宽度（物理像素）。</param>
+    /// <param name="height">窗口高度（物理像素）。</param>
+    /// <param name="showWindow">是否在定位时同步显示窗口。</param>
+    public static void SetWindowPhysicalBounds(
+        Window window,
+        int left,
+        int top,
+        int width,
+        int height,
+        bool showWindow = true)
     {
         var hwnd = new WindowInteropHelper(window).EnsureHandle();
+        var flags = SWP_NOZORDER | SWP_NOACTIVATE;
+        if (showWindow)
+            flags |= SWP_SHOWWINDOW;
+
         if (!SetWindowPos(
                 hwnd,
                 0,
@@ -205,11 +225,23 @@ public static class Win32Helper
                 top,
                 Math.Max(1, width),
                 Math.Max(1, height),
-                SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW))
+                flags))
         {
             throw new Win32Exception(Marshal.GetLastPInvokeError());
         }
     }
+
+    internal static unsafe bool SetWindowCloaked(Window window, bool cloaked)
+    {
+        var value = cloaked ? 1 : 0;
+        return PInvoke.DwmSetWindowAttribute(
+            GetWindowHandle(window, ensure: true),
+            DWMWINDOWATTRIBUTE.DWMWA_CLOAK,
+            &value,
+            (uint)sizeof(int)).Succeeded;
+    }
+
+    internal static bool FlushDesktopComposition() => PInvoke.DwmFlush().Succeeded;
 
     public static DpiScale GetDpiScaleForPhysicalPoint(int x, int y)
     {

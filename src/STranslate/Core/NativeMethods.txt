@@ -83,3 +83,5 @@ ShowWindow
 BringWindowToTop
 
 RegisterWindowMessage
+DwmSetWindowAttribute
+DwmFlush
