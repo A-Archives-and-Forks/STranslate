@@ -755,6 +755,11 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="BuiltIn">داخلی</sys:String>
     <sys:String x:Key="PreInstall">پیش‌نصب‌شده</sys:String>
     <sys:String x:Key="Extend">افزونه‌ای</sys:String>
+    <sys:String x:Key="AddTranslationService">افزودن سرویس ترجمه</sys:String>
+    <sys:String x:Key="AddOcrService">افزودن سرویس OCR</sys:String>
+    <sys:String x:Key="AddTtsService">افزودن سرویس TTS</sys:String>
+    <sys:String x:Key="AddVocabularyService">افزودن سرویس جعبه واژگان</sys:String>
+    <sys:String x:Key="AddService">افزودن سرویس</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">پخش تلفظ</sys:String>

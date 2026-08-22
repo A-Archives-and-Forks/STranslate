@@ -746,6 +746,11 @@
     <sys:String x:Key="BuiltIn">內建</sys:String>
     <sys:String x:Key="PreInstall">預裝</sys:String>
     <sys:String x:Key="Extend">擴展</sys:String>
+    <sys:String x:Key="AddTranslationService">新增翻譯服務</sys:String>
+    <sys:String x:Key="AddOcrService">新增文本識別服務</sys:String>
+    <sys:String x:Key="AddTtsService">新增語音合成服務</sys:String>
+    <sys:String x:Key="AddVocabularyService">新增生詞本服務</sys:String>
+    <sys:String x:Key="AddService">新增服務</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">播放發音</sys:String>

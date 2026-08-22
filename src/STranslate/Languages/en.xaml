@@ -743,6 +743,11 @@
     <sys:String x:Key="BuiltIn">Built-in</sys:String>
     <sys:String x:Key="PreInstall">Pre-installed</sys:String>
     <sys:String x:Key="Extend">Extension</sys:String>
+    <sys:String x:Key="AddTranslationService">Add Translation Service</sys:String>
+    <sys:String x:Key="AddOcrService">Add OCR Service</sys:String>
+    <sys:String x:Key="AddTtsService">Add TTS Service</sys:String>
+    <sys:String x:Key="AddVocabularyService">Add Vocabulary Service</sys:String>
+    <sys:String x:Key="AddService">Add Service</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">Play Pronunciation</sys:String>

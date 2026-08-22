@@ -726,6 +726,11 @@
     <sys:String x:Key="BuiltIn">내장</sys:String>
     <sys:String x:Key="PreInstall">사전 설치</sys:String>
     <sys:String x:Key="Extend">확장</sys:String>
+    <sys:String x:Key="AddTranslationService">번역 서비스 추가</sys:String>
+    <sys:String x:Key="AddOcrService">텍스트 인식 서비스 추가</sys:String>
+    <sys:String x:Key="AddTtsService">음성 합성 서비스 추가</sys:String>
+    <sys:String x:Key="AddVocabularyService">단어장 서비스 추가</sys:String>
+    <sys:String x:Key="AddService">서비스 추가</sys:String>
 
     <sys:String x:Key="PlayPronunciation">발음 재생</sys:String>
     <sys:String x:Key="Plural">복수형</sys:String>

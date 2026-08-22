@@ -744,6 +744,11 @@
     <sys:String x:Key="BuiltIn">内置</sys:String>
     <sys:String x:Key="PreInstall">预装</sys:String>
     <sys:String x:Key="Extend">拓展</sys:String>
+    <sys:String x:Key="AddTranslationService">添加翻译服务</sys:String>
+    <sys:String x:Key="AddOcrService">添加文本识别服务</sys:String>
+    <sys:String x:Key="AddTtsService">添加语音合成服务</sys:String>
+    <sys:String x:Key="AddVocabularyService">添加生词本服务</sys:String>
+    <sys:String x:Key="AddService">添加服务</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">播放发音</sys:String>

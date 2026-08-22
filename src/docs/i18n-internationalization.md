@@ -209,7 +209,11 @@ internal static class AvailableLanguages
 - ❌ 无需重启提示：语言切换是热切换。
 
 ### 已知硬编码（待修复）
-- 暂无。设置页搜索框的「无结果」提示已改为 `NoResultsFound` key；网络页代理测试的四条结果提示已改为 `ProxyTesting` / `ProxyTestSuccess` / `ProxyTestFailed` / `ProxyTestError` key，均走 i18n。
+- 已修复：设置页搜索框的「无结果」提示已改为 `NoResultsFound` key；网络页代理测试的四条结果提示已改为 `ProxyTesting` / `ProxyTestSuccess` / `ProxyTestFailed` / `ProxyTestError` key；服务添加对话框的标题已改为 `AddTranslationService` / `AddOcrService` / `AddTtsService` / `AddVocabularyService` / `AddService` key，均走 i18n。
+- 仍待修复（同类问题，文案都会直接呈现给用户）：
+  - `STranslate/Services/TranslateService.cs:68`、`:89` 的 `"词典服务不支持替换功能。"`，经 `AppMessageBox.Show` 弹窗显示；
+  - `STranslate/Core/PluginManager.cs:338`、`:345`、`:350` 的插件版本提示，经 `PluginInstallResult.Message` 进入 `PluginViewModel` 的 `ContentDialog.Content`；
+  - `STranslate/Core/ExternalCallService.cs:41` 的 `"启动服务失败请重新配置端口: {prefix}"`，经 `notification.Show` 显示（标题走 i18n，正文不走）。
 
 ## 开发参考：在代码 / XAML 中使用国际化
 

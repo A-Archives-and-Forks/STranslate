@@ -726,6 +726,11 @@
     <sys:String x:Key="BuiltIn">内蔵</sys:String>
     <sys:String x:Key="PreInstall">プリインストール</sys:String>
     <sys:String x:Key="Extend">拡張</sys:String>
+    <sys:String x:Key="AddTranslationService">翻訳サービスを追加</sys:String>
+    <sys:String x:Key="AddOcrService">文字認識サービスを追加</sys:String>
+    <sys:String x:Key="AddTtsService">音声合成サービスを追加</sys:String>
+    <sys:String x:Key="AddVocabularyService">単語帳サービスを追加</sys:String>
+    <sys:String x:Key="AddService">サービスを追加</sys:String>
 
     <sys:String x:Key="PlayPronunciation">発音を再生</sys:String>
     <sys:String x:Key="Plural">複数形</sys:String>
