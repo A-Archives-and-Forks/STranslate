@@ -321,6 +321,7 @@
     <sys:String x:Key="ProxyTestSuccess">Подключение установлено! Текущий IP: {0}</sys:String>
     <sys:String x:Key="ProxyTestFailed">Не удалось подключиться, проверьте настройки прокси</sys:String>
     <sys:String x:Key="ProxyTestError">Ошибка проверки: {0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">Не удалось запустить сервис, задайте порт заново: {0}</sys:String>
 
     <!--  Standalone Page  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">Показывать разметку</sys:String>
@@ -711,6 +712,9 @@
     <sys:String x:Key="SelectPluginFile">Выберите файл плагина</sys:String>
     <sys:String x:Key="PluginInstallFailed">Не удалось установить плагин</sys:String>
     <sys:String x:Key="PluginInstallSuccess">Плагин установлен</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">Не удалось определить версию плагина: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">Версия плагина устарела: {0} v{1}, установленная версия — v{2}.</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">Можно обновиться до новой версии (v{0}).</sys:String>
     <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">Разработчик: {0}&#10;Версия: {1}&#10;Удалить плагин «{2}»?</sys:String>
     <sys:String x:Key="PluginDeleteFailed">Не удалось удалить плагин</sys:String>
     <sys:String x:Key="PluginDeleteForRestart">Плагин помечен для удаления. Изменения вступят в силу после перезапуска.</sys:String>
@@ -748,6 +752,7 @@
     <sys:String x:Key="AddTtsService">Добавить сервис озвучивания</sys:String>
     <sys:String x:Key="AddVocabularyService">Добавить сервис словаря</sys:String>
     <sys:String x:Key="AddService">Добавить сервис</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">Сервисы словарных статей не поддерживают перевод с заменой.</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">Прослушать произношение</sys:String>

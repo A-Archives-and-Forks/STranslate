@@ -321,6 +321,7 @@
     <sys:String x:Key="ProxyTestSuccess">Connection successful! Current IP info: {0}</sys:String>
     <sys:String x:Key="ProxyTestFailed">Connection failed, please check the proxy settings</sys:String>
     <sys:String x:Key="ProxyTestError">Test failed: {0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">Failed to start the service, please reconfigure the port: {0}</sys:String>
 
     <!--  Standalone Page  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">Show Annotation</sys:String>
@@ -711,6 +712,9 @@
     <sys:String x:Key="SelectPluginFile">Select Plugin File</sys:String>
     <sys:String x:Key="PluginInstallFailed">Plugin installation failed</sys:String>
     <sys:String x:Key="PluginInstallSuccess">Plugin installation success</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">Unable to parse plugin version: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">Plugin version is too old: {0} v{1}, the installed version is v{2}.</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">You can upgrade to the new version (v{0}).</sys:String>
     <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">Developer: {0}&#10;Version: {1}&#10;Are you sure you want to delete the plugin "{2}"?</sys:String>
     <sys:String x:Key="PluginDeleteFailed">Failed to delete the plugin</sys:String>
     <sys:String x:Key="PluginDeleteForRestart">The plugin has been marked for deletion. Restart to take effect.</sys:String>
@@ -748,6 +752,7 @@
     <sys:String x:Key="AddTtsService">Add TTS Service</sys:String>
     <sys:String x:Key="AddVocabularyService">Add Vocabulary Service</sys:String>
     <sys:String x:Key="AddService">Add Service</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">Dictionary services do not support the replace feature.</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">Play Pronunciation</sys:String>

@@ -314,6 +314,7 @@
     <sys:String x:Key="ProxyTestSuccess">接続に成功しました！現在のIP情報：{0}</sys:String>
     <sys:String x:Key="ProxyTestFailed">接続に失敗しました。プロキシ設定を確認してください</sys:String>
     <sys:String x:Key="ProxyTestError">テストに失敗しました：{0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">サービスの起動に失敗しました。ポートを設定し直してください: {0}</sys:String>
 
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">検出結果を表示</sys:String>
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">元画像/検出結果画像の表示切替</sys:String>
@@ -696,6 +697,9 @@
     <sys:String x:Key="SelectPluginFile">プラグインファイルを選択</sys:String>
     <sys:String x:Key="PluginInstallFailed">プラグインのインストールに失敗</sys:String>
     <sys:String x:Key="PluginInstallSuccess">プラグインのインストールに成功</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">プラグインのバージョンを解析できません: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">プラグインのバージョンが古すぎます: {0} v{1}、現在インストール済みのバージョンは v{2} です。</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">新しいバージョン (v{0}) にアップグレードできます。</sys:String>
     <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">開発者 {0}&#10;バージョン {1}&#10;プラグイン「{2}」を削除しますか？</sys:String>
     <sys:String x:Key="PluginDeleteFailed">プラグインの削除に失敗</sys:String>
     <sys:String x:Key="PluginDeleteForRestart">プラグインは削除対象としてマークされました。再起動後に反映されます。</sys:String>
@@ -731,6 +735,7 @@
     <sys:String x:Key="AddTtsService">音声合成サービスを追加</sys:String>
     <sys:String x:Key="AddVocabularyService">単語帳サービスを追加</sys:String>
     <sys:String x:Key="AddService">サービスを追加</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">辞書サービスは置換機能に対応していません。</sys:String>
 
     <sys:String x:Key="PlayPronunciation">発音を再生</sys:String>
     <sys:String x:Key="Plural">複数形</sys:String>

@@ -321,6 +321,7 @@
     <sys:String x:Key="ProxyTestSuccess">连接成功！当前IP信息：{0}</sys:String>
     <sys:String x:Key="ProxyTestFailed">连接失败，请检查代理设置</sys:String>
     <sys:String x:Key="ProxyTestError">测试失败：{0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">启动服务失败请重新配置端口: {0}</sys:String>
 
     <!--  Standalone Page  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">显示文本检测结果</sys:String>
@@ -712,6 +713,9 @@
     <sys:String x:Key="SelectPluginFile">选择插件文件</sys:String>
     <sys:String x:Key="PluginInstallFailed">插件安装失败</sys:String>
     <sys:String x:Key="PluginInstallSuccess">插件安装成功</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">无法解析插件版本: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">插件版本过旧: {0} v{1}，当前已安装版本为 v{2}。</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">可以选择升级到新版本(v{0})。</sys:String>
     <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">开发者 {0}&#10;版本 {1}&#10;是否确认删除插件 「{2}」</sys:String>
     <sys:String x:Key="PluginDeleteFailed">插件删除失败</sys:String>
     <sys:String x:Key="PluginDeleteForRestart">插件已标记删除，重启后生效</sys:String>
@@ -749,6 +753,7 @@
     <sys:String x:Key="AddTtsService">添加语音合成服务</sys:String>
     <sys:String x:Key="AddVocabularyService">添加生词本服务</sys:String>
     <sys:String x:Key="AddService">添加服务</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">词典服务不支持替换功能。</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">播放发音</sys:String>

@@ -314,6 +314,7 @@
     <sys:String x:Key="ProxyTestSuccess">연결 성공! 현재 IP 정보: {0}</sys:String>
     <sys:String x:Key="ProxyTestFailed">연결 실패, 프록시 설정을 확인하세요</sys:String>
     <sys:String x:Key="ProxyTestError">테스트 실패: {0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">서비스를 시작하지 못했습니다. 포트를 다시 설정하세요: {0}</sys:String>
 
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">텍스트 감지 결과 표시</sys:String>
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">원본 이미지/텍스트 감지 이미지 표시 전환</sys:String>
@@ -696,6 +697,9 @@
     <sys:String x:Key="SelectPluginFile">플러그인 파일 선택</sys:String>
     <sys:String x:Key="PluginInstallFailed">플러그인 설치 실패</sys:String>
     <sys:String x:Key="PluginInstallSuccess">플러그인 설치 성공</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">플러그인 버전을 해석할 수 없습니다: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">플러그인 버전이 너무 낮습니다: {0} v{1}, 현재 설치된 버전은 v{2}입니다.</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">새 버전(v{0})으로 업그레이드할 수 있습니다.</sys:String>
     <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">제작자 {0}&#10;버전 {1}&#10;플러그인 「{2}」을(를) 삭제하시겠습니까?</sys:String>
     <sys:String x:Key="PluginDeleteFailed">플러그인 삭제 실패</sys:String>
     <sys:String x:Key="PluginDeleteForRestart">플러그인이 삭제 대상으로 표시되었습니다, 재시작 후 적용됩니다.</sys:String>
@@ -731,6 +735,7 @@
     <sys:String x:Key="AddTtsService">음성 합성 서비스 추가</sys:String>
     <sys:String x:Key="AddVocabularyService">단어장 서비스 추가</sys:String>
     <sys:String x:Key="AddService">서비스 추가</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">사전 서비스는 치환 기능을 지원하지 않습니다.</sys:String>
 
     <sys:String x:Key="PlayPronunciation">발음 재생</sys:String>
     <sys:String x:Key="Plural">복수형</sys:String>
