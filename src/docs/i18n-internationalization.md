@@ -12,6 +12,7 @@
 | `ja` | 日本語 | |
 | `ko` | 한국어 | |
 | `tr` | Türkçe | |
+| `ru` | Русский | |
 
 语言代码沿用 [VS Code 命名习惯](https://code.visualstudio.com/docs/getstarted/locales)（小写、连字符分隔，如 `zh-cn`、`pt-br`）。
 
@@ -208,7 +209,7 @@ internal static class AvailableLanguages
 - ❌ 无需重启提示：语言切换是热切换。
 
 ### 已知硬编码（待修复）
-- `STranslate/ViewModels/SearchViewModelBase.cs:78` 的 `"No results found"` 未走 i18n，切换到非英文语言时仍显示英文。贡献语言时建议一并修复（新增 key 并在各语言文件补翻译）。
+- 暂无。设置页搜索框的「无结果」提示已改为 `NoResultsFound` key，走 i18n。
 
 ## 开发参考：在代码 / XAML 中使用国际化
 

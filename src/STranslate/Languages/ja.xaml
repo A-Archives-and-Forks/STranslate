@@ -26,6 +26,7 @@
     <sys:String x:Key="TimeoutPlaceholder">タイムアウト (秒)</sys:String>
     <sys:String x:Key="SearchFunction">機能検索</sys:String>
     <sys:String x:Key="SearchFunctionToolTip">Ctrl+F で機能を検索</sys:String>
+    <sys:String x:Key="NoResultsFound">結果が見つかりません</sys:String>
     <sys:String x:Key="Function">機能</sys:String>
     <sys:String x:Key="Appearance">外観</sys:String>
     <sys:String x:Key="AutoTranslateEnabled">自動翻訳を有効化</sys:String>
