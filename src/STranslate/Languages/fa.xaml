@@ -114,9 +114,9 @@
     <sys:String x:Key="General_ShowMouseSelectionTranslation">نمایش ترجمه مستقیم با انتخاب موش‌واره (Mouse)</sys:String>
     <sys:String x:Key="General_ShowMouseSelectionTranslationDescription">نمایش کلید تغییر حالت ترجمه مستقیم انتخابی در پنجره اصلی.</sys:String>
     <sys:String x:Key="General_EnableMouseSelectionTranslation">ترجمه مستقیم با انتخاب متن</sys:String>
-    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">کپی و ترجمه فوری متن بلافاصله پس از انتخاب آن با موش‌واره.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionTranslationDescription">متن را پس از انتخاب با کشیدن موش‌واره یا دوبار کلیک، بلافاصله کپی و ترجمه می‌کند.</sys:String>
     <sys:String x:Key="General_EnableMouseSelectionIcon">آیکون شناور پس از انتخاب متن</sys:String>
-    <sys:String x:Key="General_EnableMouseSelectionIconDescription">نمایش یک آیکون شناور پس از انتخاب متن و انجام ترجمه هنگام کلیک روی آن. در صورت فعال بودن هر دو، ترجمه مستقیم اولویت دارد.</sys:String>
+    <sys:String x:Key="General_EnableMouseSelectionIconDescription">پس از انتخاب متن با کشیدن موش‌واره یا دوبار کلیک، یک آیکون شناور نمایش می‌دهد و با کلیک روی آن ترجمه می‌کند. در صورت فعال بودن هر دو، ترجمه مستقیم اولویت دارد.</sys:String>
     <sys:String x:Key="MouseSelectionIconTranslate">ترجمه</sys:String>
     <sys:String x:Key="MouseSelectionTranslationRequiresTopmost">هنگام فعال بودن ترجمه با انتخاب موش‌واره، پنجره باید همیشه در رو (Topmost) بماند.</sys:String>
     <sys:String x:Key="General_ShowHistoryNavigation">نمایش پیمایش تاریخچه</sys:String>
