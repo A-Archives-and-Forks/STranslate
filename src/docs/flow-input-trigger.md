@@ -35,11 +35,12 @@
 ### 从入口到结果：全局热键触发命令
 1. `HotkeySettings.RegisterHotkeys()` 对每个全局热键调用 `HandleGlobalLogic(propertyName)`。
 2. `HandleGlobalLogic()` 通过 `HotkeyMapper.SetHotkey()` 注册系统热键并绑定命令回调。
-3. 回调执行前经 `WithFullscreenCheck()`：
+3. `ForegroundFullscreenMonitor` 监听前台窗口与窗口尺寸变化；启用全屏忽略时，进入全屏会注销普通全局热键，退出全屏会重新注册，避免按键仍被系统级热键占用。
+4. 回调执行前仍经 `WithFullscreenCheck()` 兜底：
    - `DisableGlobalHotkeys == true` 时禁用。
    - `IgnoreHotkeysOnFullscreen == true` 且前台全屏时跳过。
-4. 命令进入 `MainWindowViewModel`（例如截图翻译、图片翻译、静默 OCR、替换翻译、剪贴板监听切换）。
-5. 需要显示窗口的命令统一走 `MainWindowViewModel.Show()` 或 `SingletonWindowOpener`；触发来源不改变窗口激活策略。
+5. 命令进入 `MainWindowViewModel`（例如截图翻译、图片翻译、静默 OCR、替换翻译、剪贴板监听切换）。
+6. 需要显示窗口的命令统一走 `MainWindowViewModel.Show()` 或 `SingletonWindowOpener`；触发来源不改变窗口激活策略。
 
 ### 从入口到结果：输入翻译
 1. 输入翻译全局热键、外部调用 `translate_input`、托盘双击输入翻译、划词失败回退到输入翻译都会进入 `MainWindowViewModel.InputClear()`。
@@ -128,6 +129,7 @@
 ## 关键文件
 - `STranslate/Core/HotkeySettings.cs`
 - `STranslate/Helpers/HotkeyMapper.cs`
+- `STranslate/Helpers/ForegroundFullscreenMonitor.cs`
 - `STranslate/Helpers/CtrlSameCHelper.cs`
 - `STranslate/Services/MouseHookService.cs`
 - `STranslate/Services/MouseSelectionService.cs`

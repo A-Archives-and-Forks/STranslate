@@ -360,8 +360,21 @@ public static class Win32Helper
         }
 
         var monitorInfo = MonitorInfo.GetNearestDisplayMonitor(hWnd);
-        return (appBounds.bottom - appBounds.top) == monitorInfo.Bounds.Height &&
-               (appBounds.right - appBounds.left) == monitorInfo.Bounds.Width;
+        var windowBounds = new Rect(
+            appBounds.left,
+            appBounds.top,
+            appBounds.right - appBounds.left,
+            appBounds.bottom - appBounds.top);
+        return IsWindowBoundsFullscreen(windowBounds, monitorInfo.Bounds);
+    }
+
+    internal static bool IsWindowBoundsFullscreen(Rect windowBounds, Rect monitorBounds)
+    {
+        const double tolerance = 1;
+        return Math.Abs(windowBounds.Left - monitorBounds.Left) <= tolerance &&
+               Math.Abs(windowBounds.Top - monitorBounds.Top) <= tolerance &&
+               Math.Abs(windowBounds.Right - monitorBounds.Right) <= tolerance &&
+               Math.Abs(windowBounds.Bottom - monitorBounds.Bottom) <= tolerance;
     }
 
     #endregion

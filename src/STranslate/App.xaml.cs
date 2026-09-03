@@ -539,6 +539,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
             // Dispose needs to be called on the main Windows thread,
             // since some resources owned by the thread need to be disposed.
             _autoUpdateCheckerService?.Dispose();
+            _hotkeySettings?.Dispose();
             _notification?.Uninstall();
             _mainWindowViewModel?.Dispose();
             _mouseSelectionService?.Dispose();
