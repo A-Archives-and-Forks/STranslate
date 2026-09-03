@@ -29,6 +29,7 @@
     <sys:String x:Key="TimeoutPlaceholder">زمان انتظار (ثانیه)</sys:String>
     <sys:String x:Key="SearchFunction">جستجوی قابلیت</sys:String>
     <sys:String x:Key="SearchFunctionToolTip">برای جستجوی قابلیت کلیدهای Ctrl+F را فشار دهید</sys:String>
+    <sys:String x:Key="NoResultsFound">هیچ نتیجه‌ای یافت نشد</sys:String>
     <sys:String x:Key="Function">قابلیت</sys:String>
     <sys:String x:Key="Appearance">ظاهر</sys:String>
     <sys:String x:Key="AutoTranslateEnabled">فعال‌ کردن ترجمه خودکار</sys:String>
