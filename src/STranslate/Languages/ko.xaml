@@ -577,6 +577,7 @@
     <sys:String x:Key="LangEnumDutch">네덜란드어</sys:String>
     <sys:String x:Key="LangEnumUkrainian">우크라이나어</sys:String>
     <sys:String x:Key="LangEnumUzbek">우즈베크어</sys:String>
+    <sys:String x:Key="LangEnumUyghur">위구르어</sys:String>
 
     <sys:String x:Key="LanguageDetectorTypeLocal">로컬 인식</sys:String>
     <sys:String x:Key="LanguageDetectorTypeBaidu">Baidu 인식</sys:String>

@@ -577,6 +577,7 @@
     <sys:String x:Key="LangEnumDutch">オランダ語</sys:String>
     <sys:String x:Key="LangEnumUkrainian">ウクライナ語</sys:String>
     <sys:String x:Key="LangEnumUzbek">ウズベク語</sys:String>
+    <sys:String x:Key="LangEnumUyghur">ウイグル語</sys:String>
 
     <sys:String x:Key="LanguageDetectorTypeLocal">ローカル認識</sys:String>
     <sys:String x:Key="LanguageDetectorTypeBaidu">Baidu認識</sys:String>

@@ -591,6 +591,7 @@
     <sys:String x:Key="LangEnumDutch">Нидерландский</sys:String>
     <sys:String x:Key="LangEnumUkrainian">Украинский</sys:String>
     <sys:String x:Key="LangEnumUzbek">Узбекский</sys:String>
+    <sys:String x:Key="LangEnumUyghur">Уйгурский</sys:String>
 
     <sys:String x:Key="LanguageDetectorTypeLocal">Локальное определение</sys:String>
     <sys:String x:Key="LanguageDetectorTypeBaidu">Определение через Baidu</sys:String>

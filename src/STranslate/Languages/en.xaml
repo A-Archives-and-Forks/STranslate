@@ -591,6 +591,7 @@
     <sys:String x:Key="LangEnumDutch">Dutch</sys:String>
     <sys:String x:Key="LangEnumUkrainian">Ukrainian</sys:String>
     <sys:String x:Key="LangEnumUzbek">Uzbek</sys:String>
+    <sys:String x:Key="LangEnumUyghur">Uyghur</sys:String>
 
     <sys:String x:Key="LanguageDetectorTypeLocal">Local Detection</sys:String>
     <sys:String x:Key="LanguageDetectorTypeBaidu">Baidu Detection</sys:String>

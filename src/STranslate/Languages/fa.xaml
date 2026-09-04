@@ -601,6 +601,7 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="LangEnumDutch">هلندی</sys:String>
     <sys:String x:Key="LangEnumUkrainian">اوکراینی</sys:String>
     <sys:String x:Key="LangEnumUzbek">ازبکی</sys:String>
+    <sys:String x:Key="LangEnumUyghur">اویغوری</sys:String>
 
     <sys:String x:Key="LanguageDetectorTypeLocal">تشخیص محلی</sys:String>
     <sys:String x:Key="LanguageDetectorTypeBaidu">تشخیص Baidu</sys:String>

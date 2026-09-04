@@ -594,6 +594,7 @@
     <sys:String x:Key="LangEnumDutch">荷蘭語</sys:String>
     <sys:String x:Key="LangEnumUkrainian">烏克蘭語</sys:String>
     <sys:String x:Key="LangEnumUzbek">烏茲別克語</sys:String>
+    <sys:String x:Key="LangEnumUyghur">維吾爾語</sys:String>
 
     <sys:String x:Key="LanguageDetectorTypeLocal">本地識別</sys:String>
     <sys:String x:Key="LanguageDetectorTypeBaidu">百度識別</sys:String>

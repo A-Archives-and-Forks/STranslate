@@ -593,6 +593,7 @@
     <sys:String x:Key="LangEnumDutch">Felemenkçe</sys:String>
     <sys:String x:Key="LangEnumUkrainian">Ukraynaca</sys:String>
     <sys:String x:Key="LangEnumUzbek">Özbekçe</sys:String>
+    <sys:String x:Key="LangEnumUyghur">Uygurca</sys:String>
 
     <sys:String x:Key="LanguageDetectorTypeLocal">Yerel Algılama</sys:String>
     <sys:String x:Key="LanguageDetectorTypeBaidu">Baidu Algılama</sys:String>
