@@ -329,8 +329,6 @@
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">Orijinal görüntü ile metin algılama katmanı arasında geçiş yapın.</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">Metin Panelini Göster</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">Sağ taraftaki metin panelini göster veya gizle.</sys:String>
-    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">QR Kodlarını Otomatik Tanı</sys:String>
-    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">OCR çalışırken QR kodlarını da algıla ve tanı.</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">OCR Penceresi Tanıma Dili</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">Bağımsız OCR penceresi tarafından kullanılan OCR tanıma dili.</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">Açıklamayı Göster</sys:String>

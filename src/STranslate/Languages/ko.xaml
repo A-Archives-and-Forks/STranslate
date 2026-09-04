@@ -320,8 +320,6 @@
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">원본 이미지/텍스트 감지 이미지 표시 전환</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">텍스트 상자 표시</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">오른쪽 텍스트 상자 표시/숨기기</sys:String>
-    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">QR 코드 자동 인식</sys:String>
-    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">OCR 실행 중 QR 코드도 감지하고 인식합니다.</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">OCR 창 인식 언어</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">독립 텍스트 인식 창에서 사용하는 OCR 인식 언어입니다.</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">텍스트 감지 결과 표시</sys:String>

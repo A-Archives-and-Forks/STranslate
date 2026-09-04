@@ -328,8 +328,6 @@
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">切换原图/文本检测图显示</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">显示文本框</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">显示/隐藏右侧文本框</sys:String>
-    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">自动识别二维码</sys:String>
-    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">执行 OCR 时同时检测并识别二维码。</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">OCR 窗口识别语言</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">独立文本识别窗口使用的 OCR 识别语言。</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">显示文本检测结果</sys:String>

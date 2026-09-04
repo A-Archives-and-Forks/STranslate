@@ -5,7 +5,12 @@ using ZXing.ZKWeb;
 
 namespace STranslate.Core;
 
-internal readonly record struct QrCodeDecodeResult(string? Text, Exception? Error)
+internal readonly record struct QrCodePoint(float X, float Y);
+
+internal readonly record struct QrCodeDecodeResult(
+    string? Text,
+    IReadOnlyList<QrCodePoint>? Points,
+    Exception? Error)
 {
     public bool HasText => !string.IsNullOrWhiteSpace(Text);
 }
@@ -23,11 +28,15 @@ internal static class QrCodeDecoder
             using var bitmap = new System.DrawingCore.Bitmap(stream);
             var result = reader.Decode(bitmap);
 
-            return new QrCodeDecodeResult(result?.Text, null);
+            var points = result?.ResultPoints?
+                .Select(point => new QrCodePoint(point.X, point.Y))
+                .ToArray();
+
+            return new QrCodeDecodeResult(result?.Text, points, null);
         }
         catch (Exception ex)
         {
-            return new QrCodeDecodeResult(null, ex);
+            return new QrCodeDecodeResult(null, null, ex);
         }
     }
 

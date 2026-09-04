@@ -85,6 +85,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
     private const double WidthAdjustment = 12;
     private bool _hasShownNoLocationInfoForSelectedEngine;
     private bool _disposed;
+    private ObservableCollection<OcrWord> _ocrSelectionWords = [];
 
     [ObservableProperty]
     public partial bool IsExecuting { get; set; } = false;
@@ -110,17 +111,15 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
 
     private BitmapSource? _sourceImage;
     private BitmapSource? _annotatedImage;
+    private QrCodeDecodeResult _lastQrCodeResult;
+
+    [ObservableProperty]
+    public partial ImageTranslateOverlayDocument? QrCodeOverlayDocument { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(OpenQrCodeLinkCommand))]
     [NotifyPropertyChangedFor(nameof(IsQrCodeWebLink))]
     public partial string QrCodeResult { get; set; } = string.Empty;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsResultPanelVisible))]
-    public partial bool IsQrCodeResultPanelVisible { get; set; }
-
-    public bool IsResultPanelVisible => Settings.IsOcrShowingTextControl || IsQrCodeResultPanelVisible;
 
     public bool IsQrCodeWebLink => QrCodeDecoder.TryGetWebUri(QrCodeResult, out _);
 
@@ -151,6 +150,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
         {
             Clear();
             _sourceImage = Utilities.ToBitmapImage(bitmap, Settings.GetImageFormat());
+            _annotatedImage = _sourceImage;
             DisplayImage = _sourceImage;
 
             var ocrSvc = _ocrService.GetActiveSvc<IOcrPlugin>();
@@ -165,9 +165,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
 
             var data = Utilities.ToBytes(bitmap, Settings.GetImageFormat());
 
-            var qrCodeTask = Settings.AutoRecognizeQrCodeInOcr
-                ? Task.Run(() => QrCodeDecoder.Decode(data), cancellationToken)
-                : Task.FromResult(default(QrCodeDecodeResult));
+            var qrCodeTask = Task.Run(() => QrCodeDecoder.Decode(data), cancellationToken);
             var ocrTask = ocrSvc.RecognizeAsync(
                 new OcrRequest(data, Settings.OcrWindowOcrLanguage, bitmap.Width, bitmap.Height),
                 cancellationToken);
@@ -242,6 +240,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
     {
         Clear();
         _sourceImage = Utilities.ToBitmapImage(bitmap, Settings.GetImageFormat());
+        _annotatedImage = _sourceImage;
         DisplayImage = _sourceImage;
         QrCode();
     }
@@ -483,14 +482,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private void ToggleTextControl()
     {
-        if (IsResultPanelVisible)
-        {
-            IsQrCodeResultPanelVisible = false;
-            Settings.IsOcrShowingTextControl = false;
-            return;
-        }
-
-        Settings.IsOcrShowingTextControl = true;
+        Settings.IsOcrShowingTextControl = !Settings.IsOcrShowingTextControl;
     }
 
     [RelayCommand]
@@ -550,10 +542,12 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
                 Settings.OcrWindowWidth = Settings.IsOcrShowingTextControl
                         ? Settings.OcrWindowWidth * WidthMultiplier - WidthAdjustment
                         : (Settings.OcrWindowWidth + WidthAdjustment) / WidthMultiplier;
-                OnPropertyChanged(nameof(IsResultPanelVisible));
                 break;
             case nameof(Settings.IsOcrShowingAnnotated):
                 DisplayImage = Settings.IsOcrShowingAnnotated ? _annotatedImage : _sourceImage;
+                break;
+            case nameof(Settings.ColorScheme):
+                UpdateQrCodeOverlay();
                 break;
         }
     }
@@ -589,7 +583,8 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
     private void Clear()
     {
         QrCodeResult = string.Empty;
-        IsQrCodeResultPanelVisible = false;
+        QrCodeOverlayDocument = null;
+        _lastQrCodeResult = default;
         Result = string.Empty;
         _sourceImage = null;
         _annotatedImage = null;
@@ -597,6 +592,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
         _lastOcrResult = null;
         IsShowingFitToWindow = false;
         IsNoLocationInfoVisible = false;
+        _ocrSelectionWords = [];
         OcrWords = [];
     }
 
@@ -609,6 +605,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
 
     private void ApplyQrCodeResult(QrCodeDecodeResult result)
     {
+        _lastQrCodeResult = result;
         if (result.Error != null)
         {
             _logger.LogWarning(result.Error, "QR code decoding failed");
@@ -617,8 +614,36 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
         if (result.HasText)
         {
             QrCodeResult = result.Text!;
-            IsQrCodeResultPanelVisible = true;
         }
+
+        UpdateQrCodeOverlay();
+    }
+
+    private void UpdateQrCodeOverlay()
+    {
+        if (_sourceImage == null)
+        {
+            QrCodeOverlayDocument = null;
+            RefreshSelectableOcrWords();
+            return;
+        }
+
+        var theme = Settings.ColorScheme == iNKORE.UI.WPF.Modern.ElementTheme.Dark
+            ? ImageTranslateOverlayTheme.Dark
+            : ImageTranslateOverlayTheme.Light;
+        QrCodeOverlayDocument = QrCodeOverlayBuilder.Create(
+            _lastQrCodeResult,
+            _sourceImage.PixelWidth,
+            _sourceImage.PixelHeight,
+            theme);
+        RefreshSelectableOcrWords();
+    }
+
+    private void RefreshSelectableOcrWords()
+    {
+        var qrCodeWords = QrCodeOverlayDocument?.SelectableWords ?? [];
+        OcrWords = OcrWordBuilder.CreateIndexedCollectionFromGroups(
+            [_ocrSelectionWords, qrCodeWords]);
     }
 
     /// <summary>
@@ -824,7 +849,8 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
         if (_sourceImage == null || ocrResult?.OcrContents == null)
             return;
 
-        OcrWords = OcrWordBuilder.CreateFromOcrContents(ocrResult.OcrContents);
+        _ocrSelectionWords = OcrWordBuilder.CreateFromOcrContents(ocrResult.OcrContents);
+        RefreshSelectableOcrWords();
     }
 
     private static BitmapSource GenerateAnnotatedImage(OcrResult ocrResult, BitmapSource? image)

@@ -91,16 +91,6 @@
                         OnContent="{DynamicResource Enable}" />
                 </ui:SettingsCard>
 
-                <ui:SettingsCard Description="{DynamicResource Standalone_OcrAutoQrCodeDescription}" Header="{DynamicResource Standalone_OcrAutoQrCodeHeader}">
-                    <ui:SettingsCard.HeaderIcon>
-                        <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.QrCode_20_Regular}" />
-                    </ui:SettingsCard.HeaderIcon>
-                    <ui:ToggleSwitch
-                        IsOn="{Binding Settings.AutoRecognizeQrCodeInOcr}"
-                        OffContent="{DynamicResource Disable}"
-                        OnContent="{DynamicResource Enable}" />
-                </ui:SettingsCard>
-
                 <ui:SettingsCard Description="{DynamicResource Standalone_OcrLanguageDescription}" Header="{DynamicResource Standalone_OcrLanguageHeader}">
                     <ui:SettingsCard.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.ScanType_20_Regular}" />
