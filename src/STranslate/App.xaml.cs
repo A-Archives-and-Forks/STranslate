@@ -39,6 +39,7 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
     private AutoUpdateCheckerService? _autoUpdateCheckerService;
     private MouseSelectionService? _mouseSelectionService;
     private static bool _disposed;
+    private AppShutdownReason _shutdownReason = AppShutdownReason.ExternalOrUnknown;
 
     public bool IsNavigated { get; set; }
 
@@ -316,8 +317,6 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
         Ioc.Default.GetRequiredService<Internationalization>()
             .InitializeLanguage(_settings.NonNull().Language);
 
-        var previousShutdownMode = ShutdownMode;
-        ShutdownMode = ShutdownMode.OnExplicitShutdown;
         AppRuntimeState.BeginInitialSetup();
         try
         {
@@ -332,7 +331,6 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
         }
         finally
         {
-            ShutdownMode = previousShutdownMode;
             AppRuntimeState.EndInitialSetup();
         }
     }
@@ -446,6 +444,16 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
 
     #region Register Events
 
+    internal static void RequestShutdown(AppShutdownReason reason)
+    {
+        if (Current is not App app)
+            return;
+
+        app._shutdownReason = reason;
+        app._logger?.LogInformation("Application shutdown requested. Reason: {Reason}", reason);
+        app.Shutdown();
+    }
+
     private void RegisterExitEvents()
     {
         AppDomain.CurrentDomain.ProcessExit += (s, e) =>
@@ -456,12 +464,13 @@ public partial class App : ISingleInstanceApp, INavigation, IDisposable
 
         Current.Exit += (s, e) =>
         {
-            _logger?.LogInformation("Application Exit");
+            _logger?.LogInformation("Application Exit. Reason: {Reason}", _shutdownReason);
             Dispose();
         };
 
         Current.SessionEnding += (s, e) =>
         {
+            _shutdownReason = AppShutdownReason.SystemSessionEnding;
             _logger?.LogInformation("Session Ending");
             Dispose();
         };

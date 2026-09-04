@@ -2013,7 +2013,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
                 ToggleGlobalHotkey();
                 break;
             case DoubleClickTrayFunction.Exit:
-                Exit();
+                Exit(AppShutdownReason.TrayDoubleClick);
                 break;
             default:
                 break;
@@ -2120,7 +2120,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void Exit() => Application.Current.Shutdown();
+    private void Exit(AppShutdownReason reason) => App.RequestShutdown(reason);
 
     #endregion
 
