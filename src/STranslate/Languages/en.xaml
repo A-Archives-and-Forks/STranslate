@@ -328,6 +328,8 @@
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">Toggle between the original image and the text detection overlay.</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">Show Text Panel</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">Show or hide the text panel on the right side.</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">Recognize QR Codes Automatically</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">Detect and recognize QR codes while running OCR.</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">OCR Window Recognition Language</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">OCR recognition language used by the standalone OCR window.</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">Show Annotation</sys:String>

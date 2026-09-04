@@ -335,6 +335,8 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">سوئیچ بین تصویر اصلی و لایه تشخیص متن.</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">نمایش پنل متن</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">نمایش یا پنهان‌سازی پنل متن در سمت راست.</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">تشخیص خودکار کد QR</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">هنگام اجرای OCR، کدهای QR را نیز شناسایی و تشخیص دهید.</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">زبان تشخیص پنجره OCR</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">زبان تشخیص OCR مورد استفاده توسط پنجره مستقل OCR.</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">نمایش نشانه‌گذاری</sys:String>

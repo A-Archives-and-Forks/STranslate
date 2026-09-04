@@ -12,14 +12,13 @@ using STranslate.Views.Pages;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using ZXing;
-using ZXing.ZKWeb;
 using Bitmap = System.Drawing.Bitmap;
 
 namespace STranslate.ViewModels;
@@ -113,7 +112,17 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
     private BitmapSource? _annotatedImage;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(OpenQrCodeLinkCommand))]
+    [NotifyPropertyChangedFor(nameof(IsQrCodeWebLink))]
     public partial string QrCodeResult { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsResultPanelVisible))]
+    public partial bool IsQrCodeResultPanelVisible { get; set; }
+
+    public bool IsResultPanelVisible => Settings.IsOcrShowingTextControl || IsQrCodeResultPanelVisible;
+
+    public bool IsQrCodeWebLink => QrCodeDecoder.TryGetWebUri(QrCodeResult, out _);
 
     [ObservableProperty]
     public partial ObservableCollection<OcrWord> OcrWords { get; set; } = [];
@@ -156,22 +165,38 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
 
             var data = Utilities.ToBytes(bitmap, Settings.GetImageFormat());
 
-            // 尝试获取二维码结果
-            var qrResult = DecodeQrCode(data);
-            if (qrResult != null)
-            {
-                QrCodeResult = qrResult.Text;
-            }
-
-            _lastOcrResult = await ocrSvc.RecognizeAsync(
+            var qrCodeTask = Settings.AutoRecognizeQrCodeInOcr
+                ? Task.Run(() => QrCodeDecoder.Decode(data), cancellationToken)
+                : Task.FromResult(default(QrCodeDecodeResult));
+            var ocrTask = ocrSvc.RecognizeAsync(
                 new OcrRequest(data, Settings.OcrWindowOcrLanguage, bitmap.Width, bitmap.Height),
                 cancellationToken);
+
+            var qrCodeResult = await qrCodeTask;
+            ApplyQrCodeResult(qrCodeResult);
+
+            try
+            {
+                _lastOcrResult = await ocrTask;
+            }
+            catch (Exception ex) when (qrCodeResult.HasText && ex is not OperationCanceledException)
+            {
+                _logger.LogWarning(ex, "OCR failed, but a QR code was recognized");
+                return;
+            }
             Utilities.PrepareOcrResult(_lastOcrResult);
 
-            if (!_lastOcrResult.IsSuccess || string.IsNullOrEmpty(_lastOcrResult.Text))
+            var hasOcrText = _lastOcrResult.IsSuccess && !string.IsNullOrEmpty(_lastOcrResult.Text);
+            if (!hasOcrText && !qrCodeResult.HasText)
             {
                 _snackbar.ShowWarning(_i18n.GetTranslation("OcrFailed"));
                 _logger.LogError("OCR failed: {ErrorMessage}", _lastOcrResult.ErrorMessage);
+                return;
+            }
+
+            if (!hasOcrText)
+            {
+                _logger.LogInformation("OCR returned no text, but a QR code was recognized");
                 return;
             }
 
@@ -230,14 +255,37 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
         QrCodeResult = string.Empty;
         using var bitmap = Utilities.ToBitmap(_sourceImage, Settings.GetBitmapEncoder());
         var data = Utilities.ToBytes(bitmap);
-        var qrResult = DecodeQrCode(data);
-        if (qrResult == null || string.IsNullOrWhiteSpace(qrResult.Text))
+        var qrCodeResult = QrCodeDecoder.Decode(data);
+        ApplyQrCodeResult(qrCodeResult);
+        if (!qrCodeResult.HasText)
         {
             _snackbar.ShowInfo(_i18n.GetTranslation("NoQrCodeFound"));
             return;
         }
+    }
 
-        QrCodeResult = qrResult.Text;
+    private bool CanOpenQrCodeLink()
+        => QrCodeDecoder.TryGetWebUri(QrCodeResult, out _);
+
+    [RelayCommand(CanExecute = nameof(CanOpenQrCodeLink))]
+    private void OpenQrCodeLink()
+    {
+        if (!QrCodeDecoder.TryGetWebUri(QrCodeResult, out var uri))
+            return;
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = uri.AbsoluteUri,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to open QR code link: {Uri}", uri.AbsoluteUri);
+            _snackbar.ShowError($"{_i18n.GetTranslation("OperationFailed")}\n{ex.Message}");
+        }
     }
 
     [RelayCommand]
@@ -433,7 +481,17 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void ToggleTextControl() => Settings.IsOcrShowingTextControl = !Settings.IsOcrShowingTextControl;
+    private void ToggleTextControl()
+    {
+        if (IsResultPanelVisible)
+        {
+            IsQrCodeResultPanelVisible = false;
+            Settings.IsOcrShowingTextControl = false;
+            return;
+        }
+
+        Settings.IsOcrShowingTextControl = true;
+    }
 
     [RelayCommand]
     private void Cancel(Window window)
@@ -492,6 +550,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
                 Settings.OcrWindowWidth = Settings.IsOcrShowingTextControl
                         ? Settings.OcrWindowWidth * WidthMultiplier - WidthAdjustment
                         : (Settings.OcrWindowWidth + WidthAdjustment) / WidthMultiplier;
+                OnPropertyChanged(nameof(IsResultPanelVisible));
                 break;
             case nameof(Settings.IsOcrShowingAnnotated):
                 DisplayImage = Settings.IsOcrShowingAnnotated ? _annotatedImage : _sourceImage;
@@ -530,6 +589,7 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
     private void Clear()
     {
         QrCodeResult = string.Empty;
+        IsQrCodeResultPanelVisible = false;
         Result = string.Empty;
         _sourceImage = null;
         _annotatedImage = null;
@@ -547,24 +607,17 @@ public partial class OcrWindowViewModel : ObservableObject, IDisposable
             : new JpegBitmapEncoder();
     }
 
-    private Result? DecodeQrCode(byte[] bytes)
+    private void ApplyQrCodeResult(QrCodeDecodeResult result)
     {
-        try
+        if (result.Error != null)
         {
-            // 创建 ZXing 的 BarcodeReader 实例
-            var reader = new BarcodeReader();
-            reader.Options.CharacterSet = "UTF-8";
-            // 使用字节数组创建 System.DrawingCore.Bitmap
-            using var stream = new MemoryStream(bytes);
-            using var drawingCoreBitmap = new System.DrawingCore.Bitmap(stream);
-            // 解码二维码
-            var result = reader.Decode(drawingCoreBitmap);
-
-            return result;
+            _logger.LogWarning(result.Error, "QR code decoding failed");
         }
-        catch (Exception)
+
+        if (result.HasText)
         {
-            return default;
+            QrCodeResult = result.Text!;
+            IsQrCodeResultPanelVisible = true;
         }
     }
 

@@ -320,6 +320,8 @@
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">元画像/検出結果画像の表示切替</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">テキストボックスを表示</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">右側のテキストボックスの表示/非表示</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">QR コードを自動認識</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">OCR の実行中に QR コードも検出して認識します。</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">OCR ウィンドウの認識言語</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">独立した OCR ウィンドウで使用する OCR 認識言語です。</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">検出結果を表示</sys:String>

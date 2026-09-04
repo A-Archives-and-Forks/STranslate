@@ -76,7 +76,7 @@
                         <Style TargetType="ColumnDefinition">
                             <Setter Property="Width" Value="8" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Settings.IsOcrShowingTextControl}" Value="False">
+                                <DataTrigger Binding="{Binding IsResultPanelVisible}" Value="False">
                                     <Setter Property="Width" Value="0" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -88,7 +88,7 @@
                         <Style TargetType="ColumnDefinition">
                             <Setter Property="Width" Value="*" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Settings.IsOcrShowingTextControl}" Value="False">
+                                <DataTrigger Binding="{Binding IsResultPanelVisible}" Value="False">
                                     <Setter Property="Width" Value="0" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -210,7 +210,7 @@
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Source={StaticResource ViewModelProxy}, Path=Data.Settings.IsOcrShowingTextControl}" Value="True">
+                                                    <DataTrigger Binding="{Binding Source={StaticResource ViewModelProxy}, Path=Data.IsResultPanelVisible}" Value="True">
                                                         <Setter Property="Header" Value="{DynamicResource HideText}" />
                                                         <Setter Property="Icon">
                                                             <Setter.Value>
@@ -356,7 +356,7 @@
             <!--#endregion-->
 
             <!--#region 右侧文本-->
-            <Grid Grid.Column="2" Visibility="{Binding Settings.IsOcrShowingTextControl, Converter={cnvt:BoolToVisibilityConverter}}">
+            <Grid Grid.Column="2" Visibility="{Binding IsResultPanelVisible, Converter={cnvt:BoolToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="48" />
@@ -504,7 +504,8 @@
                                 BorderThickness="0"
                                 IsReadOnly="True"
                                 Text="{Binding QrCodeResult}"
-                                TextWrapping="Wrap" />
+                                TextWrapping="Wrap"
+                                VerticalScrollBarVisibility="Auto" />
                             <ikw:SimpleStackPanel
                                 Grid.Row="1"
                                 Margin="5"
@@ -516,6 +517,11 @@
                                     CommandParameter="{Binding QrCodeResult}"
                                     Icon="{x:Static ui:FluentSystemIcons.Copy_20_Regular}"
                                     ToolTip="{DynamicResource Copy}" />
+                                <control:IconButton
+                                    Command="{Binding OpenQrCodeLinkCommand}"
+                                    Icon="{x:Static ui:FluentSystemIcons.Globe_20_Regular}"
+                                    ToolTip="{DynamicResource Open}"
+                                    Visibility="{Binding IsQrCodeWebLink, Converter={cnvt:BoolToVisibilityConverter}}" />
                             </ikw:SimpleStackPanel>
                         </Grid>
                     </Grid>
@@ -552,7 +558,7 @@
                         </Setter>
                         <Setter Property="ToolTip" Value="{DynamicResource ShowText}" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Settings.IsOcrShowingTextControl}" Value="True">
+                            <DataTrigger Binding="{Binding IsResultPanelVisible}" Value="True">
                                 <Setter Property="Content">
                                     <Setter.Value>
                                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelLeftContract_20_Regular}" />

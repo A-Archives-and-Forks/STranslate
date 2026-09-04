@@ -239,6 +239,7 @@ public partial class Settings : ObservableObject
     [ObservableProperty] public partial LangEnum OcrWindowOcrLanguage { get; set; } = LangEnum.Auto;
     [ObservableProperty] public partial bool IsOcrShowingAnnotated { get; set; } = false;
     [ObservableProperty] public partial bool IsOcrShowingTextControl { get; set; } = false;
+    [ObservableProperty] public partial bool AutoRecognizeQrCodeInOcr { get; set; } = true;
     [ObservableProperty] public partial double OcrWindowWidth { get; set; } = 600;
     [ObservableProperty] public partial double OcrWindowHeight { get; set; } = 600;
     [ObservableProperty] public partial OcrResultShowingType OcrResultShowingType { get; set; } = OcrResultShowingType.Original;

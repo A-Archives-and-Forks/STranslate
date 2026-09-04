@@ -328,6 +328,8 @@
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">Переключение между исходным изображением и разметкой найденного текста.</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">Показывать панель текста</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">Показать или скрыть панель текста справа.</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">Автоматически распознавать QR-коды</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">Обнаруживать и распознавать QR-коды при выполнении OCR.</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">Язык распознавания в окне OCR</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">Язык распознавания, который использует отдельное окно OCR.</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">Показывать разметку</sys:String>

@@ -328,6 +328,8 @@
     <sys:String x:Key="Standalone_OcrShowAnnotationDescription">切換原圖／文字偵測圖顯示。</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlHeader">顯示文字框</sys:String>
     <sys:String x:Key="Standalone_OcrShowTextControlDescription">顯示／隱藏右側文字框。</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeHeader">自動辨識 QR 圖碼</sys:String>
+    <sys:String x:Key="Standalone_OcrAutoQrCodeDescription">執行 OCR 時同時偵測並辨識 QR 圖碼。</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageHeader">OCR 視窗辨識語言</sys:String>
     <sys:String x:Key="Standalone_OcrLanguageDescription">獨立文字辨識視窗使用的 OCR 辨識語言。</sys:String>
     <sys:String x:Key="Standalone_ImTranShowAnnotatedHeader">顯示文字偵測結果</sys:String>
