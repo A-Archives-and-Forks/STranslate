@@ -318,6 +318,11 @@
     <sys:String x:Key="Network_HelpBypassListContent" xml:space="preserve">Birden fazla adresi ayırmak için noktalı virgül (;) kullanın, joker karakterleri (*) destekler:&#10;localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">Etkinlik</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">Proxy ayarlarındaki değişiklikler 2 dakika sonra etkili olur&#10;Hemen uygulamak için yeniden başlatma gerekir</sys:String>
+    <sys:String x:Key="ProxyTesting">Bağlantı test ediliyor...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">Bağlantı başarılı! Geçerli IP bilgisi: {0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">Bağlantı başarısız, lütfen proxy ayarlarını kontrol edin</sys:String>
+    <sys:String x:Key="ProxyTestError">Test başarısız: {0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">Hizmet başlatılamadı, lütfen bağlantı noktasını yeniden yapılandırın: {0}</sys:String>
 
     <!--  Bağımsız Sayfa  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">Açıklamayı Göster</sys:String>
@@ -709,6 +714,9 @@
     <sys:String x:Key="SelectPluginFile">Eklenti Dosyası Seç</sys:String>
     <sys:String x:Key="PluginInstallFailed">Eklenti yüklemesi başarısız</sys:String>
     <sys:String x:Key="PluginInstallSuccess">Eklenti yüklemesi başarılı</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">Eklenti sürümü çözümlenemedi: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">Eklenti sürümü çok eski: {0} v{1}, yüklü sürüm v{2}.</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">Yeni sürüme (v{0}) yükseltebilirsiniz.</sys:String>
     <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">Geliştirici: {0}&#10;Sürüm: {1}&#10;"{2}" eklentisini silmek istediğinize emin misiniz?</sys:String>
     <sys:String x:Key="PluginDeleteFailed">Eklenti silinemedi</sys:String>
     <sys:String x:Key="PluginDeleteForRestart">Eklenti silinmek üzere işaretlendi. Etkin olması için yeniden başlatın.</sys:String>
@@ -741,6 +749,12 @@
     <sys:String x:Key="BuiltIn">Yerleşik</sys:String>
     <sys:String x:Key="PreInstall">Ön Yüklü</sys:String>
     <sys:String x:Key="Extend">Eklenti</sys:String>
+    <sys:String x:Key="AddTranslationService">Çeviri Hizmeti Ekle</sys:String>
+    <sys:String x:Key="AddOcrService">OCR Hizmeti Ekle</sys:String>
+    <sys:String x:Key="AddTtsService">TTS Hizmeti Ekle</sys:String>
+    <sys:String x:Key="AddVocabularyService">Sözlük Hizmeti Ekle</sys:String>
+    <sys:String x:Key="AddService">Hizmet Ekle</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">Sözlük maddesi döndüren hizmetler değiştirerek çeviriyi desteklemez.</sys:String>
 
     <!--  // Sözlük //  -->
     <sys:String x:Key="PlayPronunciation">Telaffuzu Çal</sys:String>

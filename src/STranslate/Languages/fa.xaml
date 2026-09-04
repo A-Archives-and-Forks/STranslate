@@ -324,6 +324,11 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="Network_HelpEffectiveness">نحوه اعمال تغییرات</sys:String>
     <sys:String x:Key="Network_HelpEffectivenessContent" xml:space="preserve">تغییرات تنظیمات پروکسی پس از ۲ دقیقه اعمال می‌شوند
 برای اعمال فوری، برنامه را دوباره راه‌اندازی کنید</sys:String>
+    <sys:String x:Key="ProxyTesting">در حال تست اتصال...</sys:String>
+    <sys:String x:Key="ProxyTestSuccess">اتصال موفق بود! اطلاعات IP فعلی: {0}</sys:String>
+    <sys:String x:Key="ProxyTestFailed">اتصال ناموفق بود، لطفاً تنظیمات پروکسی را بررسی کنید</sys:String>
+    <sys:String x:Key="ProxyTestError">تست ناموفق بود: {0}</sys:String>
+    <sys:String x:Key="ExternalCallStartFailed">راه‌اندازی سرویس ناموفق بود، لطفاً پورت را دوباره پیکربندی کنید: {0}</sys:String>
 
     <!--  Standalone Page  -->
     <sys:String x:Key="Standalone_OcrShowAnnotationHeader">نمایش نشانه‌گذاری</sys:String>
@@ -717,6 +722,9 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="SelectPluginFile">انتخاب فایل افزونه</sys:String>
     <sys:String x:Key="PluginInstallFailed">نصب افزونه ناموفق بود</sys:String>
     <sys:String x:Key="PluginInstallSuccess">افزونه با موفقیت نصب شد</sys:String>
+    <sys:String x:Key="PluginVersionParseFailed">تجزیه نسخه افزونه ناموفق بود: {0}</sys:String>
+    <sys:String x:Key="PluginVersionTooOld">نسخه افزونه بسیار قدیمی است: {0} v{1}، نسخه نصب‌شده v{2} است.</sys:String>
+    <sys:String x:Key="PluginUpgradeAvailable">می‌توانید به نسخه جدید (v{0}) ارتقا دهید.</sys:String>
     <sys:String x:Key="PluginDeleteConfirm" xml:space="preserve">سازنده: {0}
 نسخه: {1}
 آیا از حذف افزونه "{2}" اطمینان دارید؟</sys:String>
@@ -751,6 +759,12 @@ localhost;127.*;10.*;192.168.*;*.example.com</sys:String>
     <sys:String x:Key="BuiltIn">داخلی</sys:String>
     <sys:String x:Key="PreInstall">پیش‌نصب‌شده</sys:String>
     <sys:String x:Key="Extend">افزونه‌ای</sys:String>
+    <sys:String x:Key="AddTranslationService">افزودن سرویس ترجمه</sys:String>
+    <sys:String x:Key="AddOcrService">افزودن سرویس OCR</sys:String>
+    <sys:String x:Key="AddTtsService">افزودن سرویس TTS</sys:String>
+    <sys:String x:Key="AddVocabularyService">افزودن سرویس جعبه واژگان</sys:String>
+    <sys:String x:Key="AddService">افزودن سرویس</sys:String>
+    <sys:String x:Key="DictionaryServiceNotSupportReplace">سرویس‌های دیکشنری از قابلیت جایگزینی پشتیبانی نمی‌کنند.</sys:String>
 
     <!--  // Dictionary //  -->
     <sys:String x:Key="PlayPronunciation">پخش تلفظ</sys:String>
