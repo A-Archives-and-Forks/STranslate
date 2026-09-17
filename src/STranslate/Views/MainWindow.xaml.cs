@@ -39,10 +39,10 @@ public partial class MainWindow : IDisposable
     {
         _viewModel.InitializeWindowLayoutConstraints();
         _viewModel.UpdatePosition(_settings.HideOnStartup);
-
+        // 等现代窗口模板安装完 WindowChrome 后再挂接，确保本钩子优先处理样式变更。
         _hwndSource = Win32Helper.AddWndProcHook(this, WndProc);
+        Win32Helper.DisableMaximize(this);
     }
-
 
     protected override void OnContentRendered(EventArgs e)
     {
@@ -79,6 +79,13 @@ public partial class MainWindow : IDisposable
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
+        // 隐藏标题栏按钮不会禁止系统最大化，统一拦截双击、拖拽和快捷键等入口。
+        if (Win32Helper.HandleMaximizeMessage(msg, wParam, lParam))
+        {
+            handled = true;
+            return IntPtr.Zero;
+        }
+
         if (msg == Win32Helper.TaskbarCreatedMessage)
         {
             Dispatcher.BeginInvoke(RefreshNotifyIcon, DispatcherPriority.Loaded);

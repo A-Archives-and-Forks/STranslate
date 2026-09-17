@@ -83,7 +83,7 @@
 
 ### 窗口生命周期要点
 - `MainWindow`：
-  - `OnLoaded()` 会按 `HideOnStartup` 计算窗口位置并挂接窗口过程钩子。
+  - `OnLoaded()` 按 `HideOnStartup` 计算窗口位置，并在现代窗口模板初始化后挂接窗口过程钩子、移除 `WS_MAXIMIZEBOX`；窗口过程过滤 `WM_STYLECHANGING`，防止框架重新加入最大化权限，并拦截 `SC_MAXIMIZE`，禁止标题栏双击、顶部拖拽与系统快捷键最大化，同时保留横向缩放。
   - `OnContentRendered()` 决定首次显示或隐藏。
   - `OnDeactivated()` 可按 `HideWhenDeactivated` 自动隐藏，避免 Alt-Tab 残留。
   - 前台激活与失焦隐藏是两条独立链路；`HideWhenDeactivated` 决定是否隐藏，置顶窗口不会触发隐藏。
