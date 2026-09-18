@@ -216,6 +216,7 @@
     <sys:String x:Key="Hotkey_OcrImTransWindow">OCR | 画像翻訳画面ホットキー</sys:String>
     <sys:String x:Key="Hotkey_ReExecuteOcr">文字認識 | 画像翻訳を再実行</sys:String>
     <sys:String x:Key="Hotkey_SwitchImage">レンダリング画像/マークアップ画像の切替</sys:String>
+    <sys:String x:Key="Hotkey_SwitchImageDescription">ピン留めウィンドウでも元画像と翻訳画像を切り替えられます。</sys:String>
     <sys:String x:Key="Hotkey_PinImageTranslate">画像翻訳をピン留め（コンパクト）</sys:String>
     <sys:String x:Key="Hotkey_QrCode">QRコード認識</sys:String>
     <sys:String x:Key="Hotkey_QrCodeDescription">このホットキーはOCR画面でのみ有効です。</sys:String>

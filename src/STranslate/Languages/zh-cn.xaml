@@ -220,6 +220,7 @@
     <sys:String x:Key="Hotkey_OcrImTransWindow">OCR | 图片翻译窗口快捷键</sys:String>
     <sys:String x:Key="Hotkey_ReExecuteOcr">重新执行文本识别 | 图片翻译</sys:String>
     <sys:String x:Key="Hotkey_SwitchImage">切换渲染图/标注图</sys:String>
+    <sys:String x:Key="Hotkey_SwitchImageDescription">也支持在贴图窗口中切换原图/译文图。</sys:String>
     <sys:String x:Key="Hotkey_PinImageTranslate">贴图（精简图片翻译窗口）</sys:String>
     <sys:String x:Key="Hotkey_QrCode">识别二维码</sys:String>
     <sys:String x:Key="Hotkey_QrCodeDescription">该热键仅支持OCR窗口</sys:String>

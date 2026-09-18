@@ -219,6 +219,7 @@
     <sys:String x:Key="Hotkey_OcrImTransWindow">Гарячі клавіші вікна розпізнавання тексту | перекладу зображення</sys:String>
     <sys:String x:Key="Hotkey_ReExecuteOcr">Повторити розпізнавання тексту | переклад зображення</sys:String>
     <sys:String x:Key="Hotkey_SwitchImage">Перемкнути зображення (результат/розмітка)</sys:String>
+    <sys:String x:Key="Hotkey_SwitchImageDescription">Також дає змогу перемикатися між оригінальним зображенням і перекладом у закріплених вікнах.</sys:String>
     <sys:String x:Key="Hotkey_QrCode">Розпізнати QR-код</sys:String>
     <sys:String x:Key="Hotkey_QrCodeDescription">Працює лише у вікні розпізнавання тексту</sys:String>
     <sys:String x:Key="Hotkey_IncrementalTranslate">Накопичувальний переклад</sys:String>

@@ -216,6 +216,7 @@
     <sys:String x:Key="Hotkey_OcrImTransWindow">OCR | 이미지 번역 창 단축키</sys:String>
     <sys:String x:Key="Hotkey_ReExecuteOcr">텍스트 인식 | 이미지 번역 재실행</sys:String>
     <sys:String x:Key="Hotkey_SwitchImage">렌더링 이미지/마킹 이미지 전환</sys:String>
+    <sys:String x:Key="Hotkey_SwitchImageDescription">고정된 창에서도 원본 이미지와 번역 이미지를 전환할 수 있습니다.</sys:String>
     <sys:String x:Key="Hotkey_PinImageTranslate">이미지 번역 고정 (간소화 창)</sys:String>
     <sys:String x:Key="Hotkey_QrCode">QR 코드 인식</sys:String>
     <sys:String x:Key="Hotkey_QrCodeDescription">이 단축키는 OCR 창에서만 지원됩니다.</sys:String>

@@ -220,6 +220,7 @@
     <sys:String x:Key="Hotkey_OcrImTransWindow">OCR | Image Translation Window Hotkey</sys:String>
     <sys:String x:Key="Hotkey_ReExecuteOcr">Re-execute Text Recognition | Image Translation</sys:String>
     <sys:String x:Key="Hotkey_SwitchImage">Switch Rendering/Annotation Image</sys:String>
+    <sys:String x:Key="Hotkey_SwitchImageDescription">Also supports switching between the original and translated image in pinned windows.</sys:String>
     <sys:String x:Key="Hotkey_PinImageTranslate">Pin image translation (Compact)</sys:String>
     <sys:String x:Key="Hotkey_QrCode">Recognize QR Code</sys:String>
     <sys:String x:Key="Hotkey_QrCodeDescription">This hotkey is only supported in OCR window</sys:String>
