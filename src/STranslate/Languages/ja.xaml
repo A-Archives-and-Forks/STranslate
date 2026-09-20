@@ -38,6 +38,8 @@
     <sys:String x:Key="General_HideOnStartup">起動時にメインウィンドウを隠す</sys:String>
     <sys:String x:Key="General_HideOnStartupDescription">STranslate起動後、検索ウィンドウをタスクトレイに格納します。</sys:String>
     <sys:String x:Key="General_HideWhenDeactivated">フォーカス喪失時に自動的に隠す</sys:String>
+    <sys:String x:Key="General_AutoHideAtTopEdge">上端で自動的に折りたたむ</sys:String>
+    <sys:String x:Key="General_AutoHideAtTopEdgeDescription">ウィンドウを画面上端にドラッグすると、マウスポインターが離れたときに折りたたまれ、上端のバーに合わせると展開します。画面上端では、フォーカス喪失時の自動非表示より優先されます。</sys:String>
     <sys:String x:Key="General_WindowPosition">メインウィンドウの位置</sys:String>
     <sys:String x:Key="General_WindowAlign">ディスプレイ上の位置</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">メインウィンドウ最大高さ（画面比率）</sys:String>

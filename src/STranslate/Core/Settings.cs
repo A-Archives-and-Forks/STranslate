@@ -38,6 +38,8 @@ public partial class Settings : ObservableObject
 
     [ObservableProperty] public partial bool HideWhenDeactivated { get; set; } = true;
 
+    [ObservableProperty] public partial bool AutoHideAtTopEdge { get; set; } = true;
+
     [ObservableProperty] public partial bool DisableGlobalHotkeys { get; set; } = false;
 
     [ObservableProperty] public partial bool IgnoreHotkeysOnFullscreen { get; set; } = false;
