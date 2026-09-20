@@ -877,4 +877,10 @@
     <sys:String x:Key="ImageTranslatePinnedCopyAll">Copy all text</sys:String>
     <sys:String x:Key="ImageTranslatePinnedShowOriginal">Show original image</sys:String>
     <sys:String x:Key="ImageTranslatePinnedShowTranslation">Show translation</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnOcrServiceChanged">Image translation: translate on OCR service change</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnTranslateServiceChanged">Image translation: translate on translation service change</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnLanguageChanged">Image translation: translate on language change</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnLayoutChanged">Image translation: translate on segmentation change</sys:String>
+    <sys:String x:Key="General_OcrOnServiceChanged">OCR window: recognize on service change</sys:String>
+    <sys:String x:Key="General_OcrOnLanguageChanged">OCR window: recognize on language change</sys:String>
 </ResourceDictionary>

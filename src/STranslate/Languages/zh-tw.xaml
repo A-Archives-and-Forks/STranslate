@@ -880,4 +880,10 @@
     <sys:String x:Key="ImageTranslatePinnedCopyAll">複製全文</sys:String>
     <sys:String x:Key="ImageTranslatePinnedShowOriginal">顯示原圖</sys:String>
     <sys:String x:Key="ImageTranslatePinnedShowTranslation">顯示譯文</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnOcrServiceChanged">圖片翻譯：切換 OCR 服務後立即翻譯</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnTranslateServiceChanged">圖片翻譯：切換翻譯服務後立即翻譯</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnLanguageChanged">圖片翻譯：切換語言後立即翻譯</sys:String>
+    <sys:String x:Key="General_ImageTranslateOnLayoutChanged">圖片翻譯：切換分段後立即翻譯</sys:String>
+    <sys:String x:Key="General_OcrOnServiceChanged">OCR 介面：切換服務後立即辨識</sys:String>
+    <sys:String x:Key="General_OcrOnLanguageChanged">OCR 介面：切換語言後立即辨識</sys:String>
 </ResourceDictionary>

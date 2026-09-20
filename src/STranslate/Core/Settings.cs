@@ -144,7 +144,14 @@ public partial class Settings : ObservableObject
     /// <summary>
     /// 切换提示词后自动翻译
     /// </summary>
-    [ObservableProperty] public partial bool AutoTranslateOnPromptChanged { get; set; } = false;
+    [ObservableProperty] public partial bool AutoTranslateOnPromptChanged { get; set; } = true;
+
+    [ObservableProperty] public partial bool ImageTranslateOnOcrServiceChanged { get; set; } = true;
+    [ObservableProperty] public partial bool ImageTranslateOnTranslateServiceChanged { get; set; } = true;
+    [ObservableProperty] public partial bool ImageTranslateOnLanguageChanged { get; set; } = true;
+    [ObservableProperty] public partial bool ImageTranslateOnLayoutChanged { get; set; } = true;
+    [ObservableProperty] public partial bool OcrOnServiceChanged { get; set; } = true;
+    [ObservableProperty] public partial bool OcrOnLanguageChanged { get; set; } = true;
 
     [ObservableProperty] public partial bool IsAutoTranslateVisible { get; set; } = true;
 
