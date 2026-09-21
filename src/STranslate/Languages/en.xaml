@@ -43,6 +43,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">Auto Hide Window When Loses Focus</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">Auto-hide at Top Edge</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">Drag the window to the top edge to dock it. Move the pointer away to collapse, and hover over the edge to expand. Docking takes priority over hiding on focus loss.</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">Collapse delay (ms)</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">Wait time before collapsing while the pointer is outside the window. Default: 600 ms.</sys:String>
     <sys:String x:Key="General_WindowPosition">Main Window Location</sys:String>
     <sys:String x:Key="General_WindowAlign">Main Window Position on Monitor</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">Main Window Max Height (Screen Ratio)</sys:String>

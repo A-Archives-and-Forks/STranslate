@@ -43,6 +43,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">Автоматически скрывать окно при потере фокуса</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">Автоматически сворачивать у верхнего края</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">Перетащите окно к верхнему краю экрана. При отведении указателя окно свернётся, а при наведении на полоску сверху — развернётся. У верхнего края это поведение имеет приоритет над скрытием при потере фокуса.</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">Задержка сворачивания (мс)</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">Время ожидания перед сворачиванием, когда указатель находится вне окна. По умолчанию: 600 мс.</sys:String>
     <sys:String x:Key="General_WindowPosition">Где открывать главное окно</sys:String>
     <sys:String x:Key="General_WindowAlign">Положение главного окна на экране</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">Максимальная высота главного окна (доля экрана)</sys:String>

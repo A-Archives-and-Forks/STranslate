@@ -43,6 +43,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">Автоматично приховувати вікно при втраті фокуса</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">Автоматично згортати біля верхнього краю</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">Перетягніть вікно до верхнього краю екрана. Коли вказівник віддаляється, вікно згортається, а коли навести його на смужку вгорі — розгортається. Біля верхнього краю ця поведінка має пріоритет над приховуванням у разі втрати фокуса.</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">Затримка згортання (мс)</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">Час очікування перед згортанням, коли вказівник перебуває поза вікном. Типово: 600 мс.</sys:String>
     <sys:String x:Key="General_WindowPosition">Де відкривати головне вікно</sys:String>
     <sys:String x:Key="General_WindowAlign">Розташування головного вікна на екрані</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">Максимальна висота головного вікна (частка екрана)</sys:String>

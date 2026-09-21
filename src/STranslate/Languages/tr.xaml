@@ -43,6 +43,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">Odak Kaybedince Pencereyi Otomatik Gizle</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">Üst Kenarda Otomatik Daralt</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">Pencereyi ekranın üst kenarına sürükleyin. İşaretçiyi uzaklaştırınca pencere daralır, üstteki çubuğun üzerine getirince genişler. Üst kenara yerleştirildiğinde bu davranış, odak kaybında gizlemeye göre önceliklidir.</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">Daraltma gecikmesi (ms)</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">İşaretçi pencerenin dışındayken daraltmadan önce beklenecek süre. Varsayılan: 600 ms.</sys:String>
     <sys:String x:Key="General_WindowPosition">Ana Pencere Konumu</sys:String>
     <sys:String x:Key="General_WindowAlign">Ana Pencere Ekran Konumu</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">Ana Pencere Maksimum Yüksekliği (Ekran Oranı)</sys:String>

@@ -43,6 +43,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">پنهان‌سازی خودکار پنجره با خروج از فوکوس</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">جمع شدن خودکار در لبهٔ بالایی</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">پنجره را به لبهٔ بالایی صفحه بکشید. با دور شدن نشانگر، پنجره جمع می‌شود و با بردن نشانگر روی نوار بالایی، باز می‌شود. در این حالت، این رفتار بر پنهان شدن هنگام از دست دادن فوکوس اولویت دارد.</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">تأخیر جمع شدن (میلی‌ثانیه)</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">زمان انتظار پیش از جمع شدن وقتی نشانگر بیرون پنجره است. پیش‌فرض: ۶۰۰ میلی‌ثانیه.</sys:String>
     <sys:String x:Key="General_WindowPosition">موقعیت پنجره اصلی</sys:String>
     <sys:String x:Key="General_WindowAlign">چیدمان پنجره اصلی روی مانیتور</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">حداکثر ارتفاع پنجره اصلی (نسبت به صفحه نمایش)</sys:String>

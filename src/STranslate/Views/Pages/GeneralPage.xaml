@@ -702,15 +702,31 @@
                         OnContent="{DynamicResource Hide}" />
                 </ui:SettingsCard>
 
-                <ui:SettingsCard Header="{DynamicResource General_AutoHideAtTopEdge}" Description="{DynamicResource General_AutoHideAtTopEdgeDescription}">
-                    <ui:SettingsCard.HeaderIcon>
+                <ui:SettingsExpander Header="{DynamicResource General_AutoHideAtTopEdge}" Description="{DynamicResource General_AutoHideAtTopEdgeDescription}">
+                    <ui:SettingsExpander.HeaderIcon>
                         <ui:FontIcon Icon="{x:Static ui:FluentSystemIcons.PanelTopGallery_20_Regular}" />
-                    </ui:SettingsCard.HeaderIcon>
+                    </ui:SettingsExpander.HeaderIcon>
                     <ui:ToggleSwitch
                         IsOn="{Binding Settings.AutoHideAtTopEdge}"
                         OffContent="{DynamicResource Disable}"
                         OnContent="{DynamicResource Enable}" />
-                </ui:SettingsCard>
+                    <ui:SettingsExpander.Items>
+                        <ui:SettingsCard
+                            Header="{DynamicResource General_TopEdgeAutoHideDelay}"
+                            Description="{DynamicResource General_TopEdgeAutoHideDelayDescription}"
+                            IsEnabled="{Binding Settings.AutoHideAtTopEdge}">
+                            <ui:NumberBox
+                                MinWidth="120"
+                                LargeChange="500"
+                                Maximum="10000"
+                                Minimum="100"
+                                SmallChange="100"
+                                SpinButtonPlacementMode="Inline"
+                                ValidationMode="InvalidInputOverwritten"
+                                Value="{Binding Settings.TopEdgeAutoHideDelayMs}" />
+                        </ui:SettingsCard>
+                    </ui:SettingsExpander.Items>
+                </ui:SettingsExpander>
 
                 <ui:SettingsCard Header="{DynamicResource General_HideWhenDeactivated}">
                     <ui:SettingsCard.HeaderIcon>

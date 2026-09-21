@@ -15,6 +15,7 @@ internal sealed class TopEdgeAutoHideController : IDisposable
     private const double StripHeight = 6;
     private readonly Window _window;
     private readonly Func<bool> _enabled;
+    private readonly Func<int> _hideDelayMs;
     private readonly Action? _onExpanded;
     private readonly DispatcherTimer _timer;
     private TopEdgeSlideAnimation? _animation;
@@ -30,10 +31,12 @@ internal sealed class TopEdgeAutoHideController : IDisposable
     public bool IsCollapsed { get; private set; }
     internal bool IsAnimating => _animation is not null;
 
-    public TopEdgeAutoHideController(Window window, Func<bool> enabled, Action? onExpanded = null)
+    public TopEdgeAutoHideController(Window window, Func<bool> enabled, Action? onExpanded = null,
+        Func<int>? hideDelayMs = null)
     {
         _window = window;
         _enabled = enabled;
+        _hideDelayMs = hideDelayMs ?? (() => 600);
         _onExpanded = onExpanded;
         _window.IsVisibleChanged += OnVisibilityChanged;
         _window.PreviewKeyDown += OnKeyDown;
@@ -115,7 +118,7 @@ internal sealed class TopEdgeAutoHideController : IDisposable
                 return;
             }
             if (_leaveTime == 0) _leaveTime = Environment.TickCount64;
-            if (Environment.TickCount64 - _leaveTime >= 600) Collapse();
+            if (Environment.TickCount64 - _leaveTime >= Math.Clamp(_hideDelayMs(), 100, 10000)) Collapse();
         }
     }
 

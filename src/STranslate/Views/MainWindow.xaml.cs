@@ -66,7 +66,7 @@ public partial class MainWindow : IDisposable
         _hwndSource = Win32Helper.AddWndProcHook(this, WndProc);
         Win32Helper.DisableMaximize(this);
         _topEdgeAutoHide ??= new TopEdgeAutoHideController(this, () => _settings.AutoHideAtTopEdge,
-            FocusInputAfterTopEdgeExpand);
+            FocusInputAfterTopEdgeExpand, () => _settings.TopEdgeAutoHideDelayMs);
     }
 
     protected override void OnContentRendered(EventArgs e)

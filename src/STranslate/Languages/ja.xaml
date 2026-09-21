@@ -40,6 +40,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">フォーカス喪失時に自動的に隠す</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">上端で自動的に折りたたむ</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">ウィンドウを画面上端にドラッグすると、マウスポインターが離れたときに折りたたまれ、上端のバーに合わせると展開します。画面上端では、フォーカス喪失時の自動非表示より優先されます。</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">折りたたみまでの待機時間（ミリ秒）</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">ポインターがウィンドウの外にあるとき、自動的に折りたたむまでの待機時間。既定値：600 ミリ秒。</sys:String>
     <sys:String x:Key="General_WindowPosition">メインウィンドウの位置</sys:String>
     <sys:String x:Key="General_WindowAlign">ディスプレイ上の位置</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">メインウィンドウ最大高さ（画面比率）</sys:String>

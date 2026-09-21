@@ -40,6 +40,8 @@ public partial class Settings : ObservableObject
 
     [ObservableProperty] public partial bool AutoHideAtTopEdge { get; set; } = true;
 
+    [ObservableProperty] public partial int TopEdgeAutoHideDelayMs { get; set; } = 600;
+
     [ObservableProperty] public partial bool DisableGlobalHotkeys { get; set; } = false;
 
     [ObservableProperty] public partial bool IgnoreHotkeysOnFullscreen { get; set; } = false;
@@ -371,6 +373,15 @@ public partial class Settings : ObservableObject
         }
     }
 
+    partial void OnTopEdgeAutoHideDelayMsChanged(int value)
+    {
+        var normalized = Math.Clamp(value, 100, 10000);
+        if (normalized != value)
+        {
+            TopEdgeAutoHideDelayMs = normalized;
+        }
+    }
+
     partial void OnSelectedTextFetchTimeoutMsChanged(int value)
     {
         var normalized = Math.Clamp(value, 50, 5000);
@@ -398,6 +409,7 @@ public partial class Settings : ObservableObject
                 e.PropertyName == nameof(MainWindowWidth) ||
                 e.PropertyName == nameof(MainWindowMaxHeightRatio) ||
                 e.PropertyName == nameof(AutoTranslateDelayMs) ||
+                e.PropertyName == nameof(TopEdgeAutoHideDelayMs) ||
                 e.PropertyName == nameof(SelectedTextFetchTimeoutMs))
                 SaveWithDebounce();
             else

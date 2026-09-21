@@ -43,6 +43,8 @@
     <sys:String x:Key="General_HideWhenDeactivated">失去焦点时自动隐藏主窗口</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdge">贴顶自动收起</sys:String>
     <sys:String x:Key="General_AutoHideAtTopEdgeDescription">将窗口拖到屏幕顶部，鼠标移开后自动收起，移到顶部感应条展开。贴顶时优先于失焦隐藏。</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelay">收起等待时间（毫秒）</sys:String>
+    <sys:String x:Key="General_TopEdgeAutoHideDelayDescription">鼠标位于窗口外时，自动收起前的等待时间，默认 600 毫秒。</sys:String>
     <sys:String x:Key="General_WindowPosition">主窗口位置</sys:String>
     <sys:String x:Key="General_WindowAlign">主窗口在显示器上的位置</sys:String>
     <sys:String x:Key="General_MainWindowMaxHeightRatio">主窗口最大高度（屏幕比例）</sys:String>
