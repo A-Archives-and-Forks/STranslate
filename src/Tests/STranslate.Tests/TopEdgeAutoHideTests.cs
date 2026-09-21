@@ -1,4 +1,3 @@
-using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Data;
@@ -11,6 +10,51 @@ namespace STranslate.Tests;
 
 public class TopEdgeAutoHideTests
 {
+    [Theory]
+    [InlineData(iNKORE.UI.WPF.Modern.ElementTheme.Default)]
+    [InlineData(iNKORE.UI.WPF.Modern.ElementTheme.Light)]
+    [InlineData(iNKORE.UI.WPF.Modern.ElementTheme.Dark)]
+    public void CollapsedStripHasVisibleContentWithApplicationTheme(iNKORE.UI.WPF.Modern.ElementTheme theme)
+    {
+        RunOnSta(() =>
+        {
+            var window = CreateWindow();
+            iNKORE.UI.WPF.Modern.ThemeManager.SetRequestedTheme(window, theme);
+            using var controller = new TopEdgeAutoHideController(window, () => true);
+            try
+            {
+                controller.Update();
+                controller.SetMoving(true);
+                controller.Collapse(animate: false);
+                var strip = (Window)typeof(TopEdgeAutoHideController)
+                    .GetField("_strip", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+                    .GetValue(controller)!;
+                strip.Resources.MergedDictionaries.Add(new iNKORE.UI.WPF.Modern.Controls.XamlControlsResources());
+                PumpFor(TimeSpan.FromMilliseconds(150));
+                strip.UpdateLayout();
+                var indicator = (System.Windows.Controls.Border)strip.Content;
+                Assert.True(strip.IsVisible);
+                Assert.True(indicator.ActualHeight > 0, $"感应条内容高度为 {indicator.ActualHeight}，窗口高度为 {strip.ActualHeight}");
+                Assert.NotNull(indicator.Background);
+                Assert.NotNull(indicator.BorderBrush);
+                var contentBounds = indicator.TransformToAncestor(strip).TransformBounds(new Rect(indicator.RenderSize));
+                Assert.True(new Rect(strip.RenderSize).Contains(contentBounds), $"内容区域 {contentBounds} 不在窗口 {strip.RenderSize} 内");
+                // 测试宿主不创建 Application，系统调色板不会初始化；用固定画刷单独验证布局裁剪。
+                strip.Resources[iNKORE.UI.WPF.Modern.ThemeKeys.AccentAAFillColorDefaultBrushKey] = Brushes.CornflowerBlue;
+                PumpFor(TimeSpan.FromMilliseconds(50));
+                var bitmap = new System.Windows.Media.Imaging.RenderTargetBitmap((int)strip.ActualWidth,
+                    (int)strip.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+                bitmap.Render((Visual)VisualTreeHelper.GetChild(strip, 0));
+                var pixels = new byte[bitmap.PixelWidth * bitmap.PixelHeight * 4];
+                bitmap.CopyPixels(pixels, bitmap.PixelWidth * 4, 0);
+                Assert.True(Enumerable.Range(0, pixels.Length / 4).Any(i => pixels[i * 4 + 3] > 128), "感应条内容被裁剪，未渲染出可见像素");
+                Assert.Equal(iNKORE.UI.WPF.Modern.ThemeManager.GetActualTheme(window),
+                    iNKORE.UI.WPF.Modern.ThemeManager.GetActualTheme(strip));
+            }
+            finally { window.Close(); }
+        });
+    }
+
     [Fact]
     public void CollapsePreservesPositionAndDisablingRestoresWindowAndTopmostBinding()
     {
@@ -350,6 +394,7 @@ public class TopEdgeAutoHideTests
 
     private static Window CreateWindow(bool withChrome = false)
     {
+        _ = new iNKORE.UI.WPF.Modern.ThemeResources();
         var window = new Window
         {
             Width = 300, Height = 200, Opacity = 0,
@@ -373,19 +418,21 @@ public class TopEdgeAutoHideTests
         return window;
     }
 
-    private static void RunOnSta(Action action)
+    // 主题库缓存包含 Dispatcher 对象，所有窗口测试共用同一个 UI 线程。
+    private static readonly Lazy<Dispatcher> TestDispatcher = new(() =>
     {
-        Exception? error = null;
+        var ready = new TaskCompletionSource<Dispatcher>();
         var thread = new Thread(() =>
         {
-            try { action(); }
-            catch (Exception exception) { error = exception; }
-        });
+            ready.SetResult(Dispatcher.CurrentDispatcher);
+            Dispatcher.Run();
+        }) { IsBackground = true };
         thread.SetApartmentState(ApartmentState.STA);
         thread.Start();
-        thread.Join();
-        if (error is not null) ExceptionDispatchInfo.Capture(error).Throw();
-    }
+        return ready.Task.GetAwaiter().GetResult();
+    });
+
+    private static void RunOnSta(Action action) => TestDispatcher.Value.Invoke(action);
 
     public sealed class TopmostSource
     {

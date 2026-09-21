@@ -152,10 +152,12 @@ internal sealed class TopEdgeAutoHideController : IDisposable
         finally { _changingVisibility = false; }
     }
 
-    private static Window CreateStripWindow()
+    private Window CreateStripWindow()
     {
         var strip = new Window
         {
+            // 全局现代窗口样式会为标题栏预留高度，将 6 DIP 感应条的内容挤出窗口。
+            Style = null,
             WindowStyle = WindowStyle.None,
             ResizeMode = ResizeMode.NoResize,
             ShowActivated = false,
@@ -168,6 +170,10 @@ internal sealed class TopEdgeAutoHideController : IDisposable
             UseLayoutRounding = true,
             SnapsToDevicePixels = true
         };
+
+        // 感应条在启动主题初始化之后才创建，需要主动加载主题资源，否则画刷会解析为空。
+        ThemeManager.SetRequestedTheme(strip, ThemeManager.GetActualTheme(_window) == ElementTheme.Dark
+            ? ElementTheme.Dark : ElementTheme.Light);
 
         var indicator = new System.Windows.Controls.Border
         {
