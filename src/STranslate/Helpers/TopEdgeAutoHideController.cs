@@ -173,6 +173,8 @@ internal sealed class TopEdgeAutoHideController : IDisposable
             UseLayoutRounding = true,
             SnapsToDevicePixels = true
         };
+        // 感应条是辅助窗口，在首次显示前将其从 Alt+Tab 切换列表中排除。
+        strip.SourceInitialized += (_, _) => Win32Helper.HideFromAltTab(strip);
 
         // 感应条在启动主题初始化之后才创建，需要主动加载主题资源，否则画刷会解析为空。
         ThemeManager.SetRequestedTheme(strip, ThemeManager.GetActualTheme(_window) == ElementTheme.Dark
