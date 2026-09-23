@@ -24,11 +24,61 @@ public partial class MainWindow : IDisposable
     private bool _disposed = false;
     private HwndSource? _hwndSource;
     private TopEdgeAutoHideController? _topEdgeAutoHide;
+    private WindowShowAnimation? _showAnimation;
+    private bool _initialContentRendered;
+    private bool _startupCloaked;
 
     public bool IsTopEdgeDocked => _topEdgeAutoHide?.IsDocked == true;
     public bool IsTopEdgeCollapsed => _topEdgeAutoHide?.IsCollapsed == true;
 
-    public bool ExpandFromTopEdge() => _topEdgeAutoHide?.Expand() == true;
+    public bool ExpandFromTopEdge()
+    {
+        if (IsTopEdgeDocked) StopShowAnimation();
+        return _topEdgeAutoHide?.Expand() == true;
+    }
+
+    internal void PrepareShowAnimation()
+    {
+        // 首次显示已在 SourceInitialized 遮蔽，保留到启动布局完成。
+        if (!_initialContentRendered) return;
+        StopShowAnimation();
+        if (!IsVisible && !IsTopEdgeDocked && SystemParameters.ClientAreaAnimation)
+            _showAnimation = WindowShowAnimation.TryCreate(this);
+    }
+
+    internal void StartShowAnimation(Action activate)
+    {
+        if (_showAnimation?.IsActive != true)
+        {
+            activate();
+            return;
+        }
+        var foreground = Win32Helper.GetForegroundWindow();
+        var activationMode = WindowActivationContext.Current;
+        _showAnimation.Start(() =>
+        {
+            if (!IsVisible) return;
+            // 用户在动画期间切换到了其他窗口，不能在动画结束后抢回焦点。
+            var currentForeground = Win32Helper.GetForegroundWindow();
+            if (currentForeground != 0 && currentForeground != foreground &&
+                !Win32Helper.IsForegroundWindow(this))
+            {
+                if (_settings.HideWhenDeactivated && !_viewModel.IsTopmost && !IsTopEdgeDocked)
+                    _viewModel.Hide();
+                return;
+            }
+            using var scope = WindowActivationContext.Push(activationMode);
+            activate();
+        });
+    }
+
+    internal void StopShowAnimation()
+    {
+        _showAnimation?.Dispose();
+        _showAnimation = null;
+        if (_startupCloaked) Win32Helper.SetWindowCloaked(this, cloaked: false);
+        _startupCloaked = false;
+    }
 
     private void FocusInputAfterTopEdgeExpand()
     {
@@ -53,9 +103,23 @@ public partial class MainWindow : IDisposable
 
         DataContext = _viewModel;
 
+        IsVisibleChanged += (_, _) =>
+        {
+            if (!IsVisible) StopShowAnimation();
+        };
+
         InitializeComponent();
 
         //Notification.Show("STranslate", "Welcome to STranslate!");
+    }
+
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        if (_settings.HideOnStartup)
+            _startupCloaked = Win32Helper.SetWindowCloaked(this, cloaked: true);
+        else if (SystemParameters.ClientAreaAnimation)
+            _showAnimation = WindowShowAnimation.TryCreate(this);
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -66,11 +130,18 @@ public partial class MainWindow : IDisposable
         _hwndSource = Win32Helper.AddWndProcHook(this, WndProc);
         Win32Helper.DisableMaximize(this);
         _topEdgeAutoHide ??= new TopEdgeAutoHideController(this, () => _settings.AutoHideAtTopEdge,
-            FocusInputAfterTopEdgeExpand, () => _settings.TopEdgeAutoHideDelayMs);
+            FocusInputAfterTopEdgeExpand, () => _settings.TopEdgeAutoHideDelayMs,
+            () => _showAnimation?.IsActive == true);
     }
 
     protected override void OnContentRendered(EventArgs e)
     {
+        // ContentRendered 在隐藏后再次显示时也可能触发，启动策略只执行一次。
+        if (_initialContentRendered)
+        {
+            base.OnContentRendered(e);
+            return;
+        }
         if (_settings.HideOnStartup)
         {
             _viewModel.Hide();
@@ -78,14 +149,21 @@ public partial class MainWindow : IDisposable
         else
         {
             _viewModel.Show();
-            Win32Helper.ActivateForegroundWindow(this);
         }
+
+        _initialContentRendered = true;
 
         base.OnContentRendered(e);
     }
 
     protected override void OnDeactivated(EventArgs e)
     {
+        // Cloak 和跨屏准备可能产生临时失焦；交还真实窗口之后才执行置前与输入聚焦。
+        if (_showAnimation?.IsActive == true)
+        {
+            base.OnDeactivated(e);
+            return;
+        }
         _topEdgeAutoHide?.Update();
         if (IsTopEdgeDocked)
         {
@@ -104,6 +182,7 @@ public partial class MainWindow : IDisposable
 
     private void OnClosed(object sender, EventArgs e)
     {
+        StopShowAnimation();
         _topEdgeAutoHide?.Dispose();
         _topEdgeAutoHide = null;
         _hwndSource?.RemoveHook(WndProc);
@@ -205,6 +284,7 @@ public partial class MainWindow : IDisposable
         {
             if (disposing)
             {
+                StopShowAnimation();
                 _topEdgeAutoHide?.Dispose();
                 _topEdgeAutoHide = null;
                 _hwndSource?.Dispose();

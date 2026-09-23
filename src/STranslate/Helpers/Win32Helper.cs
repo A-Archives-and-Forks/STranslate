@@ -275,6 +275,25 @@ public static class Win32Helper
         }
     }
 
+    /// <summary>把独立预览提升到最上层，但不激活窗口。</summary>
+    internal static void RaiseWindowWithoutActivation(Window window)
+    {
+        const nint topMost = -1; // HWND_TOPMOST
+        const uint flags = 0x0001 | 0x0002 | 0x0010 | 0x0040; // NOSIZE | NOMOVE | NOACTIVATE | SHOWWINDOW
+        if (!SetWindowPos(new WindowInteropHelper(window).Handle, topMost,
+                0, 0, 0, 0, flags))
+            throw new Win32Exception(Marshal.GetLastPInvokeError());
+    }
+
+    /// <summary>预览层在跨屏、DPI 变化和鼠标操作时都不能成为活动窗口。</summary>
+    internal static void DisableWindowActivation(Window window)
+    {
+        var hwnd = GetWindowHandle(window);
+        var style = GetWindowStyle(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+        SetWindowStyle(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
+            style | (nint)WINDOW_EX_STYLE.WS_EX_NOACTIVATE);
+    }
+
     internal static unsafe bool SetWindowCloaked(Window window, bool cloaked)
     {
         var value = cloaked ? 1 : 0;

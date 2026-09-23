@@ -10,6 +10,32 @@ namespace STranslate.Tests;
 
 public class TopEdgeAutoHideTests
 {
+    [Fact]
+    public void ShowAnimationDefersDockingUntilItReleasesTheWindow()
+    {
+        RunOnSta(() =>
+        {
+            var window = CreateWindow();
+            var showing = true;
+            using var controller = new TopEdgeAutoHideController(window, () => true, isShowing: () => showing);
+            try
+            {
+                controller.Update();
+                Assert.False(controller.IsDocked);
+                Assert.False(window.Topmost);
+                showing = false;
+                controller.Update();
+                Assert.True(controller.IsDocked);
+                window.Visibility = Visibility.Collapsed;
+                showing = true;
+                controller.Update();
+                Assert.False(controller.IsDocked);
+                Assert.False(window.IsVisible);
+            }
+            finally { window.Close(); }
+        });
+    }
+
     [Theory]
     [InlineData(iNKORE.UI.WPF.Modern.ElementTheme.Default)]
     [InlineData(iNKORE.UI.WPF.Modern.ElementTheme.Light)]

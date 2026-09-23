@@ -17,6 +17,7 @@ internal sealed class TopEdgeAutoHideController : IDisposable
     private readonly Func<bool> _enabled;
     private readonly Func<int> _hideDelayMs;
     private readonly Action? _onExpanded;
+    private readonly Func<bool>? _isShowing;
     private readonly DispatcherTimer _timer;
     private TopEdgeSlideAnimation? _animation;
     private Window? _strip;
@@ -32,12 +33,13 @@ internal sealed class TopEdgeAutoHideController : IDisposable
     internal bool IsAnimating => _animation is not null;
 
     public TopEdgeAutoHideController(Window window, Func<bool> enabled, Action? onExpanded = null,
-        Func<int>? hideDelayMs = null)
+        Func<int>? hideDelayMs = null, Func<bool>? isShowing = null)
     {
         _window = window;
         _enabled = enabled;
         _hideDelayMs = hideDelayMs ?? (() => 600);
         _onExpanded = onExpanded;
+        _isShowing = isShowing;
         _window.IsVisibleChanged += OnVisibilityChanged;
         _window.PreviewKeyDown += OnKeyDown;
         _timer = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Background,
@@ -58,6 +60,12 @@ internal sealed class TopEdgeAutoHideController : IDisposable
         if (_window.Visibility == Visibility.Collapsed)
         {
             Undock(restoreWindow: false);
+            return;
+        }
+        // 普通唤出结束后再吸附，避免预览和贴顶动画同时遮蔽窗口。
+        if (_isShowing?.Invoke() == true)
+        {
+            _leaveTime = 0;
             return;
         }
         if (!_enabled() || _window.WindowState != WindowState.Normal)
