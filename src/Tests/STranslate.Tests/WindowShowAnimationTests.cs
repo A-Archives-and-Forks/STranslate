@@ -61,12 +61,12 @@ public class WindowShowAnimationTests
     }
 
     [Fact]
-    public void FadeFinishesBeforeTheWindowSettles()
+    public void FadeFinishesBeforeTheWindowStopsRising()
     {
         Assert.Equal(0, WindowShowAnimation.GetAlpha(0));
         Assert.InRange(WindowShowAnimation.GetAlpha(70), (byte)1, (byte)254);
         Assert.Equal(255, WindowShowAnimation.GetAlpha(140));
-        Assert.Equal(255, WindowShowAnimation.GetAlpha(260));
+        Assert.Equal(255, WindowShowAnimation.GetAlpha(180));
     }
 
     [Fact]
@@ -110,10 +110,17 @@ public class WindowShowAnimationTests
     }
 
     [Fact]
-    public void FrameUsesRequestedRiseOvershootAndSettleTimings()
+    public void FrameRisesToTargetWithoutOvershoot()
     {
         Assert.Equal(18, WindowShowAnimation.GetOffset(0), precision: 3);
-        Assert.Equal(-3, WindowShowAnimation.GetOffset(180), precision: 3);
+        var previous = WindowShowAnimation.GetOffset(0);
+        for (var elapsed = 1; elapsed <= 180; elapsed++)
+        {
+            var offset = WindowShowAnimation.GetOffset(elapsed);
+            Assert.InRange(offset, 0, previous);
+            previous = offset;
+        }
+        Assert.Equal(0, WindowShowAnimation.GetOffset(180), precision: 3);
         Assert.Equal(0, WindowShowAnimation.GetOffset(260), precision: 3);
     }
 

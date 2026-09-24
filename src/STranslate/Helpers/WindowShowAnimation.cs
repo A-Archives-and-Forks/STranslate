@@ -11,13 +11,11 @@ using Windows.Win32;
 
 namespace STranslate.Helpers;
 
-/// <summary>直接移动真实窗口上浮回弹，保留原生背景、圆角和阴影。</summary>
+/// <summary>直接移动真实窗口上浮渐显，保留原生背景、圆角和阴影。</summary>
 internal sealed class WindowShowAnimation : IDisposable
 {
-    private const double RiseDurationMs = 180;
+    private const double DurationMs = 180;
     private const double FadeDurationMs = 140;
-    private const double SettleDurationMs = 80;
-    private const double DurationMs = RiseDurationMs + SettleDurationMs;
     private enum AnimationState { Ready, Started, Completing, Disposed }
 
     private readonly Window _window;
@@ -205,11 +203,8 @@ internal sealed class WindowShowAnimation : IDisposable
 
     internal static double GetOffset(double elapsedMilliseconds)
     {
-        var rise = Math.Clamp(elapsedMilliseconds / RiseDurationMs, 0, 1);
-        var settle = Math.Clamp((elapsedMilliseconds - RiseDurationMs) / SettleDurationMs, 0, 1);
-        return elapsedMilliseconds <= RiseDurationMs
-            ? -3 + 21 * Math.Pow(1 - rise, 3)
-            : -3 + 3 * settle * settle * (3 - 2 * settle);
+        var progress = Math.Clamp(elapsedMilliseconds / DurationMs, 0, 1);
+        return 18 * Math.Pow(1 - progress, 3);
     }
 
     private void OnVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
