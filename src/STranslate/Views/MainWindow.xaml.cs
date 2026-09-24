@@ -158,7 +158,7 @@ public partial class MainWindow : IDisposable
 
     protected override void OnDeactivated(EventArgs e)
     {
-        // Cloak 和跨屏准备可能产生临时失焦；交还真实窗口之后才执行置前与输入聚焦。
+        // 准备和移动窗口可能产生临时失焦；动画结束后才执行置前与输入聚焦。
         if (_showAnimation?.IsActive == true)
         {
             base.OnDeactivated(e);

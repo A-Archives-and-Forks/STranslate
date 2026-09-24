@@ -276,10 +276,11 @@ public static class Win32Helper
     }
 
     /// <summary>把独立预览提升到最上层，但不激活窗口。</summary>
-    internal static void RaiseWindowWithoutActivation(Window window)
+    internal static void RaiseWindowWithoutActivation(Window window, bool showWindow = true)
     {
         const nint topMost = -1; // HWND_TOPMOST
-        const uint flags = 0x0001 | 0x0002 | 0x0010 | 0x0040; // NOSIZE | NOMOVE | NOACTIVATE | SHOWWINDOW
+        uint flags = 0x0001 | 0x0002 | 0x0010; // NOSIZE | NOMOVE | NOACTIVATE
+        if (showWindow) flags |= 0x0040; // SHOWWINDOW
         if (!SetWindowPos(new WindowInteropHelper(window).Handle, topMost,
                 0, 0, 0, 0, flags))
             throw new Win32Exception(Marshal.GetLastPInvokeError());

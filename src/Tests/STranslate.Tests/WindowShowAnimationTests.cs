@@ -13,11 +13,11 @@ namespace STranslate.Tests;
 public class WindowShowAnimationTests
 {
     [Fact]
-    public void PreviewOnEachMonitorStaysNonActivatingAndDoesNotHideTheSource()
+    public void RealWindowReturnsToOriginalBoundsOnEachMonitor()
     {
         RunOnSta(() =>
         {
-            var previousDpiContext = SetThreadDpiAwarenessContext(new nint(-4)); // PER_MONITOR_AWARE_V2
+            var previousDpiContext = SetThreadDpiAwarenessContext(new nint(-4));
             try
             {
                 foreach (var monitor in MonitorInfo.GetDisplayMonitors())
@@ -28,19 +28,22 @@ public class WindowShowAnimationTests
                         window.Show();
                         Win32Helper.SetWindowPhysicalBounds(window,
                             (int)monitor.WorkingArea.Left + 60, (int)monitor.WorkingArea.Top + 60, 400, 250);
+                        PumpFor(TimeSpan.FromMilliseconds(60));
+                        Assert.Equal(monitor.Name, MonitorInfo.GetNearestDisplayMonitor(new WindowInteropHelper(window).Handle).Name);
                         window.Hide();
+                        var bounds = GetBounds(window);
                         using var animation = WindowShowAnimation.TryCreate(window);
                         Assert.NotNull(animation);
-                        window.Deactivated += (_, _) => window.Visibility = Visibility.Collapsed;
                         window.Show();
+                        Assert.Equal(bounds, GetBounds(window));
                         animation.Start();
-                        PumpUntil(() => animation.Surface?.IsVisible == true);
-                        var hwnd = new WindowInteropHelper(animation.Surface!).Handle;
-                        Assert.Equal(monitor.Name, MonitorInfo.GetNearestDisplayMonitor(hwnd).Name);
-                        Assert.NotEqual(0, GetWindowLong(hwnd, -20) & 0x08000000); // WS_EX_NOACTIVATE
+                        PumpUntil(() => !IsCloaked(window));
+                        Assert.NotEqual(bounds.Top, GetBounds(window).Top);
+                        var hwnd = new WindowInteropHelper(window).Handle;
+                        Assert.True(monitor.Name == MonitorInfo.GetNearestDisplayMonitor(hwnd).Name,
+                            $"屏幕 {monitor.Name}：起点 {bounds.Left},{bounds.Top}；当前 {GetBounds(window).Left},{GetBounds(window).Top}；DIP {window.Left},{window.Top}");
                         PumpUntil(() => !animation.IsActive);
-                        Assert.True(window.IsVisible);
-                        Assert.False(IsCloaked(window));
+                        Assert.Equal(bounds, GetBounds(window));
                     }
                     finally { window.Close(); }
                 }
@@ -50,141 +53,17 @@ public class WindowShowAnimationTests
     }
 
     [Fact]
-    public void ActivatingWindowWithHideOnDeactivationSurvivesThePreview()
+    public void FrameUsesRequestedRiseOvershootAndSettleTimings()
     {
-        RunOnSta(() =>
-        {
-            var window = CreateWindow();
-            window.ShowActivated = true;
-            window.Opacity = 1;
-            var losses = 0;
-            try
-            {
-                window.Show();
-                PumpFor(TimeSpan.FromMilliseconds(60));
-                window.Hide();
-                using var animation = WindowShowAnimation.TryCreate(window);
-                Assert.NotNull(animation);
-                window.Deactivated += (_, _) => { losses++; window.Visibility = Visibility.Collapsed; };
-                window.Show();
-                window.Activate();
-                animation.Start();
-                PumpUntil(() => !animation.IsActive);
-                Assert.True(window.IsVisible, $"预览导致主窗口隐藏，失焦次数 {losses}");
-                Assert.False(IsCloaked(window));
-            }
-            finally { window.Close(); }
-        });
+        Assert.Equal(18, WindowShowAnimation.GetOffset(0), precision: 3);
+        Assert.Equal(-3, WindowShowAnimation.GetOffset(180), precision: 3);
+        Assert.Equal(0, WindowShowAnimation.GetOffset(260), precision: 3);
     }
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void CancellationInsideNativePositionUpdateDoesNotContinueUsingDisposedSurface(bool useNativeHook)
-    {
-        RunOnSta(() =>
-        {
-            var window = CreateWindow();
-            try
-            {
-                window.Show();
-                using var animation = WindowShowAnimation.TryCreate(window);
-                Assert.NotNull(animation);
-                animation.Start();
-                if (useNativeHook)
-                {
-                    // 模拟主窗口失焦隐藏在 SetWindowPos 的同步消息中重入。
-                    EventHandler? hook = null;
-                    hook = (_, _) =>
-                    {
-                        if (animation.Surface is not { } surface) return;
-                        HwndSource.FromHwnd(new WindowInteropHelper(surface).Handle).AddHook(
-                            (nint hwnd, int msg, nint w, nint l, ref bool handled) =>
-                            {
-                                if (msg == 0x0046) window.Visibility = Visibility.Collapsed;
-                                return 0;
-                            });
-                        CompositionTarget.Rendering -= hook;
-                    };
-                    CompositionTarget.Rendering += hook;
-                    try { PumpUntil(() => !animation.IsActive); }
-                    finally { CompositionTarget.Rendering -= hook; }
-                }
-                else
-                {
-                    PumpUntil(() => animation.Surface?.IsVisible == true);
-                    animation.Surface!.LocationChanged += (_, _) => window.Visibility = Visibility.Collapsed;
-                    PumpUntil(() => !animation.IsActive);
-                }
-                Assert.False(window.IsVisible);
-                Assert.False(IsCloaked(window));
-                Assert.Null(animation.Surface);
-            }
-            finally { window.Close(); }
-        });
-    }
-
-    [Fact]
-    public void FrameUsesRequestedRiseOvershootFadeAndSettleTimings()
-    {
-        var start = WindowShowAnimation.GetFrame(0);
-        var overshoot = WindowShowAnimation.GetFrame(180);
-        var settled = WindowShowAnimation.GetFrame(260);
-
-        Assert.Equal(18, start.Offset, precision: 3);
-        Assert.Equal(0, start.Opacity, precision: 3);
-        Assert.Equal(-3, overshoot.Offset, precision: 3);
-        Assert.InRange(overshoot.Opacity, 0.99, 1);
-        Assert.Equal(0, settled.Offset, precision: 3);
-        Assert.Equal(1, settled.Opacity, precision: 3);
-    }
-
-    [Fact]
-    public void FirstShowIsCloakedBeforeLoadedAndCompletesWithoutChangingLayout()
-    {
-        RunOnSta(() =>
-        {
-            var window = CreateWindow();
-            WindowShowAnimation? animation = null;
-            var cloakedAtLoad = false;
-            window.SourceInitialized += (_, _) => animation = WindowShowAnimation.TryCreate(window);
-            window.Loaded += (_, _) => cloakedAtLoad = IsCloaked(window);
-            try
-            {
-                window.Show();
-                Assert.NotNull(animation);
-                Assert.True(cloakedAtLoad);
-                Assert.True(IsCloaked(window));
-                var bounds = GetBounds(window);
-                var completed = 0;
-                animation.Start(() =>
-                {
-                    Assert.False(IsCloaked(window));
-                    // 激活回调执行时预览层仍在遮挡交接空档，回调结束后才释放。
-                    Assert.NotNull(animation.Surface);
-                    completed++;
-                });
-                PumpUntil(() => animation.Surface?.IsVisible == true);
-                Assert.False(IsCloaked(animation.Surface!));
-                PumpUntil(() => !animation.IsActive);
-                Assert.False(IsCloaked(window));
-                Assert.True(window.IsVisible);
-                Assert.Equal(bounds, GetBounds(window));
-                Assert.Null(animation.Surface);
-                Assert.Equal(1, completed);
-            }
-            finally
-            {
-                animation?.Dispose();
-                window.Close();
-            }
-        });
-    }
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void RepeatedStartKeepsOneSurfaceAndPreservesPositionAndTopmostBindings(bool topmost)
+    public void RealWindowMovesWithoutWritingAnimationPositionsToBindings(bool topmost)
     {
         RunOnSta(() =>
         {
@@ -200,39 +79,107 @@ public class WindowShowAnimationTests
                 var originalBounds = GetBounds(window);
                 var root = (UIElement)window.Content;
                 var transform = root.RenderTransform;
+                var hwnd = new WindowInteropHelper(window).Handle;
                 using var animation = WindowShowAnimation.TryCreate(window);
                 Assert.NotNull(animation);
                 window.Show();
+                var completed = 0;
+                animation.Start(() =>
+                {
+                    Assert.True(window.Topmost);
+                    Assert.NotEqual(0, GetWindowLong(hwnd, -20) & 0x00000008); // WS_EX_TOPMOST
+                    Assert.Equal(originalBounds.Top, GetBounds(window).Top);
+                    completed++;
+                });
                 animation.Start();
-                animation.Start();
-                PumpUntil(() => animation.Surface?.IsVisible == true);
-                var surface = animation.Surface!;
-                animation.Start();
+                PumpUntil(() => !IsCloaked(window));
                 Assert.True(animation.IsActive);
-                Assert.Same(surface, animation.Surface);
-                Assert.False(surface.ShowActivated);
-                Assert.False(surface.ShowInTaskbar);
-                Assert.True(surface.Topmost);
-                Assert.False(IsCloaked(surface));
-                Assert.True(IsCloaked(window));
-                Assert.Equal(originalBounds, GetBounds(window));
+                Assert.NotEqual(originalBounds.Top, GetBounds(window).Top);
+                Assert.Equal(hwnd, new WindowInteropHelper(window).Handle);
+                Assert.Equal(180, source.Top);
+                Assert.Equal(160, source.Left);
+                Assert.True(window.Topmost);
+                Assert.NotEqual(0, GetWindowLong(hwnd, -20) & 0x00000008);
+                Assert.Equal(topmost, source.Topmost);
                 Assert.Same(transform, root.RenderTransform);
-
-                // 翻译结果在动画中到达，预览应跟随新高度，不改变源窗口的位置。
                 window.Height += 60;
                 window.UpdateLayout();
-                PumpUntil(() => GetBounds(surface).Height == GetBounds(window).Height);
-                Assert.Equal(originalBounds.Left, GetBounds(window).Left);
-                Assert.Equal(originalBounds.Top, GetBounds(window).Top);
                 PumpUntil(() => !animation.IsActive);
-                Assert.False(IsCloaked(window));
+                Assert.Equal(originalBounds.Top, GetBounds(window).Top);
+                Assert.Equal(originalBounds.Left, GetBounds(window).Left);
+                Assert.True(GetBounds(window).Height > originalBounds.Height);
                 Assert.Same(leftBinding, BindingOperations.GetBindingBase(window, Window.LeftProperty));
                 Assert.Same(topBinding, BindingOperations.GetBindingBase(window, Window.TopProperty));
                 Assert.Same(topmostBinding, BindingOperations.GetBindingBase(window, Window.TopmostProperty));
-                Assert.Equal(160, source.Left);
                 Assert.Equal(180, source.Top);
                 Assert.Equal(topmost, source.Topmost);
-                Assert.Null(animation.Surface);
+                Assert.Equal(topmost, window.Topmost);
+                Assert.Equal(topmost, (GetWindowLong(hwnd, -20) & 0x00000008) != 0);
+                Assert.Equal(1, completed);
+            }
+            finally { window.Close(); }
+        });
+    }
+
+    [Fact]
+    public void FirstShowIsCloakedOnlyUntilRealWindowStartsMoving()
+    {
+        RunOnSta(() =>
+        {
+            var window = CreateWindow();
+            WindowShowAnimation? animation = null;
+            var cloakedAtLoad = false;
+            window.SourceInitialized += (_, _) => animation = WindowShowAnimation.TryCreate(window);
+            window.Loaded += (_, _) => cloakedAtLoad = IsCloaked(window);
+            try
+            {
+                window.Show();
+                Assert.NotNull(animation);
+                Assert.True(cloakedAtLoad);
+                var bounds = GetBounds(window);
+                animation.Start();
+                PumpUntil(() => !IsCloaked(window));
+                Assert.True(animation.IsActive);
+                Assert.True(window.IsVisible);
+                PumpUntil(() => !animation.IsActive);
+                Assert.Equal(bounds, GetBounds(window));
+            }
+            finally { animation?.Dispose(); window.Close(); }
+        });
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CancellationRestoresLatestTopmostBinding(bool latestTopmost)
+    {
+        RunOnSta(() =>
+        {
+            var window = CreateWindow();
+            var source = new Placement { Topmost = false };
+            var binding = Bind(window, Window.TopmostProperty, source, nameof(Placement.Topmost));
+            try
+            {
+                window.Show();
+                using var animation = WindowShowAnimation.TryCreate(window);
+                Assert.NotNull(animation);
+                var foreground = Win32Helper.GetForegroundWindow();
+                var completed = false;
+                animation.Start(() => completed = true);
+                PumpUntil(() => !IsCloaked(window));
+                Assert.True(window.Topmost);
+                Assert.False(source.Topmost);
+                Assert.Equal(foreground, Win32Helper.GetForegroundWindow());
+                source.Topmost = latestTopmost;
+                window.Hide();
+                Assert.False(animation.IsActive);
+                Assert.False(completed);
+                Assert.False(window.IsVisible);
+                Assert.Same(binding, BindingOperations.GetBindingBase(window, Window.TopmostProperty));
+                Assert.Equal(latestTopmost, window.Topmost);
+                Assert.Equal(latestTopmost, source.Topmost);
+                Assert.Equal(latestTopmost,
+                    (GetWindowLong(new WindowInteropHelper(window).Handle, -20) & 0x00000008) != 0);
             }
             finally { window.Close(); }
         });
@@ -249,24 +196,20 @@ public class WindowShowAnimationTests
             try
             {
                 window.Show();
-                window.Hide();
+                var bounds = GetBounds(window);
                 using var animation = WindowShowAnimation.TryCreate(window);
                 Assert.NotNull(animation);
-                Assert.True(IsCloaked(window));
-                window.Show();
                 var completed = false;
                 animation.Start(() => completed = true);
-                if (running) PumpUntil(() => animation.Surface?.IsVisible == true);
+                if (running) PumpUntil(() => !IsCloaked(window));
                 window.Visibility = Visibility.Collapsed;
                 Assert.False(animation.IsActive);
                 Assert.False(IsCloaked(window));
+                Assert.Equal(bounds, GetBounds(window));
+                Assert.False(window.Topmost);
                 PumpFor(TimeSpan.FromMilliseconds(320));
                 Assert.False(window.IsVisible);
-                Assert.False(IsCloaked(window));
-                Assert.Null(animation.Surface);
                 Assert.False(completed);
-
-                // 快速再次唤出，上一轮清理不应影响新的遮蔽。
                 using var next = WindowShowAnimation.TryCreate(window);
                 Assert.NotNull(next);
                 animation.Dispose();
@@ -275,14 +218,14 @@ public class WindowShowAnimationTests
                 next.Start();
                 PumpUntil(() => !next.IsActive);
                 Assert.True(window.IsVisible);
-                Assert.False(IsCloaked(window));
+                Assert.Equal(bounds, GetBounds(window));
             }
             finally { window.Close(); }
         });
     }
 
     [Fact]
-    public void KeyboardInputImmediatelyReleasesTheSourceWithoutSwallowingInput()
+    public void HidingInsidePositionUpdateCancelsWithoutCompletingOrReopening()
     {
         RunOnSta(() =>
         {
@@ -290,18 +233,46 @@ public class WindowShowAnimationTests
             try
             {
                 window.Show();
+                var bounds = GetBounds(window);
+                using var animation = WindowShowAnimation.TryCreate(window);
+                Assert.NotNull(animation);
+                window.LocationChanged += (_, _) => window.Visibility = Visibility.Collapsed;
+                var completed = false;
+                animation.Start(() => completed = true);
+                PumpUntil(() => !animation.IsActive);
+                Assert.False(window.IsVisible);
+                Assert.False(IsCloaked(window));
+                Assert.Equal(bounds, GetBounds(window));
+                Assert.False(completed);
+            }
+            finally { window.Close(); }
+        });
+    }
+
+    [Fact]
+    public void KeyboardInputRestoresLatestBoundPositionWithoutSwallowingInput()
+    {
+        RunOnSta(() =>
+        {
+            var window = CreateWindow();
+            var source = new Placement { Top = 180 };
+            var binding = Bind(window, Window.TopProperty, source, nameof(Placement.Top));
+            try
+            {
+                window.Show();
                 using var animation = WindowShowAnimation.TryCreate(window);
                 Assert.NotNull(animation);
                 animation.Start();
-                PumpUntil(() => animation.Surface?.IsVisible == true);
+                PumpUntil(() => !IsCloaked(window));
+                source.Top = 200;
                 var key = new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(window),
                     Environment.TickCount, Key.A) { RoutedEvent = Keyboard.PreviewKeyDownEvent };
                 window.RaiseEvent(key);
                 Assert.False(key.Handled);
                 Assert.False(animation.IsActive);
-                Assert.False(IsCloaked(window));
-                Assert.True(window.IsVisible);
-                Assert.Null(animation.Surface);
+                Assert.Equal(200, window.Top);
+                Assert.Equal(200, source.Top);
+                Assert.Same(binding, BindingOperations.GetBindingBase(window, Window.TopProperty));
             }
             finally { window.Close(); }
         });
@@ -318,14 +289,15 @@ public class WindowShowAnimationTests
             window.Show();
             using var animation = WindowShowAnimation.TryCreate(window);
             Assert.NotNull(animation);
-            animation.Start();
-            if (running) PumpUntil(() => animation.Surface?.IsVisible == true);
+            var completed = false;
+            animation.Start(() => completed = true);
+            if (running) PumpUntil(() => !IsCloaked(window));
             window.Close();
             Assert.False(animation.IsActive);
+            Assert.False(completed);
             PumpFor(TimeSpan.FromMilliseconds(320));
         });
     }
-
     private static Window CreateWindow() => new()
     {
         Style = null,

@@ -62,7 +62,7 @@ internal sealed class TopEdgeAutoHideController : IDisposable
             Undock(restoreWindow: false);
             return;
         }
-        // 普通唤出结束后再吸附，避免预览和贴顶动画同时遮蔽窗口。
+        // 普通唤出结束后再吸附，避免回弹的临时位置触发贴顶。
         if (_isShowing?.Invoke() == true)
         {
             _leaveTime = 0;
