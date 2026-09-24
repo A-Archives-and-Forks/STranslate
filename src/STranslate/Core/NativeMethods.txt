@@ -94,3 +94,4 @@ CreateRectRgn
 CreateRoundRectRgn
 SetWindowRgn
 DWM_TNP_*
+SetLayeredWindowAttributes

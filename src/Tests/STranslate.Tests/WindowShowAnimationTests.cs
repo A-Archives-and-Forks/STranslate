@@ -12,6 +12,63 @@ namespace STranslate.Tests;
 
 public class WindowShowAnimationTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void NativeWindowFadesAndRestoresStyleOnCompletionOrCancellation(bool cancel)
+    {
+        RunOnSta(() =>
+        {
+            var window = CreateWindow();
+            window.Opacity = 1;
+            byte? firstAlpha = null;
+            byte? latestAlpha = null;
+            EventHandler observe = (_, _) =>
+            {
+                var hwnd = new WindowInteropHelper(window).Handle;
+                if (IsCloaked(window) || !GetLayeredWindowAttributes(hwnd, out _, out var alpha, out _)) return;
+                firstAlpha ??= alpha;
+                latestAlpha = alpha;
+            };
+            try
+            {
+                window.Show();
+                var hwnd = new WindowInteropHelper(window).Handle;
+                var originalStyle = GetWindowLong(hwnd, -20);
+                using var animation = WindowShowAnimation.TryCreate(window);
+                Assert.NotNull(animation);
+                CompositionTarget.Rendering += observe;
+                animation.Start();
+                PumpUntil(() => firstAlpha.HasValue);
+                Assert.InRange(firstAlpha ?? byte.MaxValue, (byte)0, (byte)254);
+                Assert.True(window.Topmost);
+                Assert.Equal(1, window.Opacity);
+                Assert.False(window.AllowsTransparency);
+                if (cancel)
+                    window.Hide();
+                else
+                {
+                    PumpUntil(() => latestAlpha > firstAlpha);
+                    PumpUntil(() => !animation.IsActive);
+                }
+                Assert.False(animation.IsActive);
+                Assert.Equal(originalStyle, GetWindowLong(hwnd, -20));
+                Assert.Equal(!cancel, window.IsVisible);
+                Assert.Equal(1, window.Opacity);
+            }
+            finally { CompositionTarget.Rendering -= observe; window.Close(); }
+        });
+    }
+
+    [Fact]
+    public void FadeFinishesBeforeTheWindowSettles()
+    {
+        Assert.Equal(0, WindowShowAnimation.GetAlpha(0));
+        Assert.InRange(WindowShowAnimation.GetAlpha(70), (byte)1, (byte)254);
+        Assert.Equal(255, WindowShowAnimation.GetAlpha(140));
+        Assert.Equal(255, WindowShowAnimation.GetAlpha(260));
+    }
+
     [Fact]
     public void RealWindowReturnsToOriginalBoundsOnEachMonitor()
     {
@@ -386,6 +443,10 @@ public class WindowShowAnimationTests
 
     [DllImport("user32.dll", EntryPoint = "GetWindowLongW")]
     private static extern int GetWindowLong(nint hwnd, int index);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetLayeredWindowAttributes(nint hwnd, out uint color, out byte alpha, out uint flags);
 
     [DllImport("user32.dll")]
     private static extern nint SetThreadDpiAwarenessContext(nint context);

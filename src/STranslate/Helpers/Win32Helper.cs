@@ -286,6 +286,31 @@ public static class Win32Helper
             throw new Win32Exception(Marshal.GetLastPInvokeError());
     }
 
+    internal static bool IsWindowLayered(Window window) =>
+        (GetWindowStyle(GetWindowHandle(window), WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE) &
+         (nint)WINDOW_EX_STYLE.WS_EX_LAYERED) != 0;
+
+    internal static bool PreserveWindowLayeredStyle(int message, nint wParam, nint lParam)
+    {
+        if (message != 0x007C || (int)wParam != (int)WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE) return false;
+        var styles = Marshal.PtrToStructure<WindowStyleChange>(lParam);
+        styles.NewStyle |= (uint)WINDOW_EX_STYLE.WS_EX_LAYERED;
+        Marshal.StructureToPtr(styles, lParam, false);
+        return true;
+    }
+
+    internal static void SetWindowLayered(Window window, bool layered)
+    {
+        var hwnd = GetWindowHandle(window);
+        var style = GetWindowStyle(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+        var flag = (nint)WINDOW_EX_STYLE.WS_EX_LAYERED;
+        SetWindowStyle(hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, layered ? style | flag : style & ~flag);
+    }
+
+    internal static bool SetWindowAlpha(Window window, byte alpha) =>
+        PInvoke.SetLayeredWindowAttributes(GetWindowHandle(window), default, alpha,
+            LAYERED_WINDOW_ATTRIBUTES_FLAGS.LWA_ALPHA);
+
     /// <summary>预览层在跨屏、DPI 变化和鼠标操作时都不能成为活动窗口。</summary>
     internal static void DisableWindowActivation(Window window)
     {
